@@ -3,10 +3,12 @@ package aiss.githubminer.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Project {
 
@@ -20,11 +22,9 @@ public class Project {
     private String web_url;
 
     @JsonProperty("commits")
-    //TODO: Get https://api.github.com/repos/octocat/Hello-World/commits{/sha}
     private List<Commit> commits;
 
     @JsonProperty("issues")
-    //TODO: Get https://api.github.com/repos/octocat/Hello-World/issues{/number}
     private List<Issue> issues;
 
     @JsonProperty("id")
@@ -90,7 +90,7 @@ public class Project {
         sb.append('=');
         sb.append(((this.name == null)?"<null>":this.name));
         sb.append(',');
-        sb.append("htmlUrl");
+        sb.append("web_url");
         sb.append('=');
         sb.append(((this.web_url == null)?"<null>":this.web_url));
         sb.append(',');

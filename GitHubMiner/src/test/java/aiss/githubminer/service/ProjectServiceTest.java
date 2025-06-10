@@ -21,7 +21,7 @@ class ProjectServiceTest {
         String owner = "spring-projects";
         String repo = "spring-framework";
 
-        Project project = projectService.getProject(owner, repo, 2, 20, 2);
+        Project project = projectService.getProject(owner, repo, 5, 20, 2);
 
         assertNotNull(project);
         assertEquals("spring-framework", project.getName());

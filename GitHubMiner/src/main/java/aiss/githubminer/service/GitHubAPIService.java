@@ -2,6 +2,7 @@ package aiss.githubminer.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,9 +14,14 @@ import org.springframework.web.client.RestTemplate;
 public class GitHubAPIService {
 
     private static final String GITHUB_API_URL = "https://api.github.com/";
-    private static final String TOKEN = System.getenv("github.api.token");
 
-    public static <T> T get(String url, Class<T> responseType, RestTemplate restTemplate) {
+    @Value("${github.api.token:}")
+    private String TOKEN;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    public <T> T get(String url, Class<T> responseType) {
         String fullUrl = GITHUB_API_URL + url;
         HttpHeaders headers = new HttpHeaders();
         if (TOKEN != null && !TOKEN.isEmpty()) {
