@@ -27,6 +27,6 @@ class ProjectServiceTest {
         assertEquals("spring-framework", project.getName());
         assertEquals("https://github.com/spring-projects/spring-framework", project.getWeb_url());
         assertEquals(1148753, project.getId().intValue());
-        System.out.println(project.toString());
+        System.out.println(project);
     }
 }

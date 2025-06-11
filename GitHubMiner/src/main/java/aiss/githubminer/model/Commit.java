@@ -16,6 +16,7 @@ public class Commit {
     @JsonProperty("commit")
     private void unpackCommit(Map<String, Object> commit) {
         Object authorObj = commit.get("author");
+        if (authorObj == null) {return;}
         if (!(authorObj instanceof Map<?, ?> authorMap)) {
             //TODO: Handle error more gracefully
             throw new IllegalArgumentException("Author object must be of type Map");

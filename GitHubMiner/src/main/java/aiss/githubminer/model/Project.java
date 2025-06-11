@@ -28,9 +28,7 @@ public class Project {
     private List<Issue> issues;
 
     @JsonProperty("id")
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() { return id; }
 
     @JsonProperty("id")
     public void setId(Integer id) {
