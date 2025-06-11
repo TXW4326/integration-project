@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
-    @JsonProperty("login")
+    @JsonProperty("username")
     private String username;
 
     @JsonProperty("id")
@@ -19,14 +19,14 @@ public class User {
     @JsonProperty("avatar_url")
     private String avatar_url;
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     private String web_url;
 
     @JsonProperty("name")
     private String name;
 
 
-    @JsonProperty("login")
+    @JsonProperty("username")
     public String getUsername() {
         return username;
     }
@@ -56,7 +56,7 @@ public class User {
         this.avatar_url = avatar_url;
     }
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     public String getWeb_url() {
         return web_url;
     }

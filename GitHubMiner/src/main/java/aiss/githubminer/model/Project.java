@@ -18,7 +18,7 @@ public class Project {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     private String web_url;
 
     @JsonProperty("commits")
@@ -46,7 +46,7 @@ public class Project {
     }
 
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     public String getWeb_url() {
         return web_url;
     }

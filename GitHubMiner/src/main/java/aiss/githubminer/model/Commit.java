@@ -10,7 +10,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Commit {
 
-    @JsonProperty("node_id")
+    @JsonProperty("id")
     private String id;
 
     @JsonProperty("commit")
@@ -44,10 +44,10 @@ public class Commit {
     @JsonProperty("title")
     private String title;
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     private String web_url;
 
-    @JsonProperty("node_id")
+    @JsonProperty("id")
     public String getId() {
         return id;
     }
@@ -57,7 +57,7 @@ public class Commit {
         this.id = id;
     }
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     public String getWeb_url() {
         return web_url;
     }
@@ -108,42 +108,52 @@ public class Commit {
         return sb.toString();
     }
 
+    @JsonProperty("author_name")
     public String getAuthor_name() {
         return author_name;
     }
 
+    @JsonProperty("author_name")
     public void setAuthor_name(String author_name) {
         this.author_name = author_name;
     }
 
+    @JsonProperty("author_email")
     public String getAuthor_email() {
         return author_email;
     }
 
+    @JsonProperty("author_email")
     public void setAuthor_email(String author_email) {
         this.author_email = author_email;
     }
 
+    @JsonProperty("authored_date")
     public String getAuthored_date() {
         return authored_date;
     }
 
+    @JsonProperty("authored_date")
     public void setAuthored_date(String authored_date) {
         this.authored_date = authored_date;
     }
 
+    @JsonProperty("message")
     public String getMessage() {
         return message;
     }
 
+    @JsonProperty("message")
     public void setMessage(String message) {
         this.message = message;
     }
 
+    @JsonProperty("title")
     public String getTitle() {
         return title;
     }
 
+    @JsonProperty("title")
     public void setTitle(String title) {
         this.title = title;
     }

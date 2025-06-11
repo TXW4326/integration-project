@@ -4,8 +4,8 @@ package aiss.githubminer.service;
 import aiss.githubminer.model.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,15 +17,23 @@ public class IssueService {
     @Autowired
     GitHubAPIService gitHubAPIService;
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    CommentService commentService;
 
     public List<Issue> getIssues(String owner, String repo, Integer sinceIssues, Integer maxPages) {
         LocalDateTime now = LocalDateTime.now();
         String resultIssues = now.minusDays(sinceIssues).format(GitHubAPIService.formatter);
         return IntStream.rangeClosed(1, maxPages)
+                .parallel()
                 .mapToObj(page ->
                         gitHubAPIService.get("repos/{owner}/{repo}/issues?since={sinceIssues}&page={page}", Issue[].class, owner, repo, resultIssues, page))
                 .flatMap(Arrays::stream)
+                .peek(issue -> {if (issue.getAuthor() != null) issue.setAuthor(userService.getUser(issue.getAuthor().getUsername()));})
+                .peek(issue -> {if (issue.getAssignee() != null) issue.setAssignee(userService.getUser(issue.getAssignee().getUsername()));})
+                .peek(issue -> issue.setComments(commentService.getComments(owner, repo, issue.getNumber(), maxPages)))
                 .collect(Collectors.toList());
     }
 }

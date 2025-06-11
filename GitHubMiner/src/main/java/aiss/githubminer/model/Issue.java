@@ -1,21 +1,17 @@
 
 package aiss.githubminer.model;
 
+import com.fasterxml.jackson.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     private String web_url;
 
     @JsonProperty("id")
@@ -24,12 +20,12 @@ public class Issue {
     @JsonProperty("title")
     private String title;
 
-    @JsonProperty("user")
+    @JsonProperty("author")
     private User author;
 
     @JsonSetter("labels")
     private void unpackLabels(List<Object> labels) {
-        this.labels = labels.stream()
+        this.labels = labels.parallelStream()
             .map(l -> {
                 if (l instanceof Map) {
                     return (String) ((Map<?, ?>) l).get("name");
@@ -61,10 +57,14 @@ public class Issue {
     @JsonProperty("closed_at")
     private String closedAt;
 
-    @JsonProperty("body")
+    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("html_url")
+    //Aunque aquí parece que el atributo se ignorea, su getter si se usa al deserializar el objeto Issue
+    @JsonIgnore
+    private List<Comment> comments;
+
+    @JsonProperty("web_url")
     public String getWeb_url() {
         return web_url;
     }
@@ -94,7 +94,7 @@ public class Issue {
         this.title = title;
     }
 
-    @JsonProperty("user")
+    @JsonProperty("author")
     public User getAuthor() {
         return author;
     }
@@ -109,6 +109,7 @@ public class Issue {
         return labels;
     }
 
+    @JsonIgnore
     public void setLabels(List<String> labels) {
         this.labels = labels;
     }
@@ -163,7 +164,7 @@ public class Issue {
         this.closedAt = closedAt;
     }
 
-    @JsonProperty("body")
+    @JsonProperty("description")
     public String getDescription() {
         return description;
     }
@@ -221,6 +222,10 @@ public class Issue {
         sb.append('=');
         sb.append(((this.description == null)?"<null>":this.description));
         sb.append(',');
+        sb.append("comments");
+        sb.append('=');
+        sb.append(((this.comments == null)?"<null>":this.comments));
+        sb.append(',');
         if (sb.charAt((sb.length()- 1)) == ',') {
             sb.setCharAt((sb.length()- 1), ']');
         } else {
@@ -229,11 +234,20 @@ public class Issue {
         return sb.toString();
     }
 
-
+    @JsonIgnore
     public Integer getNumber() {
         String[] parts = web_url.split("/");
         String lastPart = parts[parts.length - 1];
         return Integer.parseInt(lastPart);
     }
 
+    @JsonProperty("comments")
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    @JsonIgnore
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }

@@ -1,16 +1,8 @@
 package aiss.githubminer.service;
 
-import aiss.githubminer.model.Commit;
-import aiss.githubminer.model.Issue;
 import aiss.githubminer.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class ProjectService {
