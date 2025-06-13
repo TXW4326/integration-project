@@ -34,6 +34,6 @@ class ProjectServiceTest {
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
-        System.out.println(ow.writeValueAsString(project.getIssues()));
+        System.out.println(ow.writeValueAsString(project));
     }
 }

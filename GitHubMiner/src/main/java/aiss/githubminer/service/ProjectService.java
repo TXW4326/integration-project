@@ -2,12 +2,14 @@ package aiss.githubminer.service;
 
 import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Project;
+import aiss.githubminer.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 @Service
 public class ProjectService {
@@ -32,7 +34,7 @@ public class ProjectService {
     }
 
     public Project getProject(String owner, String repo, Integer sinceCommits, Integer sinceIssues, Integer maxPages) {
-        //TODO: Handle errors from user input (sinceCommits, sinceIssues, maxPages)
+        userInputValidation(owner, repo, sinceCommits, sinceIssues, maxPages);
         Project project;
         try {
             project = gitHubAPIService.get("repos/{owner}/{repo}", Project.class, owner, repo);
@@ -44,15 +46,26 @@ public class ProjectService {
                 case 403: throw new GitHubMinerException(HttpStatus.FORBIDDEN, "Access to the project is forbidden: " + owner + "/" + repo);
                 default: throw new GitHubMinerException(e.getStatusCode(), "An error occurred while fetching the project: " + owner + "/" + repo);
             }
+        } catch (UnknownHttpStatusCodeException e) {
+            throw new GitHubMinerException(e.getStatusCode(), "An unknown error occurred while fetching the project: " + owner + "/" + repo);
+        } catch (RuntimeException e) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching the project: " + owner + "/" + repo);
         }
-        project.setCommits(commitService.getCommits(owner, repo, sinceCommits, maxPages));
-        project.setIssues(issueService.getIssues(owner, repo, sinceIssues, maxPages));
+        project.setCommits(commitService.getCommitsInternal(owner, repo, sinceCommits, maxPages));
+        project.setIssues(issueService.getIssuesInternal(owner, repo, sinceIssues, maxPages));
         return project;
     }
 
     public void sendProject(Project project) {
         //TODO: Handle errors
         restTemplate.postForEntity(gitMinerApiUrl, project, Project.class);
+    }
+
+    private static void userInputValidation(String owner, String repo, Integer sinceCommits, Integer sinceIssues, Integer maxPages) {
+        ValidationUtils.validateOwnerAndRepo(owner, repo);
+        ValidationUtils.validateSinceCommits(sinceCommits);
+        ValidationUtils.validateSinceIssues(sinceIssues);
+        ValidationUtils.validateMaxPages(maxPages);
     }
 
 }
