@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
+    private final GitHubAPIService gitHubAPIService;
+
     @Autowired
-    GitHubAPIService gitHubAPIService;
+    public UserService(GitHubAPIService gitHubAPIService) {
+        this.gitHubAPIService = gitHubAPIService;
+    }
 
     public User getUser(String username) {
         return gitHubAPIService.get("users/{username}", User.class, username);

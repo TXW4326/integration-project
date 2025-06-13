@@ -14,14 +14,18 @@ import java.util.stream.IntStream;
 @Service
 public class IssueService {
 
-    @Autowired
-    GitHubAPIService gitHubAPIService;
+    private final GitHubAPIService gitHubAPIService;
+    private final UserService userService;
+    private final CommentService commentService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    CommentService commentService;
+    public IssueService(GitHubAPIService gitHubAPIService,
+                        UserService userService,
+                        CommentService commentService) {
+        this.gitHubAPIService = gitHubAPIService;
+        this.userService = userService;
+        this.commentService = commentService;
+    }
 
     public List<Issue> getIssues(String owner, String repo, Integer sinceIssues, Integer maxPages) {
         LocalDateTime now = LocalDateTime.now();
