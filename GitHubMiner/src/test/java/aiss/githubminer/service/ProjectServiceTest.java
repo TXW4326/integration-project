@@ -1,15 +1,14 @@
 package aiss.githubminer.service;
 
+import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Project;
 import aiss.githubminer.utils.JsonUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import aiss.githubminer.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -29,8 +28,8 @@ class ProjectServiceTest {
 
 
     @Test
-    @DisplayName("Get project details for spring-projects/spring-framework")
-    void getProject() throws JsonProcessingException {
+    @DisplayName("Get project with valid parameters")
+    void getProject() {
         String owner = "spring-projects";
         String repo = "spring-framework";
         int sinceCommits = 2;
@@ -53,4 +52,155 @@ class ProjectServiceTest {
 
         System.out.println(JsonUtils.toJson(project));
     }
+
+    @Test
+    @DisplayName("Get project with empty owner")
+    void getProjectWithEmptyOwner() {
+        String owner = "";
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+            "Should throw GitHubMinerException for empty owner"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals( "Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate empty owner");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with empty repo")
+    void getProjectWithEmptyRepo() {
+        String owner = "spring-projects";
+        String repo = "";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+            "Should throw GitHubMinerException for empty repo"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate empty repo");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with invalid sinceCommits")
+    void getProjectWithInvalidSinceCommits() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int sinceCommits = -1; // Invalid value
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+            "Should throw GitHubMinerException for invalid sinceCommits"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid sinceCommits value: " + sinceCommits, ex.getMessage(), "Exception message should indicate invalid sinceCommits");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with invalid sinceIssues")
+    void getProjectWithInvalidSinceIssues() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int sinceIssues = -1; // Invalid value
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+            "Should throw GitHubMinerException for invalid sinceIssues"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid sinceIssues value: " + sinceIssues, ex.getMessage(), "Exception message should indicate invalid sinceIssues");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with invalid maxPages")
+    void getProjectWithInvalidMaxPages() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = -1; // Invalid value
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+            "Should throw GitHubMinerException for invalid maxPages"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid maxPages value: " + maxPages, ex.getMessage(), "Exception message should indicate invalid maxPages");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with invalid project")
+    void getProjectWithInvalidProject() {
+        String owner = "invalid-ownerytvfgybh7gt6frgyhu7gt6frbyuh8bghni";
+        String repo = "invalid-repojuhygvbuhnygtvybuh8yvgu7hgt6frv5ygbt6frv5t";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+            "Should throw GitHubMinerException for invalid project"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
+        assertEquals("Project not found: " + owner + "/" + repo, ex.getMessage(), "Exception message should indicate project not found");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with null owner")
+    void getProjectWithNullOwner() {
+        String owner = null;
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+            "Should throw GitHubMinerException for null owner"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate null owner");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with null repo")
+    void getProjectWithNullRepo() {
+        String owner = "spring-projects";
+        String repo = null;
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for null repo"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate null repo");
+        System.out.println(ex.getMessage());
+    }
+
 }

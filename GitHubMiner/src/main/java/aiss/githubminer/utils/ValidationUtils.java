@@ -4,7 +4,7 @@ import aiss.githubminer.exception.GitHubMinerException;
 import org.springframework.http.HttpStatus;
 
 public final class ValidationUtils {
-
+    //TODO: Separate each invalid case into a different exception
     private ValidationUtils() {}
 
     public static void validateOwnerAndRepo(String owner, String repo) {
@@ -16,20 +16,20 @@ public final class ValidationUtils {
         }
     }
 
-    public static void validateSinceCommits(Integer sinceCommits) {
-        if (sinceCommits == null || sinceCommits < 0) {
+    public static void validateSinceCommits(int sinceCommits) {
+        if (sinceCommits < 0) {
             throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Invalid sinceCommits value: " + sinceCommits);
         }
     }
 
-    public static void validateSinceIssues(Integer sinceIssues) {
-        if (sinceIssues == null || sinceIssues < 0) {
+    public static void validateSinceIssues(int sinceIssues) {
+        if (sinceIssues < 0) {
             throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Invalid sinceIssues value: " + sinceIssues);
         }
     }
 
-    public static void validateMaxPages(Integer maxPages) {
-        if (maxPages == null || maxPages <= 0) {
+    public static void validateMaxPages(int maxPages) {
+        if (maxPages <= 0) {
             throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Invalid maxPages value: " + maxPages);
         }
     }
@@ -42,7 +42,7 @@ public final class ValidationUtils {
 
     public static void validateUsername(String username) {
         if (username == null || username.isEmpty()) {
-            throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Username is null or empty");
+            throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Username is null or empty: " + username);
         }
     }
 }

@@ -1,16 +1,18 @@
 package aiss.githubminer.service;
 
+import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Commit;
 import aiss.githubminer.utils.JsonUtils;
+import aiss.githubminer.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import aiss.githubminer.exception.GitHubMinerException;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +30,7 @@ class CommitServiceTest {
 
 
     @Test
-    @DisplayName("Test getCommits with valid parameters")
+    @DisplayName("Get commits with valid parameters")
     void getCommits() {
         String owner = "spring-projects";
         String repo = "spring-framework";
@@ -38,6 +40,114 @@ class CommitServiceTest {
         List<Commit> commits = commitService.getCommits(owner, repo, sinceCommits, maxPages);
         testCommits(commits, maxPages).close();
         System.out.println(JsonUtils.toJson(commits));
+    }
+
+    @Test
+    @DisplayName("Get commits with invalid project")
+    void getCommitsWithInvalidRepo() {
+        String owner = "invalid-ownerytfvcdtvgybtfrtvgybvf";
+        String repo = "invalid-repoyvfgbhubgyvfhbubgyvfb";
+        int sinceCommits = 2;
+        int maxPages = 1;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for invalid owner or repo"
+        );
+        TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
+        assertEquals("No commits found for the given parameters", ex.getReason().get("error"), "Error message should match expected");
+        Map<?, ?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        TestUtils.assertMapContains(parameters, "owner", owner);
+        TestUtils.assertMapContains(parameters, "repo", repo);
+        TestUtils.assertMapContains(parameters, "sinceCommits", sinceCommits);
+        TestUtils.assertMapContains(parameters, "maxPages", maxPages);
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get commits with invalid sinceCommits")
+    void getCommitsWithInvalidSinceCommits() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int sinceCommits = -1; // Invalid sinceCommits
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for invalid sinceCommits"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid sinceCommits value: " + sinceCommits, ex.getReason().get("error"), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get commits with invalid maxPages")
+    void getCommitsWithInvalidMaxPages() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int maxPages = -1; // Invalid maxPages
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for invalid maxPages"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid maxPages value: " + maxPages, ex.getReason().get("error"), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get commits with empty repo")
+    void getCommitsWithEmptyRepo() {
+        String owner = "spring-projects";
+        String repo = ""; // Empty repo
+        int sinceCommits = 2;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for empty repo"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is null or empty: " + repo, ex.getReason().get("error"), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get commits with null owner")
+    void getCommitsWithNullOwner() {
+        String owner = null; // Null owner
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for null owner"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is null or empty: " + owner, ex.getReason().get("error"), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+
+    @Test
+    @DisplayName("Get commits with empty owner")
+    void getCommitsWithEmptyOwner() {
+        String owner = ""; // Empty owner
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for empty owner"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is null or empty: " + owner, ex.getReason().get("error"), "Error message should match expected");
+        System.out.println(ex.getMessage());
     }
 
 

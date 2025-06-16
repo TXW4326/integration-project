@@ -47,21 +47,21 @@ public class IssueService {
             );
             switch (e.getStatusCode().value()) {
                 case 404: throw new GitHubMinerException(HttpStatus.NOT_FOUND, Map.of(
-                        "message", "No issues found for the given parameters",
+                        "error", "No issues found for the given parameters",
                         "parameters", parameters));
                 case 301: throw new GitHubMinerException(HttpStatus.MOVED_PERMANENTLY, Map.of(
-                        "message", "Issues have been moved",
+                        "error", "Issues have been moved",
                         "parameters", parameters));
                 case 422: throw new GitHubMinerException(HttpStatus.UNPROCESSABLE_ENTITY, Map.of(
-                        "message", "Unprocessable entity for issue: Validation failed, or the endpoint has been spammed.",
+                        "error", "Unprocessable entity for issue: Validation failed, or the endpoint has been spammed.",
                         "parameters", parameters));
                 default: throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                        "message", "An error occurred while fetching issues",
+                        "error", "An error occurred while fetching issues",
                         "parameters", parameters));
             }
         } catch (UnknownHttpStatusCodeException e) {
             throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                    "message", "An unknown error occurred while fetching issues",
+                    "error", "An unknown error occurred while fetching issues",
                     "parameters", Map.of(
                             "owner", owner,
                             "repo", repo,
@@ -72,7 +72,7 @@ public class IssueService {
             ));
         } catch (RuntimeException e) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                    "message", "An error occurred while fetching issues",
+                    "error", "An error occurred while fetching issues",
                     "parameters", Map.of(
                             "owner", owner,
                             "repo", repo,

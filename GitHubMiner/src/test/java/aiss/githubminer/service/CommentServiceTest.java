@@ -1,14 +1,18 @@
 package aiss.githubminer.service;
 
+import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Comment;
 import aiss.githubminer.utils.JsonUtils;
+import aiss.githubminer.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +30,7 @@ class CommentServiceTest {
 
 
     @Test
-    @DisplayName("Test getComments with valid parameters")
+    @DisplayName("Get comments with valid parameters")
     void getComments() {
         String owner = "spring-projects";
         String repo = "spring-framework";
@@ -36,6 +40,160 @@ class CommentServiceTest {
         List<Comment> comments = commentService.getComments(owner, repo, issueNumber, maxPages);
         testComments(comments, maxPages).close();
         System.out.println(JsonUtils.toJson(comments));
+    }
+
+    @Test
+    @DisplayName("Get comments with invalid project")
+    void getCommentsInvalidProject() {
+        String owner = "invalid-ownervtfgybtfr5tvg76fr5cdtfvgy7hgt6y";
+        String repo = "invalid-repohuygbuh87gt6frvygt6fr5cdtfv6gr5cdtfvygbuv";
+        int issueNumber = 35042;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            commentService.getComments(owner, repo, issueNumber, maxPages),
+            "Should throw GitHubMinerException for invalid project"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
+        assertEquals("Comments not found", ex.getReason().get("error"), "Exception message should indicate no issues found");
+        Map<?,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        TestUtils.assertMapContains(parameters, "owner", owner);
+        TestUtils.assertMapContains(parameters, "repo", repo);
+        TestUtils.assertMapContains(parameters, "issueNumber", issueNumber);
+        TestUtils.assertMapContains(parameters, "maxPages", maxPages);
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get comments with empty repo")
+    void getCommentsEmptyRepo() {
+        String owner = "spring-projects";
+        String repo = "";
+        int issueNumber = 35042;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            commentService.getComments(owner, repo, issueNumber, maxPages),
+            "Should throw GitHubMinerException for empty repo"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate empty repo");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get comments empty owner")
+    void getCommentsEmptyOwner() {
+        String owner = "";
+        String repo = "spring-framework";
+        int issueNumber = 35042;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            commentService.getComments(owner, repo, issueNumber, maxPages),
+            "Should throw GitHubMinerException for empty owner"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate empty owner");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get comments with null owner")
+    void getCommentsNullOwner() {
+        String owner = null;
+        String repo = "spring-framework";
+        int issueNumber = 35042;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            commentService.getComments(owner, repo, issueNumber, maxPages),
+            "Should throw GitHubMinerException for null owner"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate null owner");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get comments with null repo")
+    void getCommentsNullRepo() {
+        String owner = "spring-projects";
+        String repo = null;
+        int issueNumber = 35042;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            commentService.getComments(owner, repo, issueNumber, maxPages),
+            "Should throw GitHubMinerException for null repo"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate null repo");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get comments with non-existent issue")
+    void getCommentsNonExistentIssue() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int issueNumber = 99999999; // Assuming this issue does not exist
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            commentService.getComments(owner, repo, issueNumber, maxPages),
+            "Should throw GitHubMinerException for non-existent issue"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
+        assertEquals("Comments not found", ex.getReason().get("error"), "Exception message should indicate comment not found");
+        Map<?,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        TestUtils.assertMapContains(parameters, "owner", owner);
+        TestUtils.assertMapContains(parameters, "repo", repo);
+        TestUtils.assertMapContains(parameters, "issueNumber", issueNumber);
+        TestUtils.assertMapContains(parameters, "maxPages", maxPages);
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get comments with invalid maxPages")
+    void getCommentsInvalidMaxPages() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int issueNumber = 35042;
+        int maxPages = -1; // Invalid maxPages
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+            commentService.getComments(owner, repo, issueNumber, maxPages),
+            "Should throw GitHubMinerException for invalid maxPages"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid maxPages value: " + maxPages, ex.getMessage(), "Exception message should indicate invalid maxPages");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get comments with invalid issueNumber")
+    void getCommentsInvalidIssueNumber() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int issueNumber = -1; // Invalid issue number
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                commentService.getComments(owner, repo, issueNumber, maxPages),
+                "Should throw GitHubMinerException for invalid issue number"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid issue number: " + issueNumber, ex.getMessage(), "Exception message should indicate invalid issue number");
+        System.out.println(ex.getMessage());
     }
 
     public static Stream<Comment> testComments(List<Comment> comments, int maxPages) {

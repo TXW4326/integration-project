@@ -1,15 +1,19 @@
 package aiss.githubminer.service;
 
+import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Issue;
 import aiss.githubminer.utils.JsonUtils;
+import aiss.githubminer.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +30,7 @@ class IssueServiceTest {
 
 
     @Test
-    @DisplayName("Test to get issues from a repository")
+    @DisplayName("Get issues with valid parameters")
     void getIssues() {
         String owner = "spring-projects";
         String repo = "spring-framework";
@@ -40,6 +44,137 @@ class IssueServiceTest {
                             "Issue updated date should be within the sinceIssues range")
             );
         System.out.println(JsonUtils.toJson(issues));
+    }
+
+    @Test
+    @DisplayName("Get issues with empty owner")
+    void getIssuesWithEmptyOwner() {
+        String owner = "";
+        String repo = "spring-framework";
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty owner"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get issues with empty repo")
+    void getIssuesWithEmptyRepo() {
+        String owner = "spring-projects";
+        String repo = "";
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty repo"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get issues with invalid sinceIssues")
+    void getIssuesWithInvalidSinceIssues() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int sinceIssues = -1; // Invalid sinceIssues
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for invalid sinceIssues"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid sinceIssues value: " + sinceIssues, ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get issues with invalid maxPages")
+    void getIssuesWithInvalidMaxPages() {
+        String owner = "spring-projects";
+        String repo = "spring-framework";
+        int sinceIssues = 20;
+        int maxPages = -1; // Invalid maxPages
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for invalid maxPages"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Invalid maxPages value: " + maxPages, ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get issues with invalid project")
+    void getIssuesWithNonExistingOwnerAndRepo() {
+        String owner = "invalid-ownertrfvghbuy7gtvyhu7gt6fvgy";
+        String repo = "invalid-repoyvftghbyutfredsw34d55f678y";
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for non-existing owner and repo"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
+        assertEquals("No issues found for the given parameters", ex.getReason().get("error"), "Error message should match expected");
+        Map<?,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        TestUtils.assertMapContains(parameters, "sinceIssues", sinceIssues);
+        TestUtils.assertMapContains(parameters, "maxPages", maxPages);
+        TestUtils.assertMapContains(parameters, "owner", owner);
+        TestUtils.assertMapContains(parameters, "repo", repo);
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get issues with null owner")
+    void getIssuesWithNullOwner() {
+        String owner = null;
+        String repo = "spring-framework";
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for null owner"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get issues with null repo")
+    void getIssuesWithNullRepo() {
+        String owner = "spring-projects";
+        String repo = null;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for null repo"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
     }
 
     public static Stream<Issue> testIssues(List<Issue> issues, int maxPages) {

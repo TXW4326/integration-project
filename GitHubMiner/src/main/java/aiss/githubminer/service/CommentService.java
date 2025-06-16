@@ -42,18 +42,18 @@ public class CommentService {
             );
             switch (e.getStatusCode().value()) {
                 case 404: throw new GitHubMinerException(HttpStatus.NOT_FOUND, Map.of(
-                        "message", "Comment not found",
+                        "error", "Comments not found",
                         "parameters", parameters));
                 case 410: throw new GitHubMinerException(HttpStatus.GONE, Map.of(
-                        "message", "Comment has been deleted or is no longer available",
+                        "error", "Comments have been deleted or are no longer available",
                         "parameters", parameters));
                 default: throw  new GitHubMinerException(e.getStatusCode(), Map.of(
-                        "message", "An error occurred while fetching comments",
+                        "error", "An error occurred while fetching comments",
                         "parameters", parameters));
             }
         } catch (UnknownHttpStatusCodeException e) {
             throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                    "message", "An unknown error occurred while fetching comments",
+                    "error", "An unknown error occurred while fetching comments",
                     "parameters", Map.of(
                             "owner", owner,
                             "repo", repo,
@@ -64,7 +64,7 @@ public class CommentService {
             ));
         } catch (RuntimeException e) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                    "message", "An error occurred while fetching comments",
+                    "error", "An error occurred while fetching comments",
                     "parameters", Map.of(
                             "owner", owner,
                             "repo", repo,

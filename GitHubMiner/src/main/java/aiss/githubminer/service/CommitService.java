@@ -40,24 +40,24 @@ public class CommitService {
             );
             switch (e.getStatusCode().value()) {
                 case 400: throw new GitHubMinerException(HttpStatus.BAD_REQUEST, Map.of(
-                        "message", "Invalid request parameters for commits",
+                        "error", "Invalid request parameters for commits",
                         "parameters", parameters));
                 case 404: throw new GitHubMinerException(HttpStatus.NOT_FOUND,Map.of(
-                        "message", "No commits found for the given parameters",
+                        "error", "No commits found for the given parameters",
                         "parameters",parameters ));
                 case 409: throw new GitHubMinerException(HttpStatus.CONFLICT, Map.of(
-                        "message", "Conflict occurred while fetching commits",
+                        "error", "Conflict occurred while fetching commits",
                         "parameters", parameters));
                 case 500: throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                        "message", "Internal server error while fetching commits",
+                        "error", "Internal server error while fetching commits",
                         "parameters", parameters));
                 default: throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                        "message", "An error occurred while fetching commits",
+                        "error", "An error occurred while fetching commits",
                         "parameters", parameters));
             }
         } catch (UnknownHttpStatusCodeException e) {
             throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                    "message", "An unknown error occurred while fetching commits",
+                    "error", "An unknown error occurred while fetching commits",
                     "parameters", Map.of(
                             "owner", owner,
                             "repo", repo,
@@ -67,7 +67,7 @@ public class CommitService {
             ));
         } catch (RuntimeException e) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                    "message", "An error occurred while fetching commits",
+                    "error", "An error occurred while fetching commits",
                     "parameters", Map.of(
                             "owner", owner,
                             "repo", repo,
