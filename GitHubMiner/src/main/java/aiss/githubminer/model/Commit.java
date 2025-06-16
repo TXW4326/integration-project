@@ -1,10 +1,13 @@
 
 package aiss.githubminer.model;
 
+import aiss.githubminer.service.GitHubAPIService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,22 +17,6 @@ public class Commit {
     @JsonProperty("id")
     private String id;
 
-    @JsonProperty("commit")
-    private void unpackCommit(Map<String, Object> commit) {
-        Object authorObj = commit.get("author");
-        if (authorObj == null) {return;}
-        if (!(authorObj instanceof Map<?, ?> authorMap)) {
-            //TODO: Handle error more gracefully
-            throw new IllegalArgumentException("Author object must be of type Map");
-        }
-        this.author_name = (String) authorMap.get("name");
-        this.author_email = (String) authorMap.get("email");
-        this.authored_date = (String) authorMap.get("date");
-        String[] description =  ((String) commit.get("message")).split("\n\n",2);
-        this.title = description[0];
-        if (description.length > 1) {this.message = description[1];}
-    }
-
     @JsonProperty("author_name")
     private String author_name;
 
@@ -37,7 +24,8 @@ public class Commit {
     private String author_email;
 
     @JsonProperty("authored_date")
-    private String authored_date;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime authored_date;
 
     @JsonProperty("message")
     private String message;
@@ -47,6 +35,22 @@ public class Commit {
 
     @JsonProperty("web_url")
     private String web_url;
+
+    @JsonProperty("commit")
+    private void unpackCommit(Map<String, Object> commit) {
+        Object authorObj = commit.get("author");
+        if (authorObj == null) {return;}
+        if (!(authorObj instanceof Map<?, ?> authorMap)) {
+            //TODO: Handle error more gracefully
+            throw new IllegalArgumentException("Author object must be of type Map");
+        }
+        this.author_name = authorMap.get("name").toString();
+        this.author_email = authorMap.get("email").toString();
+        this.authored_date = LocalDateTime.parse(authorMap.get("date").toString().replace("Z", ""));
+        String[] description =  ((String) commit.get("message")).split("\n\n",2);
+        this.title = description[0];
+        if (description.length > 1) {this.message = description[1];}
+    }
 
     @JsonProperty("id")
     public String getId() {
@@ -130,12 +134,12 @@ public class Commit {
     }
 
     @JsonProperty("authored_date")
-    public String getAuthored_date() {
+    public LocalDateTime getAuthored_date() {
         return authored_date;
     }
 
     @JsonProperty("authored_date")
-    public void setAuthored_date(String authored_date) {
+    public void setAuthored_date(LocalDateTime authored_date) {
         this.authored_date = authored_date;
     }
 

@@ -27,7 +27,7 @@ public class CommitService {
         this.gitHubAPIService = gitHubAPIService;
     }
 
-    private Commit[] handleCommitApiCall(String owner, String repo, String resultCommits, int page, Integer maxPages, Integer sinceCommits) {
+    private Commit[] handleCommitApiCall(String owner, String repo, String resultCommits, int page, int maxPages, int sinceCommits) {
         try {
             return gitHubAPIService.get("repos/{owner}/{repo}/commits?since={sinceCommits}&page={page}", Commit[].class, owner, repo, resultCommits, page);
         } catch (HttpClientErrorException e) {
@@ -78,7 +78,7 @@ public class CommitService {
         }
     }
 
-    List<Commit> getCommitsInternal(String owner, String repo, Integer sinceCommits, Integer maxPages) {
+    List<Commit> getCommitsInternal(String owner, String repo, int sinceCommits, int maxPages) {
         LocalDateTime now = LocalDateTime.now();
         String resultCommits = now.minusDays(sinceCommits).format(GitHubAPIService.formatter);
 
@@ -90,12 +90,12 @@ public class CommitService {
     }
 
     // Method implemented in case it is needed to get commits without getting the project first
-    public List<Commit> getCommits(String owner, String repo, Integer sinceCommits, Integer maxPages) {
+    public List<Commit> getCommits(String owner, String repo, int sinceCommits, int maxPages) {
         userInputValidation(owner, repo, sinceCommits, maxPages);
         return getCommitsInternal(owner, repo, sinceCommits, maxPages);
     }
 
-    private static void userInputValidation(String owner, String repo, Integer sinceCommits, Integer maxPages) {
+    private static void userInputValidation(String owner, String repo, int sinceCommits, int maxPages) {
         ValidationUtils.validateOwnerAndRepo(owner, repo);
         ValidationUtils.validateSinceCommits(sinceCommits);
         ValidationUtils.validateMaxPages(maxPages);

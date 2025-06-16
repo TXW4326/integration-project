@@ -1,5 +1,6 @@
 package aiss.githubminer.exception;
 
+import aiss.githubminer.utils.JsonUtils;
 import org.springframework.http.HttpStatusCode;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ public class GitHubMinerException extends RuntimeException {
     }
 
     public GitHubMinerException(HttpStatusCode status, Map<String,?> reason) {
-        super(reason.toString());
+        super(JsonUtils.toJson(reason));
         this.status = status;
         this.reason = reason;
     }

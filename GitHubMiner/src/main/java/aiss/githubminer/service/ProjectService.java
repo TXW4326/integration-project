@@ -33,7 +33,7 @@ public class ProjectService {
         this.gitMinerApiUrl = gitMinerApiUrl;
     }
 
-    public Project getProject(String owner, String repo, Integer sinceCommits, Integer sinceIssues, Integer maxPages) {
+    public Project getProject(String owner, String repo, int sinceCommits, int sinceIssues, int maxPages) {
         userInputValidation(owner, repo, sinceCommits, sinceIssues, maxPages);
         Project project;
         try {
@@ -61,7 +61,7 @@ public class ProjectService {
         restTemplate.postForEntity(gitMinerApiUrl, project, Project.class);
     }
 
-    private static void userInputValidation(String owner, String repo, Integer sinceCommits, Integer sinceIssues, Integer maxPages) {
+    private static void userInputValidation(String owner, String repo, int sinceCommits, int sinceIssues, int maxPages) {
         ValidationUtils.validateOwnerAndRepo(owner, repo);
         ValidationUtils.validateSinceCommits(sinceCommits);
         ValidationUtils.validateSinceIssues(sinceIssues);

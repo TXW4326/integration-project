@@ -29,7 +29,7 @@ public class CommentService {
     }
 
 
-    private Comment[] handleCommentApiCall(String owner, String repo, Integer issueNumber, int page, Integer maxPages) {
+    private Comment[] handleCommentApiCall(String owner, String repo, int issueNumber, int page, int maxPages) {
         try {
             return gitHubAPIService.get("repos/{owner}/{repo}/issues/{issueNumber}/comments?page={page}", Comment[].class, owner, repo, issueNumber, page);
         } catch (HttpStatusCodeException e) {
@@ -77,7 +77,7 @@ public class CommentService {
     }
 
 
-    List<Comment> getCommentsInternal(String owner, String repo, Integer issueNumber, Integer maxPages) {
+    List<Comment> getCommentsInternal(String owner, String repo, int issueNumber, int maxPages) {
         return IntStream.rangeClosed(1, maxPages)
                 .parallel()
                 .mapToObj(page -> handleCommentApiCall(owner, repo, issueNumber, page, maxPages))
@@ -86,12 +86,12 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public List<Comment> getComments(String owner, String repo, Integer issueNumber, Integer maxPages) {
+    public List<Comment> getComments(String owner, String repo, int issueNumber, int maxPages) {
         userInputValidation(owner, repo, issueNumber, maxPages);
         return getCommentsInternal(owner, repo, issueNumber, maxPages);
     }
 
-    private static void userInputValidation(String owner, String repo, Integer issueNumber, Integer maxPages) {
+    private static void userInputValidation(String owner, String repo, int issueNumber, int maxPages) {
         ValidationUtils.validateOwnerAndRepo(owner, repo);
         ValidationUtils.validateIssueNumber(issueNumber);
         ValidationUtils.validateMaxPages(maxPages);

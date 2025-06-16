@@ -3,6 +3,7 @@ package aiss.githubminer.model;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,22 +25,6 @@ public class Issue {
     @JsonProperty("author")
     private User author;
 
-    @JsonSetter("labels")
-    private void unpackLabels(List<Object> labels) {
-        this.labels = labels.parallelStream()
-            .map(l -> {
-                if (l instanceof Map) {
-                    return (String) ((Map<?, ?>) l).get("name");
-                } else if (l instanceof String) {
-                    return (String) l;
-                } else {
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    }
-
     @JsonProperty("labels")
     private List<String> labels;
 
@@ -50,18 +35,21 @@ public class Issue {
     private User assignee;
 
     @JsonProperty("created_at")
-    private String createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime created_at;
 
     @JsonProperty("updated_at")
-    private String updatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime updated_at;
 
     @JsonProperty("closed_at")
-    private String closedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime closed_at;
 
     @JsonProperty("description")
     private String description;
 
-    //Aunque aquí parece que el atributo se ignorea, su getter si se usa al deserializar el objeto Issue
+    //Aunque aquí parece que el atributo se ignore, su getter si se usa al deserializar el objeto Issue
     @JsonIgnore
     private List<Comment> comments;
 
@@ -115,6 +103,22 @@ public class Issue {
         this.labels = labels;
     }
 
+    @JsonSetter("labels")
+    private void unpackLabels(List<Object> labels) {
+        this.labels = labels.parallelStream()
+                .map(l -> {
+                    if (l instanceof Map) {
+                        return (String) ((Map<?, ?>) l).get("name");
+                    } else if (l instanceof String) {
+                        return (String) l;
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
     @JsonProperty("state")
     public String getState() {
         return state;
@@ -136,33 +140,33 @@ public class Issue {
     }
 
     @JsonProperty("created_at")
-    public String getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreated_at() {
+        return created_at;
     }
 
     @JsonProperty("created_at")
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
     }
 
     @JsonProperty("updated_at")
-    public String getUpdatedAt() {
-        return updatedAt;
+    public LocalDateTime getUpdated_at() {
+        return updated_at;
     }
 
     @JsonProperty("updated_at")
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdated_at(LocalDateTime updated_at) {
+        this.updated_at = updated_at;
     }
 
     @JsonProperty("closed_at")
-    public String getClosedAt() {
-        return closedAt;
+    public LocalDateTime getClosed_at() {
+        return closed_at;
     }
 
     @JsonProperty("closed_at")
-    public void setClosedAt(String closedAt) {
-        this.closedAt = closedAt;
+    public void setClosed_at(LocalDateTime closed_at) {
+        this.closed_at = closed_at;
     }
 
     @JsonProperty("description")
@@ -209,15 +213,15 @@ public class Issue {
         sb.append(',');
         sb.append("createdAt");
         sb.append('=');
-        sb.append(((this.createdAt == null)?"<null>":this.createdAt));
+        sb.append(((this.created_at == null)?"<null>":this.created_at));
         sb.append(',');
         sb.append("updatedAt");
         sb.append('=');
-        sb.append(((this.updatedAt == null)?"<null>":this.updatedAt));
+        sb.append(((this.updated_at == null)?"<null>":this.updated_at));
         sb.append(',');
         sb.append("closedAt");
         sb.append('=');
-        sb.append(((this.closedAt == null)?"<null>":this.closedAt));
+        sb.append(((this.closed_at == null)?"<null>":this.closed_at));
         sb.append(',');
         sb.append("description");
         sb.append('=');

@@ -3,7 +3,9 @@ package aiss.githubminer.utils;
 import aiss.githubminer.exception.GitHubMinerException;
 import org.springframework.http.HttpStatus;
 
-public interface ValidationUtils {
+public final class ValidationUtils {
+
+    private ValidationUtils() {}
 
     public static void validateOwnerAndRepo(String owner, String repo) {
         if (owner == null || owner.isEmpty()) {

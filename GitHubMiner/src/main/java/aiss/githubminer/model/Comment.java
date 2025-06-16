@@ -1,9 +1,12 @@
 
 package aiss.githubminer.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -16,10 +19,12 @@ public class Comment {
     private User author;
 
     @JsonProperty("created_at")
-    private String createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime created_at;
 
     @JsonProperty("updated_at")
-    private String updatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime updated_at;
 
     @JsonProperty("body")
     private String body;
@@ -45,23 +50,23 @@ public class Comment {
     }
 
     @JsonProperty("created_at")
-    public String getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreated_at() {
+        return created_at;
     }
 
     @JsonProperty("created_at")
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
     }
 
     @JsonProperty("updated_at")
-    public String getUpdatedAt() {
-        return updatedAt;
+    public LocalDateTime getUpdated_at() {
+        return updated_at;
     }
 
     @JsonProperty("updated_at")
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdated_at(LocalDateTime updated_at) {
+        this.updated_at = updated_at;
     }
 
     @JsonProperty("body")
@@ -88,11 +93,11 @@ public class Comment {
         sb.append(',');
         sb.append("createdAt");
         sb.append('=');
-        sb.append(((this.createdAt == null)?"<null>":this.createdAt));
+        sb.append(((this.created_at == null)?"<null>":this.created_at));
         sb.append(',');
         sb.append("updatedAt");
         sb.append('=');
-        sb.append(((this.updatedAt == null)?"<null>":this.updatedAt));
+        sb.append(((this.updated_at == null)?"<null>":this.updated_at));
         sb.append(',');
         sb.append("body");
         sb.append('=');

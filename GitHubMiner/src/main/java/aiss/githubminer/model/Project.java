@@ -13,7 +13,7 @@ import java.util.List;
 public class Project {
 
     @JsonProperty("id")
-    private Integer id;
+    private long id;
 
     @JsonProperty("name")
     private String name;
@@ -28,10 +28,10 @@ public class Project {
     private List<Issue> issues;
 
     @JsonProperty("id")
-    public Integer getId() { return id; }
+    public long getId() { return id; }
 
     @JsonProperty("id")
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -82,7 +82,7 @@ public class Project {
         sb.append(Project.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("id");
         sb.append('=');
-        sb.append(((this.id == null)?"<null>":this.id));
+        sb.append(this.id);
         sb.append(',');
         sb.append("name");
         sb.append('=');

@@ -14,7 +14,7 @@ public class User {
     private String username;
 
     @JsonProperty("id")
-    private Integer id;
+    private long id;
 
     @JsonProperty("avatar_url")
     private String avatar_url;
@@ -37,12 +37,12 @@ public class User {
     }
 
     @JsonProperty("id")
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -86,7 +86,7 @@ public class User {
         sb.append(',');
         sb.append("id");
         sb.append('=');
-        sb.append(((this.id == null)?"<null>":this.id));
+        sb.append((this.id));
         sb.append(',');
         sb.append("avatar_url");
         sb.append('=');

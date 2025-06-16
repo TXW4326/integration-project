@@ -34,7 +34,7 @@ public class IssueService {
     }
 
 
-    private Issue[] handleIssueApiCall(String owner, String repo, String resultIssues, int page, Integer maxPages, Integer sinceIssues) {
+    private Issue[] handleIssueApiCall(String owner, String repo, String resultIssues, int page, int maxPages, int sinceIssues) {
         try {
             return gitHubAPIService.get("repos/{owner}/{repo}/issues?since={sinceIssues}&page={page}", Issue[].class, owner, repo, resultIssues, page);
         } catch (HttpStatusCodeException e) {
@@ -84,7 +84,7 @@ public class IssueService {
         }
     }
 
-    List<Issue> getIssuesInternal(String owner, String repo, Integer sinceIssues, Integer maxPages) {
+    List<Issue> getIssuesInternal(String owner, String repo, int sinceIssues, int maxPages) {
         LocalDateTime now = LocalDateTime.now();
         String resultIssues = now.minusDays(sinceIssues).format(GitHubAPIService.formatter);
         return IntStream.rangeClosed(1, maxPages)
@@ -98,12 +98,12 @@ public class IssueService {
     }
 
     // Method implemented in case it is needed to get issues without getting the project first
-    public List<Issue> getIssues(String owner, String repo, Integer sinceIssues, Integer maxPages) {
+    public List<Issue> getIssues(String owner, String repo, int sinceIssues, int maxPages) {
         userInputValidation(owner, repo, sinceIssues, maxPages);
         return getIssuesInternal(owner, repo, sinceIssues, maxPages);
     }
 
-    private static void userInputValidation(String owner, String repo, Integer sinceIssues, Integer maxPages) {
+    private static void userInputValidation(String owner, String repo, int sinceIssues, int maxPages) {
         ValidationUtils.validateOwnerAndRepo(owner, repo);
         ValidationUtils.validateSinceIssues(sinceIssues);
         ValidationUtils.validateMaxPages(maxPages);
