@@ -2,6 +2,7 @@
 package aiss.githubminer.model;
 
 
+import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,7 +46,6 @@ public class Project {
         this.name = name;
     }
 
-
     @JsonProperty("web_url")
     public String getWeb_url() {
         return web_url;
@@ -75,37 +75,15 @@ public class Project {
     }
 
 
-
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Project.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("id");
-        sb.append('=');
-        sb.append(this.id);
-        sb.append(',');
-        sb.append("name");
-        sb.append('=');
-        sb.append(((this.name == null)?"<null>":this.name));
-        sb.append(',');
-        sb.append("web_url");
-        sb.append('=');
-        sb.append(((this.web_url == null)?"<null>":this.web_url));
-        sb.append(',');
-        sb.append("commits");
-        sb.append('=');
-        sb.append(((this.commits == null)?"<null>":this.commits));
-        sb.append(',');
-        sb.append("issues");
-        sb.append('=');
-        sb.append(((this.issues == null)?"<null>":this.issues));
-        sb.append(',');
-        if (sb.charAt((sb.length()- 1)) == ',') {
-            sb.setCharAt((sb.length()- 1), ']');
-        } else {
-            sb.append(']');
-        }
-        return sb.toString();
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("name", name)
+                .append("web_url", web_url)
+                .append("commits", commits)
+                .append("issues", issues)
+                .toString();
     }
 
 }

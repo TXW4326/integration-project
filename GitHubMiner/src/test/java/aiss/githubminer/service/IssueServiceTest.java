@@ -60,7 +60,7 @@ class IssueServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Error message should match expected");
+        assertEquals("Owner is empty", ex.getMessage(), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -78,7 +78,7 @@ class IssueServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Error message should match expected");
+        assertEquals("Repository is empty", ex.getMessage(), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -96,7 +96,7 @@ class IssueServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid sinceIssues value: " + sinceIssues, ex.getMessage(), "Error message should match expected");
+        assertEquals("sinceIssues value cannot be negative: " + sinceIssues, ex.getMessage(), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -114,7 +114,7 @@ class IssueServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid maxPages value: " + maxPages, ex.getMessage(), "Error message should match expected");
+        assertEquals("maxPages value cannot be negative: " + maxPages, ex.getMessage(), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -155,7 +155,7 @@ class IssueServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Error message should match expected");
+        assertEquals("Owner is null", ex.getMessage(), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -173,7 +173,7 @@ class IssueServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Error message should match expected");
+        assertEquals("Repository is null", ex.getMessage(), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -184,8 +184,6 @@ class IssueServiceTest {
             assertTrue(issue.getId() >= 0, "Issue ID should be non-negative");
             assertNotNull(issue.getTitle(), "Issue title should not be null");
             assertFalse(issue.getTitle().isEmpty(), "Issue title should not be empty");
-            assertNotNull(issue.getWeb_url(), "Issue web URL should not be null");
-            assertFalse(issue.getWeb_url().isEmpty(), "Issue web URL should not be empty");
             assertNotNull(issue.getState(), "Issue state should not be null");
             assertFalse(issue.getState().isEmpty(), "Issue state should not be empty");
             if (issue.getDescription() != null) assertFalse(issue.getDescription().isEmpty(), "Issue description should not be empty");
@@ -196,8 +194,8 @@ class IssueServiceTest {
                 assertFalse(label.isEmpty(), "Issue label should not be empty");
             }
             if (issue.getAssignee() != null) UserServiceTest.testUser(issue.getAssignee());
-            assertNotNull(issue.getNumber(), "Issue number should not be null");
             assertTrue(issue.getNumber() >= 0, "Issue number should be non-negative");
+            assertTrue(issue.getVotes() >= 0, "Issue votes should be non-negative");
             assertNotNull(issue.getCreated_at(), "Issue created date should not be null");
             assertNotNull(issue.getUpdated_at(), "Issue updated date should not be null");
             assertTrue(issue.getCreated_at().isBefore(LocalDateTime.now()), "Issue created date should be in the past");

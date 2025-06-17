@@ -1,7 +1,10 @@
 
 package aiss.githubminer.model;
 
+import aiss.githubminer.exception.GitHubMinerException;
+import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,17 +16,20 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
 
-    @JsonProperty("web_url")
-    private String web_url;
-
     @JsonProperty("id")
     private long id;
+
+    @JsonProperty("votes")
+    private int votes;
 
     @JsonProperty("title")
     private String title;
 
     @JsonProperty("author")
     private User author;
+
+    @JsonIgnore
+    private int number;
 
     @JsonProperty("labels")
     private List<String> labels;
@@ -49,18 +55,22 @@ public class Issue {
     @JsonProperty("description")
     private String description;
 
-    //Aunque aquí parece que el atributo se ignore, su getter si se usa al deserializar el objeto Issue
+    // Although the attribute appears to be ignored here, its getter is nevertheless invoked when deserializing the Issue object.
     @JsonIgnore
     private List<Comment> comments;
 
-    @JsonProperty("web_url")
-    public String getWeb_url() {
-        return web_url;
+    @JsonProperty("reactions")
+    private void unpackReactions(Map<String, ?> reactions) {
+        if (reactions == null || !reactions.containsKey("total_count")) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Reactions data does not contain total_count: " + reactions);
+        }
+        this.votes = (int) reactions.get("total_count");
     }
 
-    @JsonProperty("html_url")
-    public void setWeb_url(String web_url) {
-        this.web_url = web_url;
+    @JsonProperty("votes")
+    public int getVotes() {
+        return votes;
     }
 
     @JsonProperty("id")
@@ -98,13 +108,9 @@ public class Issue {
         return labels;
     }
 
-    @JsonIgnore
-    public void setLabels(List<String> labels) {
-        this.labels = labels;
-    }
 
     @JsonSetter("labels")
-    private void unpackLabels(List<Object> labels) {
+    private void unpackLabels(List<?> labels) {
         this.labels = labels.parallelStream()
                 .map(l -> {
                     if (l instanceof Map) {
@@ -179,71 +185,14 @@ public class Issue {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Issue.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("web_url");
-        sb.append('=');
-        sb.append(((this.web_url == null)?"<null>":this.web_url));
-        sb.append(',');
-        sb.append("id");
-        sb.append('=');
-        sb.append(this.id);
-        sb.append(',');
-        sb.append("title");
-        sb.append('=');
-        sb.append(((this.title == null)?"<null>":this.title));
-        sb.append(',');
-        sb.append("author");
-        sb.append('=');
-        sb.append(((this.author == null)?"<null>":this.author));
-        sb.append(',');
-        sb.append("labels");
-        sb.append('=');
-        sb.append(((this.labels == null)?"<null>":this.labels));
-        sb.append(',');
-        sb.append("state");
-        sb.append('=');
-        sb.append(((this.state == null)?"<null>":this.state));
-        sb.append(',');
-        sb.append("assignee");
-        sb.append('=');
-        sb.append(((this.assignee == null)?"<null>":this.assignee));
-        sb.append(',');
-        sb.append("createdAt");
-        sb.append('=');
-        sb.append(((this.created_at == null)?"<null>":this.created_at));
-        sb.append(',');
-        sb.append("updatedAt");
-        sb.append('=');
-        sb.append(((this.updated_at == null)?"<null>":this.updated_at));
-        sb.append(',');
-        sb.append("closedAt");
-        sb.append('=');
-        sb.append(((this.closed_at == null)?"<null>":this.closed_at));
-        sb.append(',');
-        sb.append("description");
-        sb.append('=');
-        sb.append(((this.description == null)?"<null>":this.description));
-        sb.append(',');
-        sb.append("comments");
-        sb.append('=');
-        sb.append(((this.comments == null)?"<null>":this.comments));
-        sb.append(',');
-        if (sb.charAt((sb.length()- 1)) == ',') {
-            sb.setCharAt((sb.length()- 1), ']');
-        } else {
-            sb.append(']');
-        }
-        return sb.toString();
+    @JsonIgnore
+    public int getNumber() {
+        return number;
     }
 
-    @JsonIgnore
-    public Integer getNumber() {
-        String[] parts = web_url.split("/");
-        String lastPart = parts[parts.length - 1];
-        return Integer.parseInt(lastPart);
+    @JsonProperty("number")
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     @JsonProperty("comments")
@@ -254,5 +203,23 @@ public class Issue {
     @JsonIgnore
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("title", title)
+                .append("description", description)
+                .append("state", state)
+                .append("created_at", created_at)
+                .append("updated_at", updated_at)
+                .append("closed_at", closed_at)
+                .append("labels", labels)
+                .append("votes", votes)
+                .append("assignee", assignee)
+                .append("author", author)
+                .append("comments", comments)
+                .toString();
     }
 }

@@ -1,6 +1,7 @@
 
 package aiss.githubminer.model;
 
+import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -81,34 +82,13 @@ public class Comment {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Comment.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("id");
-        sb.append('=');
-        sb.append(this.id);
-        sb.append(',');
-        sb.append("author");
-        sb.append('=');
-        sb.append(((this.author == null)?"<null>":this.author));
-        sb.append(',');
-        sb.append("createdAt");
-        sb.append('=');
-        sb.append(((this.created_at == null)?"<null>":this.created_at));
-        sb.append(',');
-        sb.append("updatedAt");
-        sb.append('=');
-        sb.append(((this.updated_at == null)?"<null>":this.updated_at));
-        sb.append(',');
-        sb.append("body");
-        sb.append('=');
-        sb.append(((this.body == null)?"<null>":this.body));
-        sb.append(',');
-        if (sb.charAt((sb.length()- 1)) == ',') {
-            sb.setCharAt((sb.length()- 1), ']');
-        } else {
-            sb.append(']');
-        }
-        return sb.toString();
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("body", body)
+                .append("created_at", created_at)
+                .append("updated_at", updated_at)
+                .append("author", author)
+                .toString();
     }
 
 }

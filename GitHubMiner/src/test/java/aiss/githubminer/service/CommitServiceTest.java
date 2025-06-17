@@ -77,7 +77,7 @@ class CommitServiceTest {
                 "Should throw GitHubMinerException for invalid sinceCommits"
         );
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid sinceCommits value: " + sinceCommits, ex.getReason().get("error"), "Error message should match expected");
+        assertEquals("sinceCommits value cannot be negative: " + sinceCommits, ex.getReason().get("error"), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -94,7 +94,7 @@ class CommitServiceTest {
                 "Should throw GitHubMinerException for invalid maxPages"
         );
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid maxPages value: " + maxPages, ex.getReason().get("error"), "Error message should match expected");
+        assertEquals("maxPages value cannot be negative: " + maxPages, ex.getReason().get("error"), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -111,7 +111,7 @@ class CommitServiceTest {
                 "Should throw GitHubMinerException for empty repo"
         );
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Repository is null or empty: " + repo, ex.getReason().get("error"), "Error message should match expected");
+        assertEquals("Repository is empty", ex.getReason().get("error"), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -128,7 +128,7 @@ class CommitServiceTest {
                 "Should throw GitHubMinerException for null owner"
         );
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Owner is null or empty: " + owner, ex.getReason().get("error"), "Error message should match expected");
+        assertEquals("Owner is null", ex.getReason().get("error"), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 
@@ -146,7 +146,7 @@ class CommitServiceTest {
                 "Should throw GitHubMinerException for empty owner"
         );
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Owner is null or empty: " + owner, ex.getReason().get("error"), "Error message should match expected");
+        assertEquals("Owner is empty", ex.getReason().get("error"), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
 

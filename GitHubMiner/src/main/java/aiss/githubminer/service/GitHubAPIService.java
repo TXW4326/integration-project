@@ -8,7 +8,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import java.time.format.DateTimeFormatter;
 
@@ -29,7 +31,7 @@ public class GitHubAPIService {
         this.GITHUB_API_URL = GITHUB_API_URL;
     }
 
-    public <T> T get(String url, Class<T> responseType, Object... uriVariables) {
+    public <T> T get(String url, Class<T> responseType, Object... uriVariables) throws HttpClientErrorException, UnknownHttpStatusCodeException {
         String fullUrl = GITHUB_API_URL + url;
         HttpHeaders headers = new HttpHeaders();
         if (TOKEN != null && !TOKEN.isEmpty()) {
@@ -37,7 +39,6 @@ public class GitHubAPIService {
         }
         HttpEntity<String> request = new HttpEntity<>(null, headers);
         ResponseEntity<T> response = restTemplate.exchange(fullUrl, HttpMethod.GET, request, responseType, uriVariables);
-        //TODO: Handle errors properly
         return response.getBody();
     }
 }

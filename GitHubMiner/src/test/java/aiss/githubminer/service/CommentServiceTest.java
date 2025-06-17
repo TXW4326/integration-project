@@ -79,7 +79,7 @@ class CommentServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate empty repo");
+        assertEquals("Repository is empty", ex.getMessage(), "Exception message should indicate empty repo");
         System.out.println(ex.getMessage());
     }
 
@@ -97,7 +97,7 @@ class CommentServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate empty owner");
+        assertEquals("Owner is empty", ex.getMessage(), "Exception message should indicate empty owner");
         System.out.println(ex.getMessage());
     }
 
@@ -115,7 +115,7 @@ class CommentServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate null owner");
+        assertEquals("Owner is null", ex.getMessage(), "Exception message should indicate null owner");
         System.out.println(ex.getMessage());
     }
 
@@ -133,7 +133,7 @@ class CommentServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate null repo");
+        assertEquals("Repository is null", ex.getMessage(), "Exception message should indicate null repo");
         System.out.println(ex.getMessage());
     }
 
@@ -174,7 +174,7 @@ class CommentServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid maxPages value: " + maxPages, ex.getMessage(), "Exception message should indicate invalid maxPages");
+        assertEquals("maxPages value cannot be negative: " + maxPages, ex.getMessage(), "Exception message should indicate invalid maxPages");
         System.out.println(ex.getMessage());
     }
 
@@ -192,7 +192,7 @@ class CommentServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid issue number: " + issueNumber, ex.getMessage(), "Exception message should indicate invalid issue number");
+        assertEquals("Issue number cannot be negative:  " + issueNumber, ex.getMessage(), "Exception message should indicate invalid issue number");
         System.out.println(ex.getMessage());
     }
 

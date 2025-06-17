@@ -60,7 +60,7 @@ class UserServiceTest {
         GitHubMinerException ex = assertThrows(GitHubMinerException.class, () -> userService.getUser(username), "Should throw GitHubMinerException for empty username");
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Username is null or empty: " + username, ex.getMessage(), "Exception message should indicate empty username");
+        assertEquals("Username is empty", ex.getMessage(), "Exception message should indicate empty username");
 
         System.out.println(ex.getMessage());
     }
@@ -73,7 +73,7 @@ class UserServiceTest {
         GitHubMinerException ex = assertThrows(GitHubMinerException.class, () -> userService.getUser(username), "Should throw GitHubMinerException for null username");
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Username is null or empty: " + username, ex.getMessage(), "Exception message should indicate null username");
+        assertEquals("Username is null", ex.getMessage(), "Exception message should indicate null username");
 
         System.out.println(ex.getMessage());
     }

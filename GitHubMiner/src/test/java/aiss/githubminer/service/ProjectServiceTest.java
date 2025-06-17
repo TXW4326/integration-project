@@ -67,7 +67,7 @@ class ProjectServiceTest {
             "Should throw GitHubMinerException for empty owner"
         );
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals( "Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate empty owner");
+        assertEquals( "Owner is empty", ex.getMessage(), "Exception message should indicate empty owner");
         System.out.println(ex.getMessage());
     }
 
@@ -85,7 +85,7 @@ class ProjectServiceTest {
             "Should throw GitHubMinerException for empty repo"
         );
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate empty repo");
+        assertEquals("Repository is empty", ex.getMessage(), "Exception message should indicate empty repo");
         System.out.println(ex.getMessage());
     }
 
@@ -104,7 +104,7 @@ class ProjectServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid sinceCommits value: " + sinceCommits, ex.getMessage(), "Exception message should indicate invalid sinceCommits");
+        assertEquals("sinceCommits value cannot be negative: " + sinceCommits, ex.getMessage(), "Exception message should indicate invalid sinceCommits");
         System.out.println(ex.getMessage());
     }
 
@@ -123,7 +123,7 @@ class ProjectServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid sinceIssues value: " + sinceIssues, ex.getMessage(), "Exception message should indicate invalid sinceIssues");
+        assertEquals("sinceIssues value cannot be negative: " + sinceIssues, ex.getMessage(), "Exception message should indicate invalid sinceIssues");
         System.out.println(ex.getMessage());
     }
 
@@ -142,7 +142,7 @@ class ProjectServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Invalid maxPages value: " + maxPages, ex.getMessage(), "Exception message should indicate invalid maxPages");
+        assertEquals("maxPages value cannot be negative: " + maxPages, ex.getMessage(), "Exception message should indicate invalid maxPages");
         System.out.println(ex.getMessage());
     }
 
@@ -180,7 +180,7 @@ class ProjectServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Owner is null or empty: " + owner, ex.getMessage(), "Exception message should indicate null owner");
+        assertEquals("Owner is null", ex.getMessage(), "Exception message should indicate null owner");
         System.out.println(ex.getMessage());
     }
 
@@ -199,7 +199,7 @@ class ProjectServiceTest {
         );
 
         TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
-        assertEquals("Repository is null or empty: " + repo, ex.getMessage(), "Exception message should indicate null repo");
+        assertEquals("Repository is null", ex.getMessage(), "Exception message should indicate null repo");
         System.out.println(ex.getMessage());
     }
 

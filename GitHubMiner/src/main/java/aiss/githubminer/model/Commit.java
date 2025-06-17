@@ -1,10 +1,13 @@
 
 package aiss.githubminer.model;
 
+import aiss.githubminer.exception.GitHubMinerException;
+import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -36,12 +39,17 @@ public class Commit {
     private String web_url;
 
     @JsonProperty("commit")
-    private void unpackCommit(Map<String, Object> commit) {
+    private void unpackCommit(Map<String, ?> commit) {
+        if (commit == null || !commit.containsKey("author")) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit data does not contain author information: " + commit);
+        }
         Object authorObj = commit.get("author");
         if (authorObj == null) {return;}
         if (!(authorObj instanceof Map<?, ?> authorMap)) {
-            //TODO: Handle error more gracefully
-            throw new IllegalArgumentException("Author object must be of type Map");
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid author data format in commit: " + commit);
+        }
+        if (!authorMap.containsKey("name") || !authorMap.containsKey("email") || !authorMap.containsKey("date")) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Author data is missing required fields: " + authorMap);
         }
         this.author_name = authorMap.get("name").toString();
         this.author_email = authorMap.get("email").toString();
@@ -56,7 +64,7 @@ public class Commit {
         return id;
     }
 
-    @JsonProperty("node_id")
+    @JsonProperty("sha")
     public void setId(String id) {
         this.id = id;
     }
@@ -69,47 +77,6 @@ public class Commit {
     @JsonProperty("html_url")
     public void setWeb_url(String web_url) {
         this.web_url = web_url;
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Commit.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("id");
-        sb.append('=');
-        sb.append(((this.id == null)?"<null>":this.id));
-        sb.append(',');
-        sb.append("web_url");
-        sb.append('=');
-        sb.append(((this.web_url == null)?"<null>":this.web_url));
-        sb.append(',');
-        sb.append("author_name");
-        sb.append('=');
-        sb.append(((this.author_name == null)?"<null>":this.author_name));
-        sb.append(',');
-        sb.append("author_email");
-        sb.append('=');
-        sb.append(((this.author_email == null)?"<null>":this.author_email));
-        sb.append(',');
-        sb.append("authored_date");
-        sb.append('=');
-        sb.append(((this.authored_date == null)?"<null>":this.authored_date));
-        sb.append(',');
-        sb.append("title");
-        sb.append('=');
-        sb.append(((this.title == null)?"<null>":this.title));
-        sb.append(',');
-        sb.append("message");
-        sb.append('=');
-        sb.append(((this.message == null)?"<null>":this.message));
-        sb.append(',');
-        if (sb.charAt((sb.length()- 1)) == ',') {
-            sb.setCharAt((sb.length()- 1), ']');
-        } else {
-            sb.append(']');
-        }
-        return sb.toString();
     }
 
     @JsonProperty("author_name")
@@ -160,5 +127,18 @@ public class Commit {
     @JsonProperty("title")
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("title", title)
+                .append("message", message)
+                .append("author_name", author_name)
+                .append("author_email", author_email)
+                .append("authored_date", authored_date)
+                .append("web_url", web_url)
+                .toString();
     }
 }

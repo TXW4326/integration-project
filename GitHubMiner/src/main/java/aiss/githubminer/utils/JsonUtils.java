@@ -9,7 +9,7 @@ public final class JsonUtils {
 
     private JsonUtils() {}
 
-    private static ObjectWriter ow = new ObjectMapper().registerModule(new JavaTimeModule()).writer().withDefaultPrettyPrinter();
+    private static final ObjectWriter ow = new ObjectMapper().registerModule(new JavaTimeModule()).writer().withDefaultPrettyPrinter();
 
     public static String toJson(Object obj) {
         try {
