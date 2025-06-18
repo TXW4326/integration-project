@@ -11,11 +11,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class CommitService {
@@ -81,12 +83,13 @@ public class CommitService {
     List<Commit> getCommitsInternal(String owner, String repo, int sinceCommits, int maxPages) {
         LocalDateTime now = LocalDateTime.now();
         String resultCommits = now.minusDays(sinceCommits).format(GitHubAPIService.formatter);
-
-        return IntStream.rangeClosed(1, maxPages)
-                .parallel()
-                .mapToObj(page -> handleCommitApiCall(owner, repo, resultCommits, page, maxPages, sinceCommits))
-                .flatMap(Arrays::stream)
-                .collect(Collectors.toList());
+        List<Commit> commits = new ArrayList<>();
+        for (int page = 1; page <= maxPages; page++) {
+            Commit[] commitArray = handleCommitApiCall(owner, repo, resultCommits, page, maxPages, sinceCommits);
+            commits.addAll(Arrays.asList(commitArray));
+            if (commitArray.length < gitHubAPIService.PER_PAGE) break;
+        }
+        return commits;
     }
 
     // Method implemented in case it is needed to get commits without getting the project first

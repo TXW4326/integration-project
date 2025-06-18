@@ -11,11 +11,13 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class IssueService {
@@ -83,18 +85,21 @@ public class IssueService {
             ));
         }
     }
-
     List<Issue> getIssuesInternal(String owner, String repo, int sinceIssues, int maxPages) {
         LocalDateTime now = LocalDateTime.now();
         String resultIssues = now.minusDays(sinceIssues).format(GitHubAPIService.formatter);
-        return IntStream.rangeClosed(1, maxPages)
-                .parallel()
-                .mapToObj(page -> handleIssueApiCall(owner, repo, resultIssues, page, maxPages, sinceIssues))
-                .flatMap(Arrays::stream)
-                .peek(issue -> {if (issue.getAuthor() != null) issue.setAuthor(userService.getUserInternal(issue.getAuthor().getUsername()));})
-                .peek(issue -> {if (issue.getAssignee() != null) issue.setAssignee(userService.getUserInternal(issue.getAssignee().getUsername()));})
-                .peek(issue -> issue.setComments(commentService.getCommentsInternal(owner, repo, issue.getNumber(), maxPages)))
-                .collect(Collectors.toList());
+        List<Issue> issues = new ArrayList<>();
+        for (int page = 1; page <= maxPages; page++) {
+            Issue[] issuesArray = handleIssueApiCall(owner, repo, resultIssues, page, maxPages, sinceIssues);
+            issues.addAll(Stream.of(issuesArray).parallel()
+                    .peek(issue -> {if (issue.getAuthor() != null) issue.setAuthor(userService.getUserInternal(issue.getAuthor().getUsername()));})
+                    .peek(issue -> {if (issue.getAssignee() != null) issue.setAssignee(userService.getUserInternal(issue.getAssignee().getUsername()));})
+                    .peek(issue -> issue.setComments(commentService.getCommentsInternal(owner, repo, issue.getNumber(), maxPages)))
+                    .toList()
+            );
+            if (issuesArray.length < gitHubAPIService.PER_PAGE) break;
+        }
+        return issues;
     }
 
     // Method implemented in case it is needed to get issues without getting the project first

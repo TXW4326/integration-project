@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 public class GitHubAPIService {
     static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+    final int PER_PAGE;
     private final String GITHUB_API_URL;
     private final String TOKEN;
     private final RestTemplate restTemplate;
@@ -25,10 +26,12 @@ public class GitHubAPIService {
     @Autowired
     public GitHubAPIService(@Value("${github.api.token:}") String TOKEN,
                             @Value("${github.api.url:}") String GITHUB_API_URL,
+                            @Value("${github.default.perPage}") int PER_PAGE,
                             RestTemplate restTemplate) {
         this.TOKEN = TOKEN;
         this.restTemplate = restTemplate;
         this.GITHUB_API_URL = GITHUB_API_URL;
+        this.PER_PAGE = PER_PAGE;
     }
 
     public <T> T get(String url, Class<T> responseType, Object... uriVariables) throws HttpClientErrorException, UnknownHttpStatusCodeException {
@@ -41,4 +44,5 @@ public class GitHubAPIService {
         ResponseEntity<T> response = restTemplate.exchange(fullUrl, HttpMethod.GET, request, responseType, uriVariables);
         return response.getBody();
     }
+
 }
