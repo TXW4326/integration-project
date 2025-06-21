@@ -1,0 +1,90 @@
+query ($owner: String!, $name: String!, $resultCommits: GitTimestamp!, $resultIssues: DateTime!, $fetchRepoDetails: Boolean!, $numIssues: Int!, $numCommits: Int!, $numComments: Int!, $commitCursor: String = null, $issueCursor: String = null, $commentCursor: String = null) {
+    repository(owner: $owner, name: $name) {
+        id @include(if: $fetchRepoDetails)
+        name @include(if: $fetchRepoDetails)
+        web_url: url @include(if: $fetchRepoDetails)
+        commits: defaultBranchRef {
+            target {
+                ... on Commit {
+                    history(first: $numCommits, after: $commitCursor, since: $resultCommits) {
+                        nodes {
+                            id : oid
+                            title: messageHeadline
+                            message: messageBody
+                            author {
+                                author_name: name
+                                author_email: email
+                            }
+                            authored_date: authoredDate
+                            web_url: url
+                        }
+                        pageInfo {
+                            ...PageFields
+                        }
+                    }
+                }
+            }
+        }
+        issues(first: $numIssues, after: $issueCursor, filterBy: {since: $resultIssues}) {
+            nodes {
+                id
+                title
+                description: body
+                state
+                created_at: createdAt
+                updated_at: updatedAt
+                closed_at: closedAt
+                labels(first: 100) {
+                    nodes {
+                        name
+                    }
+                }
+                reactions {
+                    votes: totalCount
+                }
+                author {
+                    ... on User {
+                        ...UserFields
+                    }
+                }
+                assignee : assignees(first: 1) {
+                    nodes {
+                        ...UserFields
+                    }
+                }
+                comments(first: $numComments, after: $commentCursor) {
+                    nodes {
+                        id
+                        body
+                        created_at: createdAt
+                        updated_at: updatedAt
+                        author {
+                            ... on User {
+                                ...UserFields
+                            }
+                        }
+                    }
+                    pageInfo {
+                        ...PageFields
+                    }
+                }
+            }
+            pageInfo {
+                ...PageFields
+            }
+        }
+    }
+}
+
+fragment UserFields on User {
+    id
+    username: login
+    name
+    avatar_url: avatarUrl
+    web_url: url
+}
+
+fragment PageFields on PageInfo {
+    endCursor
+    hasNextPage
+}

@@ -15,7 +15,7 @@ public class User {
     private String username;
 
     @JsonProperty("id")
-    private long id;
+    private String id;
 
     @JsonProperty("avatar_url")
     private String avatar_url;
@@ -32,18 +32,18 @@ public class User {
         return username;
     }
 
-    @JsonProperty("login")
+    @JsonProperty("username")
     public void setUsername(String username) {
         this.username = username;
     }
 
     @JsonProperty("id")
-    public long getId() {
+    public String getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -62,7 +62,7 @@ public class User {
         return web_url;
     }
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     public void setWeb_url(String web_url) {
         this.web_url = web_url;
     }

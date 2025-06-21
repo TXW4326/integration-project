@@ -3,6 +3,8 @@ package aiss.githubminer.utils;
 import aiss.githubminer.exception.GitHubMinerException;
 import org.springframework.http.HttpStatus;
 
+import java.util.Map;
+
 public final class ValidationUtils {
 
     private ValidationUtils() {}
@@ -33,5 +35,36 @@ public final class ValidationUtils {
     public static void validateUsername(String username) {
         if (username == null) throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Username is null");
         if (username.isEmpty()) throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Username is empty");
+    }
+
+    public static Map<String,?> validateGraphQLresponse(Map<String, ?> response, Map<String,?> parameters) {
+        if (response == null) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
+                    "error", "An error occurred while fetching the data",
+                    "parameters", parameters)
+            );
+        }
+        if (response.containsKey("errors")) {
+            //TODO: Handle specific errors based on the response
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
+                    "error", "An error occurred while fetching the data",
+                    "parameters", parameters,
+                    "details", response.get("errors")
+            ));
+        }
+        if (!response.containsKey("data") ||
+                response.get("data") == null ||
+                !(response.get("data") instanceof Map<?,?> data) ||
+                data.isEmpty() ||
+                !data.containsKey("repository") ||
+                data.get("repository") == null ||
+                !(data.get("repository") instanceof Map<?,?> repository)) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
+                    "error", "No data found for the given parameters",
+                    "parameters", parameters
+            ));
+        }
+
+        return (Map<String,?>) repository;
     }
 }

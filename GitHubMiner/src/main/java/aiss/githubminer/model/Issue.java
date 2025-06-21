@@ -2,22 +2,24 @@
 package aiss.githubminer.model;
 
 import aiss.githubminer.exception.GitHubMinerException;
+import aiss.githubminer.utils.JsonUtils;
 import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.*;
 import org.springframework.http.HttpStatus;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
 
     @JsonProperty("id")
-    private long id;
+    private String id;
 
     @JsonProperty("votes")
     private int votes;
@@ -27,9 +29,6 @@ public class Issue {
 
     @JsonProperty("author")
     private User author;
-
-    @JsonIgnore
-    private int number;
 
     @JsonProperty("labels")
     private List<String> labels;
@@ -57,15 +56,18 @@ public class Issue {
 
     // Although the attribute appears to be ignored here, its getter is nevertheless invoked when deserializing the Issue object.
     @JsonIgnore
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
-    @JsonProperty("reactions")
+    @JsonIgnore
+    private PageInfo pageInfoComments;
+
+    @JsonSetter("reactions")
     private void unpackReactions(Map<String, ?> reactions) {
-        if (reactions == null || !reactions.containsKey("total_count")) {
+        if (reactions == null || !reactions.containsKey("votes")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Reactions data does not contain total_count: " + reactions);
+                    "Issue data does not contain votes");
         }
-        this.votes = (int) reactions.get("total_count");
+        this.votes = (int) reactions.get("votes");
     }
 
     @JsonProperty("votes")
@@ -74,12 +76,12 @@ public class Issue {
     }
 
     @JsonProperty("id")
-    public long getId() {
+    public String getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -110,19 +112,14 @@ public class Issue {
 
 
     @JsonSetter("labels")
-    private void unpackLabels(List<?> labels) {
-        this.labels = labels.parallelStream()
-                .map(l -> {
-                    if (l instanceof Map) {
-                        return (String) ((Map<?, ?>) l).get("name");
-                    } else if (l instanceof String) {
-                        return (String) l;
-                    } else {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    private void setLabels(Map<String, List<Map<String,String>>> labels) {
+        if (labels == null || !labels.containsKey("nodes")) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Issue data does not contain labels");
+        }
+        this.labels = labels.get("nodes").stream()
+                .map(label -> label.get("name"))
+                .toList();
     }
 
     @JsonProperty("state")
@@ -140,9 +137,11 @@ public class Issue {
         return assignee;
     }
 
-    @JsonProperty("assignee")
-    public void setAssignee(User assignee) {
-        this.assignee = assignee;
+    @JsonSetter("assignee")
+    public void setAssignee(Map<String, List<User>> assignees) {
+        if (assignees != null && assignees.containsKey("nodes") && !assignees.get("nodes").isEmpty()) {
+            this.assignee = assignees.get("nodes").get(0);
+        }
     }
 
     @JsonProperty("created_at")
@@ -180,19 +179,9 @@ public class Issue {
         return description;
     }
 
-    @JsonProperty("body")
+    @JsonProperty("description")
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @JsonIgnore
-    public int getNumber() {
-        return number;
-    }
-
-    @JsonProperty("number")
-    public void setNumber(int number) {
-        this.number = number;
     }
 
     @JsonProperty("comments")
@@ -200,9 +189,28 @@ public class Issue {
         return comments;
     }
 
+    @JsonSetter("comments")
+    public void setComments(Map<String, ?> comments) {
+        if (comments == null || !comments.containsKey("pageInfo")) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Comments data does not contain pageInfo");
+        }
+        this.pageInfoComments = JsonUtils.convertToObject(comments.get("pageInfo"), PageInfo.class);
+        if (!comments.containsKey("nodes") || !(comments.get("nodes") instanceof List<?> nodes)) return;
+        this.comments = JsonUtils.convertToObject(
+                nodes,
+                new TypeReference<List<Comment>>() {}
+        );
+    }
+
     @JsonIgnore
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public PageInfo getPageInfoComments() {
+        return pageInfoComments;
+    }
+
+    @JsonIgnore
+    public void setPageInfoComments(PageInfo pageInfoComments) {
+        this.pageInfoComments = pageInfoComments;
     }
 
     @Override

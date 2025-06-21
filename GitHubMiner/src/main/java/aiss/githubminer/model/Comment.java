@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Comment {
 
     @JsonProperty("id")
-    private long id;
+    private String id;
 
     @JsonProperty("author")
     private User author;
@@ -31,12 +31,12 @@ public class Comment {
     private String body;
 
     @JsonProperty("id")
-    public long getId() {
+    public String getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,7 +45,7 @@ public class Comment {
         return author;
     }
 
-    @JsonProperty("user")
+    @JsonProperty("author")
     public void setAuthor(User author) {
         this.author = author;
     }

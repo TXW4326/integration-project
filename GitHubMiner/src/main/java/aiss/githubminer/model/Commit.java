@@ -3,10 +3,7 @@ package aiss.githubminer.model;
 
 import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.utils.ToStringBuilder;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -38,25 +35,16 @@ public class Commit {
     @JsonProperty("web_url")
     private String web_url;
 
-    @JsonProperty("commit")
-    private void unpackCommit(Map<String, ?> commit) {
-        if (commit == null || !commit.containsKey("author")) {
-            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit data does not contain author information: " + commit);
+    @JsonSetter("author")
+    private void unpackAuthor(Map<String, String> author) {
+        if (author == null || author.isEmpty()) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit data does not contain author data.");
         }
-        Object authorObj = commit.get("author");
-        if (authorObj == null) {return;}
-        if (!(authorObj instanceof Map<?, ?> authorMap)) {
-            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid author data format in commit: " + commit);
+        if (!author.containsKey("author_name") || !author.containsKey("author_email")) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit author data is incomplete.");
         }
-        if (!authorMap.containsKey("name") || !authorMap.containsKey("email") || !authorMap.containsKey("date")) {
-            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Author data is missing required fields: " + authorMap);
-        }
-        this.author_name = authorMap.get("name").toString();
-        this.author_email = authorMap.get("email").toString();
-        this.authored_date = LocalDateTime.parse(authorMap.get("date").toString().replace("Z", ""));
-        String[] description =  ((String) commit.get("message")).split("\n\n",2);
-        this.title = description[0];
-        if (description.length > 1) {this.message = description[1];}
+        this.author_name = author.get("author_name");
+        this.author_email = author.get("author_email");
     }
 
     @JsonProperty("id")
@@ -64,7 +52,7 @@ public class Commit {
         return id;
     }
 
-    @JsonProperty("sha")
+    @JsonProperty("id")
     public void setId(String id) {
         this.id = id;
     }
@@ -74,7 +62,7 @@ public class Commit {
         return web_url;
     }
 
-    @JsonProperty("html_url")
+    @JsonProperty("web_url")
     public void setWeb_url(String web_url) {
         this.web_url = web_url;
     }
