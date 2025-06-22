@@ -40,8 +40,12 @@ public class Variables {
     @JsonProperty("issueCursor")
     private String issueCursor;
 
-    @JsonProperty("commentCursor")
-    private String commentCursor;
+
+    @JsonProperty("fetchCommits")
+    private boolean fetchCommits;
+
+    @JsonProperty("fetchIssues")
+    private boolean fetchIssues;
 
     @JsonProperty("owner")
     public String getOwner() {
@@ -143,14 +147,24 @@ public class Variables {
         this.issueCursor = issueCursor;
     }
 
-    @JsonProperty("commentCursor")
-    public String getCommentCursor() {
-        return commentCursor;
+    @JsonProperty("fetchCommits")
+    public boolean isFetchCommits() {
+        return fetchCommits;
     }
 
-    @JsonProperty("commentCursor")
-    public void setCommentCursor(String commentCursor) {
-        this.commentCursor = commentCursor;
+    @JsonProperty("fetchCommits")
+    public void setFetchCommits(boolean fetchCommits) {
+        this.fetchCommits = fetchCommits;
+    }
+
+    @JsonProperty("fetchIssues")
+    public boolean isFetchIssues() {
+        return fetchIssues;
+    }
+
+    @JsonProperty("fetchIssues")
+    public void setFetchIssues(boolean fetchIssues) {
+        this.fetchIssues = fetchIssues;
     }
 
     @Override
@@ -166,12 +180,14 @@ public class Variables {
                 .append("numComments", numComments)
                 .append("commitCursor", commitCursor)
                 .append("issueCursor", issueCursor)
-                .append("commentCursor", commentCursor)
+                .append("fetchCommits", fetchCommits)
+                .append("fetchIssues", fetchIssues)
                 .toString();
     }
 
     public Variables(String owner, String name, String resultCommits, String resultIssues,
-                     boolean fetchRepoDetails, int numIssues, int numCommits, int numComments) {
+                     boolean fetchRepoDetails, int numIssues, int numCommits, int numComments,
+                     boolean fetchCommits, boolean fetchIssues) {
         this.owner = owner;
         this.name = name;
         this.resultCommits = resultCommits;
@@ -180,6 +196,8 @@ public class Variables {
         this.numIssues = numIssues;
         this.numCommits = numCommits;
         this.numComments = numComments;
+        this.fetchCommits = fetchCommits;
+        this.fetchIssues = fetchIssues;
     }
 
 }

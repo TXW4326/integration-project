@@ -5,8 +5,8 @@ import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.utils.JsonUtils;
 import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.*;
-import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -199,8 +199,15 @@ public class Issue {
         if (!comments.containsKey("nodes") || !(comments.get("nodes") instanceof List<?> nodes)) return;
         this.comments = JsonUtils.convertToObject(
                 nodes,
-                new TypeReference<List<Comment>>() {}
+                new TypeReference<>() {}
         );
+    }
+
+    @JsonIgnore
+    public void addComments(List<Comment> comments) {
+        if (comments != null) {
+            this.comments.addAll(comments);
+        }
     }
 
     @JsonIgnore

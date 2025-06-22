@@ -28,15 +28,7 @@ public final class ValidationUtils {
         if (maxPages <= 0) throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "maxPages value cannot be negative: " + maxPages);
     }
 
-    public static void validateIssueNumber(int issueNumber) {
-        if (issueNumber <= 0) throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Issue number cannot be negative:  " + issueNumber);
-    }
-
-    public static void validateUsername(String username) {
-        if (username == null) throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Username is null");
-        if (username.isEmpty()) throw new GitHubMinerException(HttpStatus.BAD_REQUEST, "Username is empty");
-    }
-
+    @SuppressWarnings("unchecked")
     public static Map<String,?> validateGraphQLresponse(Map<String, ?> response, Map<String,?> parameters) {
         if (response == null) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
@@ -58,7 +50,8 @@ public final class ValidationUtils {
                 data.isEmpty() ||
                 !data.containsKey("repository") ||
                 data.get("repository") == null ||
-                !(data.get("repository") instanceof Map<?,?> repository)) {
+                !(data.get("repository") instanceof Map<?,?> repository) ||
+                repository.keySet().stream().anyMatch(k -> !(k instanceof String))) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
                     "error", "No data found for the given parameters",
                     "parameters", parameters

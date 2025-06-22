@@ -59,6 +59,6 @@ public class GitHubMinerController {
                 sinceCommits != null ? sinceCommits : DEFAULT_SINCE_COMMITS,
                 sinceIssues != null ? sinceIssues : DEFAULT_SINCE_ISSUES,
                 maxPages != null ? maxPages : DEFAULT_MAX_PAGES);
-        //projectService.sendProject(project);
+        gitHubAPIService.sendProject(project);
     }
 }

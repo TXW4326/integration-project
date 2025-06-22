@@ -1,9 +1,9 @@
-query ($owner: String!, $name: String!, $resultCommits: GitTimestamp!, $resultIssues: DateTime!, $fetchRepoDetails: Boolean!, $numIssues: Int!, $numCommits: Int!, $numComments: Int!, $commitCursor: String = null, $issueCursor: String = null, $commentCursor: String = null) {
+query ($owner: String!, $name: String!, $resultCommits: GitTimestamp!, $resultIssues: DateTime!, $fetchRepoDetails: Boolean!, $numIssues: Int!, $numCommits: Int!, $numComments: Int!, $commitCursor: String = null, $issueCursor: String = null, $fetchCommits: Boolean!, $fetchIssues: Boolean!) {
     repository(owner: $owner, name: $name) {
         id @include(if: $fetchRepoDetails)
         name @include(if: $fetchRepoDetails)
         web_url: url @include(if: $fetchRepoDetails)
-        commits: defaultBranchRef {
+        commits: defaultBranchRef @include(if: $fetchCommits) {
             target {
                 ... on Commit {
                     history(first: $numCommits, after: $commitCursor, since: $resultCommits) {
@@ -25,7 +25,7 @@ query ($owner: String!, $name: String!, $resultCommits: GitTimestamp!, $resultIs
                 }
             }
         }
-        issues(first: $numIssues, after: $issueCursor, filterBy: {since: $resultIssues}) {
+        issues(first: $numIssues, after: $issueCursor, filterBy: {since: $resultIssues, states: OPEN}, orderBy: {field: CREATED_AT, direction: DESC}) @include(if : $fetchIssues) {
             nodes {
                 id
                 title
@@ -52,7 +52,7 @@ query ($owner: String!, $name: String!, $resultCommits: GitTimestamp!, $resultIs
                         ...UserFields
                     }
                 }
-                comments(first: $numComments, after: $commentCursor) {
+                comments(first: $numComments) {
                     nodes {
                         id
                         body
@@ -73,6 +73,7 @@ query ($owner: String!, $name: String!, $resultCommits: GitTimestamp!, $resultIs
                 ...PageFields
             }
         }
+        {{extraQueries}}
     }
 }
 

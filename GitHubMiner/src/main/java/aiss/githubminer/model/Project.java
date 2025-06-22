@@ -16,7 +16,6 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Project {
-    //TODO: Take into account that the project id in gitminer is a String
 
     @JsonProperty("id")
     private String id;
@@ -82,7 +81,7 @@ public class Project {
         if (!issues.containsKey("nodes") || !(issues.get("nodes") instanceof List<?> nodes)) return;
         this.issues = JsonUtils.convertToObject(
                 nodes,
-                new TypeReference<List<Issue>>() {});
+                new TypeReference<>() {});
     }
 
     @JsonIgnore
@@ -117,7 +116,7 @@ public class Project {
         this.pageInfoCommits = JsonUtils.convertToObject(history.get("pageInfo"), PageInfo.class);
         Object nodesObj = history.get("nodes");
         if (nodesObj instanceof List<?> nodes && !nodes.isEmpty()) {
-            this.commits = JsonUtils.convertToObject(nodes, new TypeReference<List<Commit>>() {});
+            this.commits = JsonUtils.convertToObject(nodes, new TypeReference<>() {});
         }
     }
 
@@ -135,7 +134,7 @@ public class Project {
 
     @JsonIgnore
     public void setPageInfoCommits(PageInfo pageInfoCommits) {
-        this.pageInfoCommits = pageInfoCommits;
+        if (pageInfoCommits != null) this.pageInfoCommits = pageInfoCommits;
     }
 
     @JsonIgnore
@@ -145,7 +144,7 @@ public class Project {
 
     @JsonIgnore
     public void setPageInfoIssues(PageInfo pageInfoIssues) {
-        this.pageInfoIssues = pageInfoIssues;
+        if (pageInfoIssues != null) this.pageInfoIssues = pageInfoIssues;
     }
 
 
