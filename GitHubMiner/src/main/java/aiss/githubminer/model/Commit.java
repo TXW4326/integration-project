@@ -44,7 +44,7 @@ public class Commit {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit data does not contain author information: " + commit);
         }
         Object authorObj = commit.get("author");
-        if (authorObj == null) {return;}
+        if (authorObj == null) return;
         if (!(authorObj instanceof Map<?, ?> authorMap)) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid author data format in commit: " + commit);
         }

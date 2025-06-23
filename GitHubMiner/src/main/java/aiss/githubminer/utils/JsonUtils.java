@@ -1,9 +1,11 @@
 package aiss.githubminer.utils;
 
+import aiss.githubminer.exception.GitHubMinerException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.http.HttpStatus;
 
 public final class JsonUtils {
 
@@ -15,7 +17,7 @@ public final class JsonUtils {
         try {
             return ow.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error converting object to JSON", e);
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Error serializing object to JSON: " + obj);
         }
 
     }

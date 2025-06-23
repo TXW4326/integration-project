@@ -7,6 +7,7 @@ import aiss.githubminer.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
@@ -22,12 +23,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class IssueServiceTest {
 
     private final IssueService issueService;
+    private final int PER_PAGE;
 
     @Autowired
-    public IssueServiceTest(IssueService issueService) {
+    public IssueServiceTest(IssueService issueService,
+                            @Value("${github.default.perPage:}") int perPage) {
         this.issueService = issueService;
+        this.PER_PAGE = perPage;
     }
-
 
     @Test
     @DisplayName("Get issues with valid parameters")
@@ -38,7 +41,7 @@ class IssueServiceTest {
         int maxPages = 2;
 
         List<Issue> issues = issueService.getIssues(owner, repo, sinceIssues, maxPages);
-        testIssues(issues, maxPages)
+        testIssues(issues, maxPages, PER_PAGE)
             .forEach(issue ->
                     assertTrue(ChronoUnit.DAYS.between(issue.getUpdated_at(), LocalDateTime.now()) <= sinceIssues,
                             "Issue updated date should be within the sinceIssues range")
@@ -133,7 +136,7 @@ class IssueServiceTest {
 
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("No issues found for the given parameters", ex.getReason().get("error"), "Error message should match expected");
-        Map<?,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        Map<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "sinceIssues", sinceIssues);
         TestUtils.assertMapContains(parameters, "maxPages", maxPages);
         TestUtils.assertMapContains(parameters, "owner", owner);
@@ -177,16 +180,17 @@ class IssueServiceTest {
         System.out.println(ex.getMessage());
     }
 
-    public static Stream<Issue> testIssues(List<Issue> issues, int maxPages) {
+    public static Stream<Issue> testIssues(List<Issue> issues, int maxPages, int PER_PAGE) {
         assertNotNull(issues, "List of issues should not be null");
-        assertTrue(issues.size() <= maxPages * 30, "Number of issues should not exceed maxPages * 30 (30 issues per page)");
+        assertTrue(issues.size() <= maxPages * PER_PAGE, "Number of issues should not exceed maxPages * 30 (30 issues per page)");
+        assertEquals(issues.size(), issues.stream().map(Issue::getId).distinct().count(), "Issue IDs should be unique");
+
         return issues.stream().peek(issue -> {
             assertTrue(issue.getId() >= 0, "Issue ID should be non-negative");
             assertNotNull(issue.getTitle(), "Issue title should not be null");
             assertFalse(issue.getTitle().isEmpty(), "Issue title should not be empty");
             assertNotNull(issue.getState(), "Issue state should not be null");
             assertFalse(issue.getState().isEmpty(), "Issue state should not be empty");
-            if (issue.getDescription() != null) assertFalse(issue.getDescription().isEmpty(), "Issue description should not be empty");
             if (issue.getAuthor() != null) UserServiceTest.testUser(issue.getAuthor());
             assertNotNull(issue.getLabels(), "Issue labels should not be null");
             for (String label : issue.getLabels()) {
@@ -206,8 +210,8 @@ class IssueServiceTest {
                 assertTrue(issue.getClosed_at().isAfter(issue.getUpdated_at()), "Issue closed date should be after last updated date");
                 assertTrue(issue.getClosed_at().isAfter(issue.getCreated_at()), "Issue closed date should be after created date");
             }
-            if (issue.getDescription() != null) assertFalse(issue.getDescription().isEmpty(), "Issue description should not be empty");
-            CommentServiceTest.testComments(issue.getComments(), maxPages).close();
+            assertTrue(issue.getDescription() == null || !issue.getDescription().isEmpty(), "Issue description should not be empty");
+            CommentServiceTest.testComments(issue.getComments(), maxPages, PER_PAGE).close();
         });
 
     }

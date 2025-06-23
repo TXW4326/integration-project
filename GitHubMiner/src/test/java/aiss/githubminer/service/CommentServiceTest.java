@@ -7,6 +7,7 @@ import aiss.githubminer.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
@@ -21,11 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommentServiceTest {
 
     private final CommentService commentService;
-
+    private final int PER_PAGE;
 
     @Autowired
-    public CommentServiceTest(CommentService commentService) {
+    public CommentServiceTest(CommentService commentService,
+                              @Value("${github.default.perPage:}") int perPage) {
         this.commentService = commentService;
+        this.PER_PAGE = perPage;
     }
 
 
@@ -38,7 +41,7 @@ class CommentServiceTest {
         int maxPages = 2;
 
         List<Comment> comments = commentService.getComments(owner, repo, issueNumber, maxPages);
-        testComments(comments, maxPages).close();
+        testComments(comments, maxPages, PER_PAGE).close();
         System.out.println(JsonUtils.toJson(comments));
     }
 
@@ -57,7 +60,7 @@ class CommentServiceTest {
 
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("Comments not found", ex.getReason().get("error"), "Exception message should indicate no issues found");
-        Map<?,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        Map<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "owner", owner);
         TestUtils.assertMapContains(parameters, "repo", repo);
         TestUtils.assertMapContains(parameters, "issueNumber", issueNumber);
@@ -152,7 +155,7 @@ class CommentServiceTest {
 
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("Comments not found", ex.getReason().get("error"), "Exception message should indicate comment not found");
-        Map<?,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        Map<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "owner", owner);
         TestUtils.assertMapContains(parameters, "repo", repo);
         TestUtils.assertMapContains(parameters, "issueNumber", issueNumber);
@@ -196,9 +199,9 @@ class CommentServiceTest {
         System.out.println(ex.getMessage());
     }
 
-    public static Stream<Comment> testComments(List<Comment> comments, int maxPages) {
+    public static Stream<Comment> testComments(List<Comment> comments, int maxPages, int PER_PAGE) {
         assertNotNull(comments, "Comments should not be null");
-        assertTrue(comments.size() <= maxPages * 30, "Comments size should not exceed maxPages * 30 (default page size)");
+        assertTrue(comments.size() <= maxPages * PER_PAGE, "Comments size should not exceed maxPages * PER_PAGE");
         assertEquals(comments.size(), comments.stream().map(Comment::getId).distinct().count(), "Comment IDs should be unique");
 
        return comments.stream().peek(comment -> {

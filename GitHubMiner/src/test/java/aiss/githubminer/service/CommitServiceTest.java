@@ -7,6 +7,7 @@ import aiss.githubminer.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
@@ -22,10 +23,13 @@ class CommitServiceTest {
 
 
     private final CommitService commitService;
+    private final int PER_PAGE;
 
     @Autowired
-    public CommitServiceTest(CommitService commitService) {
+    public CommitServiceTest(CommitService commitService,
+                             @Value("${github.default.perPage:}") int perPage) {
         this.commitService = commitService;
+        this.PER_PAGE = perPage;
     }
 
 
@@ -38,7 +42,7 @@ class CommitServiceTest {
         int maxPages = 2;
 
         List<Commit> commits = commitService.getCommits(owner, repo, sinceCommits, maxPages);
-        testCommits(commits, maxPages).close();
+        testCommits(commits, maxPages, PER_PAGE).close();
         System.out.println(JsonUtils.toJson(commits));
     }
 
@@ -56,7 +60,7 @@ class CommitServiceTest {
         );
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("No commits found for the given parameters", ex.getReason().get("error"), "Error message should match expected");
-        Map<?, ?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        Map<String, ?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "owner", owner);
         TestUtils.assertMapContains(parameters, "repo", repo);
         TestUtils.assertMapContains(parameters, "sinceCommits", sinceCommits);
@@ -151,11 +155,11 @@ class CommitServiceTest {
     }
 
 
-    public static Stream<Commit> testCommits(List<Commit> commits, int maxPages) {
+    public static Stream<Commit> testCommits(List<Commit> commits, int maxPages, int PER_PAGE) {
         assertNotNull(commits, "Commits list should not be null");
         assertFalse(commits.isEmpty(), "Commits list should not be empty");
-        assertTrue(commits.size() <= maxPages * 30, "Commits size should not exceed max pages times 30 (commits per page)");
-        assertEquals(commits.size(), commits.stream().map(Commit::getId).distinct().count(), "Commits list should be equal to commits size");
+        assertTrue(commits.size() <= maxPages * PER_PAGE, "Commits size should not exceed max pages times PER_PAGE");
+        assertEquals(commits.size(), commits.stream().map(Commit::getId).distinct().count(), "Commit ids should be unique");
         return commits.stream().peek(commit -> {
             assertNotNull(commit, "Commit should not be null");
             assertNotNull(commit.getId(), "Commit id should not be null");
@@ -173,6 +177,7 @@ class CommitServiceTest {
                 assertFalse(commit.getAuthor_email().isEmpty(), "Author email should not be empty");
                 assertTrue(commit.getAuthored_date().isBefore(LocalDateTime.now()), "Authored date should be in the past");
             }
+            assertTrue(commit.getMessage() == null || !commit.getMessage().isEmpty(), "Commit message should not be empty");
         });
     }
 }
