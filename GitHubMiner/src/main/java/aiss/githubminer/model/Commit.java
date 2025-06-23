@@ -104,6 +104,7 @@ public class Commit {
 
     @JsonProperty("message")
     public void setMessage(String message) {
+        if (message.isEmpty()) return;
         this.message = message;
     }
 

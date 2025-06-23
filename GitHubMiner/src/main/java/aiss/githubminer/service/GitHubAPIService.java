@@ -12,7 +12,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -50,7 +52,7 @@ public class GitHubAPIService {
         }}
 
 
-    public Map<String,?> sendGraphQLQuery(String extraQueries, Variables variables) {
+    public Map<String,?> sendGraphQLQuery(String extraQueries, Variables variables) throws HttpClientErrorException, UnknownHttpStatusCodeException {
         HttpHeaders headers = new HttpHeaders();
         if (TOKEN != null && !TOKEN.isEmpty()) {
             headers.set("Authorization", "Bearer " + TOKEN);
@@ -62,13 +64,10 @@ public class GitHubAPIService {
         body.put("query", query);
         body.put("variables", variables);
         HttpEntity<Map<String, ?>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map<String, ?>> response = restTemplate.exchange(GITHUB_API_URL, HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, ?>>() {});
+        ResponseEntity<Map<String, ?>> response = restTemplate.exchange(GITHUB_API_URL, HttpMethod.POST, request, new ParameterizedTypeReference<>() {});
         return response.getBody();
     }
 
-    public Map<String, ?> sendGraphQLQuery(Variables variables) {
-        return sendGraphQLQuery("", variables);
-    }
 
     private void validateUserInput(String owner, String repo, int sinceCommits, int sinceIssues, int maxPages) {
         ValidationUtils.validateOwnerAndRepo(owner, repo);
@@ -82,7 +81,6 @@ public class GitHubAPIService {
         LocalDateTime now = LocalDateTime.now();
         String resultCommits = now.minusDays(sinceCommits).format(formatter);
         String resultIssues = now.minusDays(sinceIssues).format(formatter);
-        System.out.println("resultIssues: " + resultIssues);
         int elements = PER_PAGE * maxPages;
         Variables variables = new Variables(owner, repo, resultCommits, resultIssues, true, 100,100,100, false, false);
         Map<String, ?> parameters = Map.of(

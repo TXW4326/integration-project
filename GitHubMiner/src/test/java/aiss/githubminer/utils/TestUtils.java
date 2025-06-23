@@ -12,17 +12,19 @@ public final class TestUtils {
 
     private TestUtils() {}
 
-    public static <T> void assertMapContains(Map<?,?> parameters, String key, T expectedValue) {
+    public static <T> void assertMapContains(Map<String,?> parameters, String key, T expectedValue) {
         assertTrue(parameters.containsKey(key), "Parameters should contain '" + key + "'");
         assertNotNull(parameters.get(key), key + " should not be null");
         assertEquals(expectedValue, parameters.get(key), key + " should match expected");
     }
 
-    public static Map<?,?> assertParametersInMap(Map<String,?> reason) {
+    @SuppressWarnings("unchecked")
+    public static Map<String,?> assertParametersInMap(Map<String,?> reason) {
         assertTrue(reason.containsKey("parameters"), "Parameters should be present in the error reason");
         assertNotNull(reason.get("parameters"), "Parameters should not be null");
-        assertInstanceOf(Map.class, reason.get("parameters"), "Parameters should be a Map");
-        return (Map<?,?>) reason.get("parameters");
+        Map<?,?> map = assertInstanceOf(Map.class, reason.get("parameters"), "Parameters should be a Map");
+        assertTrue(map.keySet().stream().allMatch(k -> k instanceof String), "All keys in parameters should be Strings");
+        return (Map<String,?>) reason.get("parameters");
     }
 
     public static void assertException(GitHubMinerException ex, HttpStatus expectedStatus) {

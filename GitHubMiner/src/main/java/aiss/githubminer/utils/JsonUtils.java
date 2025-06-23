@@ -1,10 +1,12 @@
 package aiss.githubminer.utils;
 
+import aiss.githubminer.exception.GitHubMinerException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.http.HttpStatus;
 
 public final class JsonUtils {
 
@@ -17,35 +19,16 @@ public final class JsonUtils {
         try {
             return ow.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            //TODO: Handle this exception properly
-            throw new RuntimeException("Error converting object to JSON", e);
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Error serializing object to JSON: " + obj);
         }
 
     }
-
-    public static <T> T fromJson(String json, Class<T> clazz) {
-        try {
-            return om.readValue(json, clazz);
-        } catch (JsonProcessingException e) {
-            //TODO: Handle this exception properly
-            throw new RuntimeException("Error converting JSON to object", e);
-        }
-    }
-
-    public static <T> T fromJson(String json, TypeReference<T> typeReference) {
-        try {
-            return om.readValue(json, typeReference);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error converting JSON to object", e);
-        }
-    }
-
 
     public static <T> T convertToObject(Object value, Class<T> clazz) {
         try {
             return om.convertValue(value, clazz);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error convirtiendo el objeto", e);
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Error deserializing object to JSON: " + value);
         }
     }
 
@@ -53,7 +36,7 @@ public final class JsonUtils {
         try {
             return om.convertValue(value, typeReference);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error convirtiendo el objeto", e);
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Error deserializing object to JSON: " + value);
         }
     }
 }

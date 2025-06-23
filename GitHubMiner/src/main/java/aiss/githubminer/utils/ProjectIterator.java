@@ -1,9 +1,13 @@
 package aiss.githubminer.utils;
 
+import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Issue;
 import aiss.githubminer.model.Project;
 import aiss.githubminer.model.Variables;
 import aiss.githubminer.service.GitHubAPIService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import java.util.Map;
 
@@ -40,7 +44,7 @@ public final class ProjectIterator {
                 variables.setFetchCommits(true);
                 variables.setFetchIssues(true);
             }
-            Map<String, ?> response = gitHubAPIService.sendGraphQLQuery(variables);
+            Map<String, ?> response = sendGraphQLQuery(variables);
             Map<String,?> repository = ValidationUtils.validateGraphQLresponse(response, parameters);
             project = JsonUtils.convertToObject(repository, Project.class);
             queryBuilder = new QueryBuilder(project, elements);
@@ -60,7 +64,7 @@ public final class ProjectIterator {
         } else {
             variables.setFetchIssues(false);
         }
-        Map<String, ?> response = gitHubAPIService.sendGraphQLQuery(queryBuilder.buildCommentsQuery(),variables);
+        Map<String, ?> response = sendGraphQLQuery(queryBuilder.buildCommentsQuery(),variables);
         Map<String,?> repository = ValidationUtils.validateGraphQLresponse(response, parameters);
         Project project2 = JsonUtils.convertToObject(repository, Project.class);
         project.addCommits(project2.getCommits());
@@ -81,4 +85,30 @@ public final class ProjectIterator {
     public Project getProject() {
         return project;
     }
+
+    private Map<String, ?> sendGraphQLQuery(String extraQueries, Variables variables) {
+        try {
+            return gitHubAPIService.sendGraphQLQuery(extraQueries, variables);
+        } catch (HttpStatusCodeException e) {
+            throw new GitHubMinerException(e.getStatusCode(), Map.of(
+                    "error", "An error occurred while fetching the data for the given parameters",
+                    "parameters", parameters)
+            );
+        } catch (UnknownHttpStatusCodeException e) {
+            throw new GitHubMinerException(e.getStatusCode(), Map.of(
+                    "error", "An unknown error occurred while fetching the data for the given parameters",
+                    "parameters", parameters
+            ));
+        } catch (RuntimeException e) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
+                    "error", "An unexpected error occurred while fetching the data for the given parameters",
+                    "parameters", parameters
+            ));
+        }
+    }
+
+    private Map<String, ?> sendGraphQLQuery(Variables variables) {
+        return sendGraphQLQuery("", variables);
+    }
+
 }

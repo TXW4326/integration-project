@@ -181,6 +181,7 @@ public class Issue {
 
     @JsonProperty("description")
     public void setDescription(String description) {
+        if (description.isEmpty()) return;
         this.description = description;
     }
 
