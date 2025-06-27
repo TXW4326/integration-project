@@ -2,12 +2,14 @@ package aiss.githubminer.service;
 
 import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Project;
+import aiss.githubminer.utils.LinkedHashMapBuilder;
 import aiss.githubminer.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
@@ -58,7 +60,20 @@ public class ProjectService {
 
     public void sendProject(Project project) {
         //TODO: Handle errors
-        restTemplate.postForEntity(gitMinerApiUrl, project, Project.class);
+        try {
+            restTemplate.postForEntity(gitMinerApiUrl, project, Project.class);
+        } catch (RestClientResponseException e) {
+            LinkedHashMapBuilder errorResponse = LinkedHashMapBuilder.of().add("error", "An error occurred while sending the project to GitMiner");
+            throw new GitHubMinerException(e.getStatusCode(), (e.getResponseBodyAsString().isEmpty() ?
+                    errorResponse : errorResponse.add("GitHubMinerResponse", e.getResponseBodyAsString())
+                ).add("project", project)
+            );
+        } catch (RuntimeException e) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, LinkedHashMapBuilder.of()
+                    .add("error", "An error occurred while sending the project to GitMiner")
+                    .add("project", project)
+            );
+        }
     }
 
     private static void userInputValidation(String owner, String repo, int sinceCommits, int sinceIssues, int maxPages) {

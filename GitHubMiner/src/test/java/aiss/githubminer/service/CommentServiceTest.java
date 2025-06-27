@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,7 +60,7 @@ class CommentServiceTest {
 
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("Comments not found", ex.getReason().get("error"), "Exception message should indicate no issues found");
-        Map<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        LinkedHashMap<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "owner", owner);
         TestUtils.assertMapContains(parameters, "repo", repo);
         TestUtils.assertMapContains(parameters, "issueNumber", issueNumber);
@@ -155,7 +155,7 @@ class CommentServiceTest {
 
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("Comments not found", ex.getReason().get("error"), "Exception message should indicate comment not found");
-        Map<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        LinkedHashMap<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "owner", owner);
         TestUtils.assertMapContains(parameters, "repo", repo);
         TestUtils.assertMapContains(parameters, "issueNumber", issueNumber);

@@ -2,10 +2,7 @@
 package aiss.githubminer.model;
 
 import aiss.githubminer.utils.ToStringBuilder;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -30,7 +27,7 @@ public class Comment {
     @JsonProperty("body")
     private String body;
 
-    @JsonProperty("id")
+    @JsonIgnore
     public long getId() {
         return id;
     }
@@ -38,6 +35,11 @@ public class Comment {
     @JsonProperty("id")
     public void setId(long id) {
         this.id = id;
+    }
+
+    @JsonProperty("id")
+    public String getIdAsString() {
+        return String.valueOf(id);
     }
 
     @JsonProperty("author")

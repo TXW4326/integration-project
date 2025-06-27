@@ -13,8 +13,8 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -136,7 +136,7 @@ class IssueServiceTest {
 
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("No issues found for the given parameters", ex.getReason().get("error"), "Error message should match expected");
-        Map<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        LinkedHashMap<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "sinceIssues", sinceIssues);
         TestUtils.assertMapContains(parameters, "maxPages", maxPages);
         TestUtils.assertMapContains(parameters, "owner", owner);
@@ -210,6 +210,7 @@ class IssueServiceTest {
                 assertTrue(issue.getClosed_at().isAfter(issue.getUpdated_at()), "Issue closed date should be after last updated date");
                 assertTrue(issue.getClosed_at().isAfter(issue.getCreated_at()), "Issue closed date should be after created date");
             }
+            assertEquals("open", issue.getState(), "Issue state should be 'open'");
             assertTrue(issue.getDescription() == null || !issue.getDescription().isEmpty(), "Issue description should not be empty");
             CommentServiceTest.testComments(issue.getComments(), maxPages, PER_PAGE).close();
         });

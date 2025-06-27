@@ -12,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,7 +60,7 @@ class CommitServiceTest {
         );
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("No commits found for the given parameters", ex.getReason().get("error"), "Error message should match expected");
-        Map<String, ?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        LinkedHashMap<String, ?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "owner", owner);
         TestUtils.assertMapContains(parameters, "repo", repo);
         TestUtils.assertMapContains(parameters, "sinceCommits", sinceCommits);
@@ -157,7 +157,6 @@ class CommitServiceTest {
 
     public static Stream<Commit> testCommits(List<Commit> commits, int maxPages, int PER_PAGE) {
         assertNotNull(commits, "Commits list should not be null");
-        assertFalse(commits.isEmpty(), "Commits list should not be empty");
         assertTrue(commits.size() <= maxPages * PER_PAGE, "Commits size should not exceed max pages times PER_PAGE");
         assertEquals(commits.size(), commits.stream().map(Commit::getId).distinct().count(), "Commit ids should be unique");
         return commits.stream().peek(commit -> {

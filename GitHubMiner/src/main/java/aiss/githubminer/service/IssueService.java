@@ -3,6 +3,7 @@ package aiss.githubminer.service;
 
 import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Issue;
+import aiss.githubminer.utils.LinkedHashMapBuilder;
 import aiss.githubminer.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,6 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 @Service
@@ -35,53 +35,66 @@ public class IssueService {
 
     private Issue[] handleIssueApiCall(String owner, String repo, String resultIssues, int page, int maxPages, int sinceIssues) {
         try {
-            return gitHubAPIService.get("repos/{owner}/{repo}/issues?since={sinceIssues}&page={page}", Issue[].class, owner, repo, resultIssues, page);
-        } catch (HttpStatusCodeException e) {
-            Map<String, ?> parameters = Map.of(
-                    "owner", owner,
-                    "repo", repo,
-                    "sinceIssues", sinceIssues,
-                    "maxPages", maxPages,
-                    "page", page
+            return gitHubAPIService.get(
+                    "repos/{owner}/{repo}/issues?since={sinceIssues}&page={page}",
+                    Issue[].class,
+                    owner, repo, resultIssues, page
             );
+        } catch (HttpStatusCodeException e) {
+            LinkedHashMapBuilder parameters = LinkedHashMapBuilder.of()
+                    .add("owner", owner)
+                    .add("repo", repo)
+                    .add("sinceIssues", sinceIssues)
+                    .add("maxPages", maxPages)
+                    .add("page", page);
+
             switch (e.getStatusCode().value()) {
-                case 404: throw new GitHubMinerException(HttpStatus.NOT_FOUND, Map.of(
-                        "error", "No issues found for the given parameters",
-                        "parameters", parameters));
-                case 301: throw new GitHubMinerException(HttpStatus.MOVED_PERMANENTLY, Map.of(
-                        "error", "Issues have been moved",
-                        "parameters", parameters));
-                case 422: throw new GitHubMinerException(HttpStatus.UNPROCESSABLE_ENTITY, Map.of(
-                        "error", "Unprocessable entity for issue: Validation failed, or the endpoint has been spammed.",
-                        "parameters", parameters));
-                default: throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                        "error", "An error occurred while fetching issues",
-                        "parameters", parameters));
+                case 404:
+                    throw new GitHubMinerException(HttpStatus.NOT_FOUND, LinkedHashMapBuilder.of()
+                        .add("error", "No issues found for the given parameters")
+                        .add("parameters", parameters)
+                    );
+                case 301:
+                    throw new GitHubMinerException(HttpStatus.MOVED_PERMANENTLY, LinkedHashMapBuilder.of()
+                        .add("error", "Issues have been moved")
+                        .add("parameters", parameters)
+                    );
+                case 422:
+                    throw new GitHubMinerException(HttpStatus.UNPROCESSABLE_ENTITY, LinkedHashMapBuilder.of()
+                        .add("error", "Unprocessable entity for issue: Validation failed, or the endpoint has been spammed.")
+                        .add("parameters", parameters)
+                    );
+                default:
+                    throw new GitHubMinerException(e.getStatusCode(), LinkedHashMapBuilder.of()
+                        .add("error", "An error occurred while fetching issues")
+                        .add("parameters", parameters)
+                    );
             }
         } catch (UnknownHttpStatusCodeException e) {
-            throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                    "error", "An unknown error occurred while fetching issues",
-                    "parameters", Map.of(
-                            "owner", owner,
-                            "repo", repo,
-                            "sinceIssues", sinceIssues,
-                            "maxPages", maxPages,
-                            "page", page
-                    )
-            ));
+            throw new GitHubMinerException(e.getStatusCode(), LinkedHashMapBuilder.of()
+                .add("error", "An unknown error occurred while fetching issues")
+                .add("parameters", LinkedHashMapBuilder.of()
+                        .add("owner", owner)
+                        .add("repo", repo)
+                        .add("sinceIssues", sinceIssues)
+                        .add("maxPages", maxPages)
+                        .add("page", page)
+                )
+            );
         } catch (RuntimeException e) {
-            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                    "error", "An error occurred while fetching issues",
-                    "parameters", Map.of(
-                            "owner", owner,
-                            "repo", repo,
-                            "sinceIssues", sinceIssues,
-                            "maxPages", maxPages,
-                            "page", page
-                    )
-            ));
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, LinkedHashMapBuilder.of()
+                .add("error", "An error occurred while fetching issues")
+                .add("parameters", LinkedHashMapBuilder.of()
+                        .add("owner", owner)
+                        .add("repo", repo)
+                        .add("sinceIssues", sinceIssues)
+                        .add("maxPages", maxPages)
+                        .add("page", page)
+                )
+            );
         }
     }
+
     List<Issue> getIssuesInternal(String owner, String repo, int sinceIssues, int maxPages) {
         LocalDateTime now = LocalDateTime.now();
         String resultIssues = now.minusDays(sinceIssues).format(GitHubAPIService.formatter);

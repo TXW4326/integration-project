@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -39,13 +39,13 @@ public class Commit {
     private String web_url;
 
     @JsonProperty("commit")
-    private void unpackCommit(Map<String, ?> commit) {
+    private void unpackCommit(LinkedHashMap<String, ?> commit) {
         if (commit == null || !commit.containsKey("author")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit data does not contain author information: " + commit);
         }
         Object authorObj = commit.get("author");
         if (authorObj == null) return;
-        if (!(authorObj instanceof Map<?, ?> authorMap)) {
+        if (!(authorObj instanceof LinkedHashMap<?, ?> authorMap)) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid author data format in commit: " + commit);
         }
         if (!authorMap.containsKey("name") || !authorMap.containsKey("email") || !authorMap.containsKey("date")) {

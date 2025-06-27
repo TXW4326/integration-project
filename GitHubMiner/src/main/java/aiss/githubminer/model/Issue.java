@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.*;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -60,7 +60,7 @@ public class Issue {
     private List<Comment> comments;
 
     @JsonProperty("reactions")
-    private void unpackReactions(Map<String, ?> reactions) {
+    private void unpackReactions(LinkedHashMap<String, ?> reactions) {
         if (reactions == null || !reactions.containsKey("total_count")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Reactions data does not contain total_count: " + reactions);
@@ -73,9 +73,14 @@ public class Issue {
         return votes;
     }
 
-    @JsonProperty("id")
+    @JsonIgnore
     public long getId() {
         return id;
+    }
+
+    @JsonProperty("id")
+    public String getIdAsString() {
+        return String.valueOf(id);
     }
 
     @JsonProperty("id")
@@ -113,8 +118,8 @@ public class Issue {
     private void unpackLabels(List<?> labels) {
         this.labels = labels.parallelStream()
                 .map(l -> {
-                    if (l instanceof Map) {
-                        return (String) ((Map<?, ?>) l).get("name");
+                    if (l instanceof LinkedHashMap) {
+                        return (String) ((LinkedHashMap<?, ?>) l).get("name");
                     } else if (l instanceof String) {
                         return (String) l;
                     } else {

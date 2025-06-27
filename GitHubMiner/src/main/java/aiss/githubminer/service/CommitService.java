@@ -3,6 +3,7 @@ package aiss.githubminer.service;
 
 import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Commit;
+import aiss.githubminer.utils.LinkedHashMapBuilder;
 import aiss.githubminer.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CommitService {
@@ -28,54 +28,73 @@ public class CommitService {
 
     private Commit[] handleCommitApiCall(String owner, String repo, String resultCommits, int page, int maxPages, int sinceCommits) {
         try {
-            return gitHubAPIService.get("repos/{owner}/{repo}/commits?since={sinceCommits}&page={page}", Commit[].class, owner, repo, resultCommits, page);
-        } catch (HttpClientErrorException e) {
-            Map<String,?> parameters = Map.of(
-                    "owner", owner,
-                    "repo", repo,
-                    "sinceCommits", sinceCommits,
-                    "maxPages", maxPages,
-                    "page", page
+            return gitHubAPIService.get(
+                    "repos/{owner}/{repo}/commits?since={sinceCommits}&page={page}",
+                    Commit[].class,
+                    owner, repo, resultCommits, page
             );
+        } catch (HttpClientErrorException e) {
+            LinkedHashMapBuilder parameters = LinkedHashMapBuilder.of()
+                    .add("owner", owner)
+                    .add("repo", repo)
+                    .add("sinceCommits", sinceCommits)
+                    .add("maxPages", maxPages)
+                    .add("page", page);
+
             switch (e.getStatusCode().value()) {
-                case 400: throw new GitHubMinerException(HttpStatus.BAD_REQUEST, Map.of(
-                        "error", "Invalid request parameters for commits",
-                        "parameters", parameters));
-                case 404: throw new GitHubMinerException(HttpStatus.NOT_FOUND,Map.of(
-                        "error", "No commits found for the given parameters",
-                        "parameters",parameters ));
-                case 409: throw new GitHubMinerException(HttpStatus.CONFLICT, Map.of(
-                        "error", "Conflict occurred while fetching commits",
-                        "parameters", parameters));
-                case 500: throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                        "error", "Internal server error while fetching commits",
-                        "parameters", parameters));
-                default: throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                        "error", "An error occurred while fetching commits",
-                        "parameters", parameters));
+                case 400:
+                    throw new GitHubMinerException(HttpStatus.BAD_REQUEST, LinkedHashMapBuilder.of()
+                        .add("error", "Invalid request parameters for commits")
+                        .add("parameters", parameters)
+                    );
+                case 404:
+                    throw new GitHubMinerException(HttpStatus.NOT_FOUND, LinkedHashMapBuilder.of()
+                        .add("error", "No commits found for the given parameters")
+                        .add("parameters", parameters)
+                    );
+                case 409:
+                    throw new GitHubMinerException(HttpStatus.CONFLICT, LinkedHashMapBuilder.of()
+                        .add("error", "Conflict occurred while fetching commits")
+                        .add("parameters", parameters)
+                    );
+                case 500:
+                    throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, LinkedHashMapBuilder.of()
+                        .add("error", "Internal server error while fetching commits")
+                        .add("parameters", parameters)
+                    );
+                default:
+                    throw new GitHubMinerException(e.getStatusCode(), LinkedHashMapBuilder.of()
+                        .add("error", "An error occurred while fetching commits")
+                        .add("parameters", parameters)
+                    );
             }
         } catch (UnknownHttpStatusCodeException e) {
-            throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                    "error", "An unknown error occurred while fetching commits",
-                    "parameters", Map.of(
-                            "owner", owner,
-                            "repo", repo,
-                            "sinceCommits", sinceCommits,
-                            "maxPages", maxPages,
-                            "page", page)
-            ));
+            LinkedHashMapBuilder parameters = LinkedHashMapBuilder.of()
+                    .add("owner", owner)
+                    .add("repo", repo)
+                    .add("sinceCommits", sinceCommits)
+                    .add("maxPages", maxPages)
+                    .add("page", page);
+
+            throw new GitHubMinerException(e.getStatusCode(), LinkedHashMapBuilder.of()
+                    .add("error", "An unknown error occurred while fetching commits")
+                    .add("parameters", parameters)
+            );
         } catch (RuntimeException e) {
-            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                    "error", "An error occurred while fetching commits",
-                    "parameters", Map.of(
-                            "owner", owner,
-                            "repo", repo,
-                            "sinceCommits", sinceCommits,
-                            "maxPages", maxPages,
-                            "page", page)
-            ));
+            LinkedHashMapBuilder parameters = LinkedHashMapBuilder.of()
+                    .add("owner", owner)
+                    .add("repo", repo)
+                    .add("sinceCommits", sinceCommits)
+                    .add("maxPages", maxPages)
+                    .add("page", page);
+
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, LinkedHashMapBuilder.of()
+                .add("error", "An error occurred while fetching commits")
+                .add("parameters", parameters)
+            );
         }
     }
+
 
     List<Commit> getCommitsInternal(String owner, String repo, int sinceCommits, int maxPages) {
         LocalDateTime now = LocalDateTime.now();

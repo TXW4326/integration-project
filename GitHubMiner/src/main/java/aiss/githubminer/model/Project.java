@@ -3,6 +3,7 @@ package aiss.githubminer.model;
 
 
 import aiss.githubminer.utils.ToStringBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,8 +29,13 @@ public class Project {
     @JsonProperty("issues")
     private List<Issue> issues;
 
-    @JsonProperty("id")
+    @JsonIgnore
     public long getId() { return id; }
+
+    @JsonProperty("id")
+    public String getIdAsString() {
+        return String.valueOf(id);
+    }
 
     @JsonProperty("id")
     public void setId(long id) {

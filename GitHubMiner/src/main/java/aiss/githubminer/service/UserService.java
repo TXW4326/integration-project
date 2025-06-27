@@ -24,9 +24,7 @@ public class UserService {
         try {
             return gitHubAPIService.get("users/{username}", User.class, username);
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode().value() == 404) {
-                throw new GitHubMinerException(HttpStatus.NOT_FOUND, "User not found: " + username);
-            }
+            if (e.getStatusCode().value() == 404) throw new GitHubMinerException(HttpStatus.NOT_FOUND, "User not found: " + username);
             throw new GitHubMinerException(e.getStatusCode(), "An error occurred while fetching the user: " + username);
         } catch (UnknownHttpStatusCodeException e) {
             throw new GitHubMinerException(e.getStatusCode(), "An unknown error occurred while fetching the user: " + username);

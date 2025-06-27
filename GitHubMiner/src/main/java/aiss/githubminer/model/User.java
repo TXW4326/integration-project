@@ -3,6 +3,7 @@ package aiss.githubminer.model;
 
 
 import aiss.githubminer.utils.ToStringBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,7 +38,7 @@ public class User {
         this.username = username;
     }
 
-    @JsonProperty("id")
+    @JsonIgnore
     public long getId() {
         return id;
     }
@@ -45,6 +46,11 @@ public class User {
     @JsonProperty("id")
     public void setId(long id) {
         this.id = id;
+    }
+
+    @JsonProperty("id")
+    public String getIdAsString() {
+        return String.valueOf(id);
     }
 
     @JsonProperty("avatar_url")
