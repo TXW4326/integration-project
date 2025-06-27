@@ -46,7 +46,7 @@ public class GitHubMinerController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{username}/{repo}")
-    public void sendProjectToGitMiner(
+    public Project sendProjectToGitMiner(
         @PathVariable String username,
         @PathVariable String repo,
         @RequestParam(required = false) Integer sinceCommits,
@@ -60,5 +60,6 @@ public class GitHubMinerController {
                 sinceIssues != null ? sinceIssues : DEFAULT_SINCE_ISSUES,
                 maxPages != null ? maxPages : DEFAULT_MAX_PAGES);
         gitHubAPIService.sendProject(project);
+        return project;
     }
 }

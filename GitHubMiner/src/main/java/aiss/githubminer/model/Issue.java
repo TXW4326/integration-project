@@ -10,9 +10,9 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -112,7 +112,7 @@ public class Issue {
 
 
     @JsonSetter("labels")
-    private void setLabels(Map<String, List<Map<String,String>>> labels) {
+    private void setLabels(LinkedHashMap<String, List<LinkedHashMap<String,String>>> labels) {
         if (labels == null || !labels.containsKey("nodes")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Issue data does not contain labels");

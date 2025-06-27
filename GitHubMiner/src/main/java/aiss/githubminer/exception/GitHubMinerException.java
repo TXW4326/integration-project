@@ -1,21 +1,22 @@
 package aiss.githubminer.exception;
 
 import aiss.githubminer.utils.JsonUtils;
+import aiss.githubminer.utils.LinkedHashMapBuilder;
 import org.springframework.http.HttpStatusCode;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class GitHubMinerException extends RuntimeException {
     private final HttpStatusCode status;
-    private final Map<String, ?> reason;
+    private final LinkedHashMap<String, ?> reason;
 
     public GitHubMinerException(HttpStatusCode status, Object reason) {
         super(reason.toString());
         this.status = status;
-        this.reason = Map.of("error", reason);
+        this.reason = LinkedHashMapBuilder.of().add("error", reason);
     }
 
-    public GitHubMinerException(HttpStatusCode status, Map<String,?> reason) {
+    public GitHubMinerException(HttpStatusCode status, LinkedHashMap<String,?> reason) {
         super(JsonUtils.toJson(reason));
         this.status = status;
         this.reason = reason;
@@ -25,7 +26,7 @@ public class GitHubMinerException extends RuntimeException {
         return status;
     }
 
-    public Map<String,?> getReason() {
+    public LinkedHashMap<String,?> getReason() {
         return reason;
     }
 }

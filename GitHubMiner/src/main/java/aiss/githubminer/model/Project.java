@@ -10,8 +10,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -72,7 +72,7 @@ public class Project {
     }
 
     @JsonSetter("issues")
-    public void setIssues (Map<String, ?> issues) {
+    public void setIssues (LinkedHashMap<String, ?> issues) {
         if (issues == null || !issues.containsKey("pageInfo")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Project data does not contain issues pageInfo");
@@ -98,17 +98,17 @@ public class Project {
 
 
     @JsonSetter("commits")
-    public void setCommits(Map<String, Map<String, Map<String, ?>>> commits) {
+    public void setCommits(LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, ?>>> commits) {
         if (commits == null || !commits.containsKey("target")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Project data does not contain target attribute on commits");
         }
-        Map<String, Map<String, ?>> target = commits.get("target");
+        LinkedHashMap<String, LinkedHashMap<String, ?>> target = commits.get("target");
         if (target == null || !target.containsKey("history")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Project data does not contain history attribute on targets from commits");
         }
-        Map<String, ?> history = target.get("history");
+        LinkedHashMap<String, ?> history = target.get("history");
         if (history == null || !history.containsKey("pageInfo")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Project data does not contain history pageInfo of commits");

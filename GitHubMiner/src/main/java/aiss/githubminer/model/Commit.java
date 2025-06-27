@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.*;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -36,7 +36,7 @@ public class Commit {
     private String web_url;
 
     @JsonSetter("author")
-    private void unpackAuthor(Map<String, String> author) {
+    private void unpackAuthor(LinkedHashMap<String, String> author) {
         if (author == null || author.isEmpty()) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit data does not contain author data.");
         }
