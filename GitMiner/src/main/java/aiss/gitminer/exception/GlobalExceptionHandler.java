@@ -1,22 +1,22 @@
 package aiss.gitminer.exception;
 
 import aiss.gitminer.dto.ErrorResponse;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 
-
-@RestControllerAdvice
-public class CustomExceptionHandler {
+@RestControllerAdvice //This notation is the same as @ControllerAdvice + @ResponseBody
+public class GlobalExceptionHandler {
 
     // Specific handlers by model:
 
-    @ExceptionHandler(value = IssueNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleIssueNotFoundException(IssueNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(IssueNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleIssueNotFoundException(IssueNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND,
                 "Not Found",
@@ -25,8 +25,8 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = CommentNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleCommentNotFoundException(CommentNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCommentNotFoundException(CommentNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND,
                 "Not Found",
@@ -35,8 +35,8 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = CommitNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleCommitNotFoundException(CommitNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(CommitNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCommitNotFoundException(CommitNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND,
                 "Not Found",
@@ -45,8 +45,8 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = ProjectNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleProjectNotFoundException(ProjectNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleProjectNotFoundException(ProjectNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND,
                 "Not Found",
@@ -55,18 +55,9 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = PullRequestNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePullRequestNotFoundException(PullRequestNotFoundException ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND,
-                "Not Found",
-                "Requested Pull Request doesn't exist."
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
 
-    @ExceptionHandler(value = UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND,
                 "Not Found",
@@ -76,12 +67,9 @@ public class CustomExceptionHandler {
     }
 
     // Validation errors handler:
-    @ExceptionHandler(javax.validation.ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(javax.validation.ConstraintViolationException ex, WebRequest request) {
-        List<String> errors = ex.getConstraintViolations().stream()
-                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage()) // Personaliza el formato
-                .collect(java.util.stream.Collectors.toList());
-
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        List<String> errors =  ex.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 "Bad Request",
@@ -92,15 +80,15 @@ public class CustomExceptionHandler {
     }
 
     // Generic handler for unexpected exceptions:
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception ex, WebRequest request) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception ex) {
         System.err.println("An uncontrolled error has occurred: " + ex.getMessage());
         ex.printStackTrace();
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Internal Server Error",
-                "An unexpected error has occurred in the server. Please , try again later."
+                "An unexpected error has occurred in the server. Please, try again later."
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }

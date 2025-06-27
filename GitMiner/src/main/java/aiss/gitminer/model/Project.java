@@ -34,12 +34,6 @@ public class Project {
     @JoinColumn(name = "projectId")
     private List<Issue> issues;
 
-    @JsonProperty("pullRequests")
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "projectId")
-    private List<PullRequest> pullRequests;
-
-
     public Project() {
         commits = new ArrayList<>();
         issues = new ArrayList<>();
@@ -85,14 +79,6 @@ public class Project {
         this.issues = issues;
     }
 
-    public List<PullRequest> getPullRequests() {
-        return pullRequests;
-    }
-
-    public void setPullRequests(List<PullRequest> pullRequests) {
-        this.pullRequests = pullRequests;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -100,6 +86,14 @@ public class Project {
         sb.append("id");
         sb.append('=');
         sb.append(((this.id == null)?"<null>":this.id));
+        sb.append(',');
+        sb.append("name");
+        sb.append('=');
+        sb.append(((this.name == null)?"<null>":this.name));
+        sb.append(',');
+        sb.append("web_url");
+        sb.append('=');
+        sb.append(((this.webUrl == null)?"<null>":this.webUrl));
         sb.append(',');
         sb.append("commits");
         sb.append('=');
