@@ -1,13 +1,9 @@
 
 package aiss.gitminer.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -48,7 +44,7 @@ public class Issue {
     @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "issueId")
-    private List<Comment> comments;
+    private List<aiss.gitminer.model.Comment> comments;
 
     public String getId() {
         return id;
@@ -138,7 +134,7 @@ public class Issue {
         this.votes = votes;
     }
 
-    public List<Comment> getComments() {
+    public List<aiss.gitminer.model.Comment> getComments() {
         return comments;
     }
 

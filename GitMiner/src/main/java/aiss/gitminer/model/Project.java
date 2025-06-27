@@ -34,6 +34,12 @@ public class Project {
     @JoinColumn(name = "projectId")
     private List<Issue> issues;
 
+    @JsonProperty("pullRequests")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "projectId")
+    private List<PullRequest> pullRequests;
+
+
     public Project() {
         commits = new ArrayList<>();
         issues = new ArrayList<>();
@@ -77,6 +83,14 @@ public class Project {
 
     public void setIssues(List<Issue> issues) {
         this.issues = issues;
+    }
+
+    public List<PullRequest> getPullRequests() {
+        return pullRequests;
+    }
+
+    public void setPullRequests(List<PullRequest> pullRequests) {
+        this.pullRequests = pullRequests;
     }
 
     @Override
