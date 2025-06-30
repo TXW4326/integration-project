@@ -1,5 +1,6 @@
 package aiss.githubminer.utils;
 
+// This class is a utility to implement simple toString methods on models.
 public final class ToStringBuilder {
 
     private final StringBuilder sb = new StringBuilder();

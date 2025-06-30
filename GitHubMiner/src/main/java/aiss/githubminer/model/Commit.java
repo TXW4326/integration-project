@@ -4,35 +4,46 @@ package aiss.githubminer.model;
 import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.*;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Commit {
 
     @JsonProperty("id")
+    @NotNull(message = "Commit ID cannot be null")
+    @NotBlank(message = "Commit ID cannot be empty")
     private String id;
 
     @JsonProperty("author_name")
+    @Size(min = 1, message = "Commit author name cannot be empty")
     private String author_name;
 
     @JsonProperty("author_email")
+    @Email(message = "Invalid email format for author email")
     private String author_email;
 
     @JsonProperty("authored_date")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @Past(message = "Authored date must be in the past")
     private LocalDateTime authored_date;
 
     @JsonProperty("message")
     private String message;
 
     @JsonProperty("title")
+    @NotNull(message = "Commit title cannot be null")
     private String title;
 
     @JsonProperty("web_url")
+    @NotNull(message = "Commit web URL cannot be null")
+    @URL(message = "Invalid URL format for commit web URL")
     private String web_url;
 
     @JsonSetter("author")
@@ -129,5 +140,16 @@ public class Commit {
                 .append("authored_date", authored_date)
                 .append("web_url", web_url)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Commit commit)) return false;
+        return Objects.equals(getId(), commit.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 }

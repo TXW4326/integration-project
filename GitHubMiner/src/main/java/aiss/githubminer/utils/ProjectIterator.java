@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public final class ProjectIterator {
 
@@ -19,9 +19,9 @@ public final class ProjectIterator {
     private final int elements;
     private QueryBuilder queryBuilder;
     private final GitHubAPIService gitHubAPIService;
-    private final Map<String, ?> parameters;
+    private final LinkedHashMap<String,?> parameters;
 
-    public ProjectIterator(int elements, Variables variables, GitHubAPIService gitHubAPIService, Map<String,?> parameters) {
+    public ProjectIterator(int elements, Variables variables, GitHubAPIService gitHubAPIService, LinkedHashMap<String,?> parameters) {
         this.variables = variables;
         this.elements = elements;
         this.gitHubAPIService = gitHubAPIService;
@@ -44,8 +44,8 @@ public final class ProjectIterator {
                 variables.setFetchCommits(true);
                 variables.setFetchIssues(true);
             }
-            Map<String, ?> response = sendGraphQLQuery(variables);
-            Map<String,?> repository = ValidationUtils.validateGraphQLresponse(response, parameters);
+            LinkedHashMap<String, ?> response = sendGraphQLQuery(variables);
+            LinkedHashMap<String,?> repository = ValidationUtils.validateGraphQLresponse(response, parameters);
             project = JsonUtils.convertToObject(repository, Project.class);
             queryBuilder = new QueryBuilder(project, elements);
             variables.setFetchRepoDetails(false);
@@ -64,8 +64,8 @@ public final class ProjectIterator {
         } else {
             variables.setFetchIssues(false);
         }
-        Map<String, ?> response = sendGraphQLQuery(queryBuilder.buildCommentsQuery(),variables);
-        Map<String,?> repository = ValidationUtils.validateGraphQLresponse(response, parameters);
+        LinkedHashMap<String, ?> response = sendGraphQLQuery(queryBuilder.buildCommentsQuery(),variables);
+        LinkedHashMap<String,?> repository = ValidationUtils.validateGraphQLresponse(response, parameters);
         Project project2 = JsonUtils.convertToObject(repository, Project.class);
         project.addCommits(project2.getCommits());
         project.addIssues(project2.getIssues());
@@ -86,28 +86,28 @@ public final class ProjectIterator {
         return project;
     }
 
-    private Map<String, ?> sendGraphQLQuery(String extraQueries, Variables variables) {
+    private LinkedHashMap<String, ?> sendGraphQLQuery(String extraQueries, Variables variables) {
         try {
             return gitHubAPIService.sendGraphQLQuery(extraQueries, variables);
         } catch (HttpStatusCodeException e) {
-            throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                    "error", "An error occurred while fetching the data for the given parameters",
-                    "parameters", parameters)
+            throw new GitHubMinerException(e.getStatusCode(), LinkedHashMapBuilder.of()
+                    .add("error", "An error occurred while fetching the data for the given parameters")
+                    .add("parameters", parameters)
             );
         } catch (UnknownHttpStatusCodeException e) {
-            throw new GitHubMinerException(e.getStatusCode(), Map.of(
-                    "error", "An unknown error occurred while fetching the data for the given parameters",
-                    "parameters", parameters
-            ));
+            throw new GitHubMinerException(e.getStatusCode(), LinkedHashMapBuilder.of()
+                    .add("error", "An unknown error occurred while fetching the data for the given parameters")
+                    .add("parameters", parameters)
+            );
         } catch (RuntimeException e) {
-            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, Map.of(
-                    "error", "An unexpected error occurred while fetching the data for the given parameters",
-                    "parameters", parameters
-            ));
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, LinkedHashMapBuilder.of()
+                    .add("error", "An unexpected error occurred while fetching the data for the given parameters")
+                    .add("parameters", parameters)
+            );
         }
     }
 
-    private Map<String, ?> sendGraphQLQuery(Variables variables) {
+    private LinkedHashMap<String, ?> sendGraphQLQuery(Variables variables) {
         return sendGraphQLQuery("", variables);
     }
 

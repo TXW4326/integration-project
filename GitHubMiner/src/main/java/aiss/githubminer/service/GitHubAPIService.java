@@ -4,6 +4,7 @@ package aiss.githubminer.service;
 import aiss.githubminer.exception.GitHubMinerException;
 import aiss.githubminer.model.Project;
 import aiss.githubminer.model.Variables;
+import aiss.githubminer.utils.LinkedHashMapBuilder;
 import aiss.githubminer.utils.ProjectIterator;
 import aiss.githubminer.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -52,7 +54,7 @@ public class GitHubAPIService {
         }}
 
 
-    public Map<String,?> sendGraphQLQuery(String extraQueries, Variables variables) throws HttpClientErrorException, UnknownHttpStatusCodeException {
+    public LinkedHashMap<String,?> sendGraphQLQuery(String extraQueries, Variables variables) throws HttpClientErrorException, UnknownHttpStatusCodeException {
         HttpHeaders headers = new HttpHeaders();
         if (TOKEN != null && !TOKEN.isEmpty()) {
             headers.set("Authorization", "Bearer " + TOKEN);
@@ -64,7 +66,7 @@ public class GitHubAPIService {
         body.put("query", query);
         body.put("variables", variables);
         HttpEntity<Map<String, ?>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map<String, ?>> response = restTemplate.exchange(GITHUB_API_URL, HttpMethod.POST, request, new ParameterizedTypeReference<>() {});
+        ResponseEntity<LinkedHashMap<String, ?>> response = restTemplate.exchange(GITHUB_API_URL, HttpMethod.POST, request, new ParameterizedTypeReference<>() {});
         return response.getBody();
     }
 
@@ -83,16 +85,15 @@ public class GitHubAPIService {
         String resultIssues = now.minusDays(sinceIssues).format(formatter);
         int elements = PER_PAGE * maxPages;
         Variables variables = new Variables(owner, repo, resultCommits, resultIssues, true, 100,100,100, false, false);
-        Map<String, ?> parameters = Map.of(
-                "owner", owner,
-                "repo", repo,
-                "sinceCommits", sinceCommits,
-                "sinceIssues", sinceIssues,
-                "maxPages", maxPages
-        );
+        LinkedHashMapBuilder parameters = LinkedHashMapBuilder.of()
+                .add("owner", owner)
+                .add("repo", repo)
+                .add("sinceCommits", sinceCommits)
+                .add("sinceIssues", sinceIssues)
+                .add("maxPages", maxPages);
         ProjectIterator projectIterator = new ProjectIterator(elements, variables, this, parameters);
         while (projectIterator.hasNext()) projectIterator.next();
-        return projectIterator.getProject();
+        return ValidationUtils.validateObject(projectIterator.getProject());
     }
 
     public void sendProject(Project project) {

@@ -7,11 +7,17 @@ import aiss.githubminer.utils.JsonUtils;
 import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.URL;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,19 +27,29 @@ public class Project {
     private String id;
 
     @JsonProperty("name")
+    @NotNull(message = "The name of the project cannot be null")
+    @NotBlank(message = "The name of the project cannot be empty")
     private String name;
 
     @JsonProperty("web_url")
+    @NotNull(message = "The URL of the project cannot be null")
+    @URL(message = "Invalid URL format for project web URL")
     private String web_url;
 
+    @Valid
     @JsonProperty("commits")
-    private List<Commit> commits = new ArrayList<>();
-
-    @JsonProperty("issues")
-    private List<Issue> issues = new ArrayList<>();
+    @NotNull(message = "Project commit list cannot be null")
+    @UniqueElements(message = "Commit ids should be unique")
+    private List<@NotNull(message = "Project commit cannot be null") Commit> commits = new ArrayList<>();
 
     @JsonIgnore
     private PageInfo pageInfoCommits;
+
+    @Valid
+    @JsonProperty("issues")
+    @NotNull(message = "Project issue list cannot be null")
+    @UniqueElements(message = "Issue ids should be unique")
+    private List<@NotNull(message = "Project issue cannot be null") Issue> issues = new ArrayList<>();
 
     @JsonIgnore
     private PageInfo pageInfoIssues;
@@ -159,4 +175,14 @@ public class Project {
                 .toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Issue issue)) return false;
+        return getId() == issue.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
 }

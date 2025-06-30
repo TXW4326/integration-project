@@ -6,57 +6,76 @@ import aiss.githubminer.utils.JsonUtils;
 import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
 
     @JsonProperty("id")
+    @NotNull(message = "Issue ID cannot be null")
+    @NotBlank(message = "Issue ID should not be empty")
     private String id;
 
     @JsonProperty("votes")
+    @Min(value = 0, message = "Votes must be a non-negative integer")
+    @NotNull(message = "Issue votes cannot be null")
     private int votes;
 
     @JsonProperty("title")
+    @NotNull(message = "Issue title cannot be null")
+    @NotEmpty(message = "Issue title cannot be empty")
     private String title;
 
     @JsonProperty("author")
+    @Valid
     private User author;
 
     @JsonProperty("labels")
-    private List<String> labels;
+    @NotNull(message = "Issue label list cannot be null")
+    private List<@NotNull(message = "Issue label cannot be null") String> labels;
 
     @JsonProperty("state")
+    @NotNull(message = "Issue state cannot be null")
+    @NotBlank(message = "Issue state cannot be empty")
     private String state;
 
     @JsonProperty("assignee")
+    @Valid
     private User assignee;
 
     @JsonProperty("created_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @Past(message = "Issue creation date must be in the past")
+    @NotNull(message = "Issue creation date cannot be null")
     private LocalDateTime created_at;
 
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @Past(message = "Issue update date must be in the past")
+    @NotNull(message = "Issue update date cannot be null")
     private LocalDateTime updated_at;
 
     @JsonProperty("closed_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @Past(message = "Issue closed date must be in the past")
     private LocalDateTime closed_at;
 
     @JsonProperty("description")
+    @Size(min = 1, message = "Issue description cannot be empty")
     private String description;
 
     // Although the attribute appears to be ignored here, its getter is nevertheless invoked when deserializing the Issue object.
-    @JsonIgnore
-    private List<Comment> comments = new ArrayList<>();
+    @Valid
+    @NotNull(message = "Issue comment list cannot be null")
+    @UniqueElements(message = "Issue comment ids should be unique")
+    private List<@NotNull(message = "Issue comments cannot be null") Comment> comments = new ArrayList<>();
 
     @JsonIgnore
     private PageInfo pageInfoComments;
@@ -65,7 +84,7 @@ public class Issue {
     private void unpackReactions(Map<String, ?> reactions) {
         if (reactions == null || !reactions.containsKey("votes")) {
             throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Issue data does not contain votes");
+                    "Issue reactions data does not contain total_count: " + reactions);
         }
         this.votes = (int) reactions.get("votes");
     }
@@ -237,5 +256,16 @@ public class Issue {
                 .append("author", author)
                 .append("comments", comments)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Issue issue)) return false;
+        return getId() == issue.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 }

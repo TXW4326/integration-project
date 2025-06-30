@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.HttpStatus;
 
+//Class to handle JSON serialization using Jackson
 public final class JsonUtils {
 
     private JsonUtils() {}

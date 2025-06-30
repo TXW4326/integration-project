@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -163,12 +163,17 @@ class GitHubAPIServiceTest {
 
         TestUtils.assertException(ex, HttpStatus.NOT_FOUND);
         assertEquals("An error occurred while fetching the data for the given parameters", ex.getReason().get("error"),  "Exception message should indicate project not found");
-        Map<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
+        LinkedHashMap<String,?> parameters = TestUtils.assertParametersInMap(ex.getReason());
         TestUtils.assertMapContains(parameters, "owner", owner);
         TestUtils.assertMapContains(parameters, "repo", repo);
         TestUtils.assertMapContains(parameters, "sinceCommits", sinceCommits);
         TestUtils.assertMapContains(parameters, "sinceIssues", sinceIssues);
         TestUtils.assertMapContains(parameters, "maxPages", maxPages);
+        LinkedHashMap<String,?> description = TestUtils.assertDescriptionInMap(ex.getReason());
+        TestUtils.assertMapContains(description, "type", "NOT_FOUND");
+        TestUtils.assertMapContains(description, "path");
+        TestUtils.assertMapContains(description, "locations");
+        TestUtils.assertMapContains(description, "message", "Could not resolve to a Repository with the name 'invalid-ownerytvfgybh7gt6frgyhu7gt6frbyuh8bghni/invalid-repojuhygvbuhnygtvybuh8yvgu7hgt6frv5ygbt6frv5t'.");
         System.out.println(ex.getMessage());
     }
 

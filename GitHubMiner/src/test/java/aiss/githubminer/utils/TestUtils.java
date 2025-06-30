@@ -12,10 +12,16 @@ public final class TestUtils {
 
     private TestUtils() {}
 
-    public static <T> void assertMapContains(LinkedHashMap<String,?> parameters, String key, T expectedValue) {
-        assertTrue(parameters.containsKey(key), "Parameters should contain '" + key + "'");
-        assertNotNull(parameters.get(key), key + " should not be null");
-        assertEquals(expectedValue, parameters.get(key), key + " should match expected");
+    public static <T> void assertMapContains(LinkedHashMap<String,?> map, String key, T expectedValue) {
+        assertTrue(map.containsKey(key), "Parameters should contain '" + key + "'");
+        assertNotNull(map.get(key), key + " should not be null");
+        assertInstanceOf(expectedValue.getClass(), map.get(key), key + " should be of type " + expectedValue.getClass().getSimpleName());
+        assertEquals(expectedValue, map.get(key), key + " should match expected");
+    }
+
+    public static void assertMapContains(LinkedHashMap<String,?> map, String key) {
+        assertTrue(map.containsKey(key), "Parameters should contain '" + key + "'");
+        assertNotNull(map.get(key), key + " should not be null");
     }
 
     @SuppressWarnings("unchecked")
@@ -25,6 +31,15 @@ public final class TestUtils {
         LinkedHashMap<?,?> map = assertInstanceOf(LinkedHashMap.class, reason.get("parameters"), "Parameters should be a Map");
         assertTrue(map.keySet().stream().allMatch(key-> key instanceof String), "All keys in parameters should be Strings");
         return (LinkedHashMap<String,?>) reason.get("parameters");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static LinkedHashMap<String, ?> assertDescriptionInMap(LinkedHashMap<String, ?> reason) {
+        assertTrue(reason.containsKey("description"), "Description should be present in the error reason");
+        assertNotNull(reason.get("description"), "Description should not be null");
+        LinkedHashMap<?, ?> map = assertInstanceOf(LinkedHashMap.class, reason.get("description"), "Description should be a Map");
+        assertTrue(map.keySet().stream().allMatch(key -> key instanceof String), "All keys in description should be Strings");
+        return (LinkedHashMap<String, ?>) reason.get("description");
     }
 
     public static void assertException(GitHubMinerException ex, HttpStatus expectedStatus) {
