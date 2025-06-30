@@ -7,24 +7,40 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
+
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @JsonProperty("username")
+    @NotNull(message = "Username cannot be null")
+    @NotBlank(message = "Username cannot be empty")
     private String username;
 
     @JsonProperty("id")
+    @NotNull(message = "User ID cannot be null")
+    @Min(value = 0, message = "User ID must be a non-negative integer")
     private long id;
 
     @JsonProperty("avatar_url")
+    @NotNull(message = "Avatar URL cannot be null")
+    @URL(message = "Invalid URL format for avatar URL")
     private String avatar_url;
 
     @JsonProperty("web_url")
+    @NotNull(message = "Web URL cannot be null")
+    @URL(message = "Invalid URL format for web URL")
     private String web_url;
 
     @JsonProperty("name")
+    @Size(min = 1, message = "User real name cannot be empty")
     private String name;
 
 
@@ -92,6 +108,17 @@ public class User {
                 .append("avatar_url", avatar_url)
                 .append("web_url", web_url)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Issue issue)) return false;
+        return getId() == issue.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 
 }

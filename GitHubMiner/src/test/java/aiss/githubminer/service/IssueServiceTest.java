@@ -1,6 +1,7 @@
 package aiss.githubminer.service;
 
 import aiss.githubminer.exception.GitHubMinerException;
+import aiss.githubminer.model.Comment;
 import aiss.githubminer.model.Issue;
 import aiss.githubminer.utils.JsonUtils;
 import aiss.githubminer.utils.TestUtils;
@@ -84,6 +85,43 @@ class IssueServiceTest {
         assertEquals("Repository is empty", ex.getMessage(), "Error message should match expected");
         System.out.println(ex.getMessage());
     }
+
+    @Test
+    @DisplayName("Get issues with blank owner")
+    void getIssuesWithBlankOwner() {
+        String owner = "  ";
+        String repo = "spring-framework";
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty owner"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is empty", ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get issues with blank repo")
+    void getIssuesWithBlankRepo() {
+        String owner = "spring-projects";
+        String repo = "  ";
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class,
+                () -> issueService.getIssues(owner, repo, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty repo"
+        );
+
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is empty", ex.getMessage(), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
 
     @Test
     @DisplayName("Get issues with invalid sinceIssues")
@@ -184,6 +222,8 @@ class IssueServiceTest {
         assertNotNull(issues, "List of issues should not be null");
         assertTrue(issues.size() <= maxPages * PER_PAGE, "Number of issues should not exceed maxPages * 30 (30 issues per page)");
         assertEquals(issues.size(), issues.stream().map(Issue::getId).distinct().count(), "Issue IDs should be unique");
+        List<Long> commentIDs = issues.stream().flatMap(issue -> issue.getComments().stream()).map(Comment::getId).toList();
+        assertEquals(commentIDs.size(),commentIDs.stream().distinct().count(), "Comments should be unique");
 
         return issues.stream().peek(issue -> {
             assertTrue(issue.getId() >= 0, "Issue ID should be non-negative");

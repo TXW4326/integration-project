@@ -3,28 +3,43 @@ package aiss.githubminer.model;
 
 import aiss.githubminer.utils.ToStringBuilder;
 import com.fasterxml.jackson.annotation.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Comment {
 
     @JsonProperty("id")
+    @NotNull(message = "Comment ID cannot be null")
+    @Min(value = 0, message = "Comment ID must be a non-negative integer")
     private long id;
 
     @JsonProperty("author")
+    @Valid
     private User author;
 
     @JsonProperty("created_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @NotNull(message = "Commit creation date cannot be null")
+    @Past(message = "Commit creation date must be in the past")
     private LocalDateTime created_at;
 
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @NotNull(message = "Commit update date cannot be null")
+    @Past(message = "Commit update date must be in the past")
     private LocalDateTime updated_at;
 
     @JsonProperty("body")
+    @NotNull(message = "Comment body cannot be null")
+    @NotEmpty(message = "Comment body cannot be empty")
     private String body;
 
     @JsonIgnore
@@ -93,4 +108,14 @@ public class Comment {
                 .toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Issue issue)) return false;
+        return getId() == issue.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
 }

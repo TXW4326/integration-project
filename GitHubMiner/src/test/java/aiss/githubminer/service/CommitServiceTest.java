@@ -120,6 +120,23 @@ class CommitServiceTest {
     }
 
     @Test
+    @DisplayName("Get commits with blank repo")
+    void getCommitsWithBlankRepo() {
+        String owner = "spring-projects";
+        String repo = "  "; // Blank repo
+        int sinceCommits = 2;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                        commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for empty repo"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is empty", ex.getReason().get("error"), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
     @DisplayName("Get commits with null owner")
     void getCommitsWithNullOwner() {
         String owner = null; // Null owner
@@ -154,6 +171,23 @@ class CommitServiceTest {
         System.out.println(ex.getMessage());
     }
 
+    @Test
+    @DisplayName("Get commits with blank owner")
+    void getCommitsWithBlankOwner() {
+        String owner = "  "; // Blank owner
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                        commitService.getCommits(owner, repo, sinceCommits, maxPages),
+                "Should throw GitHubMinerException for empty owner"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Owner is empty", ex.getReason().get("error"), "Error message should match expected");
+        System.out.println(ex.getMessage());
+    }
+
 
     public static Stream<Commit> testCommits(List<Commit> commits, int maxPages, int PER_PAGE) {
         assertNotNull(commits, "Commits list should not be null");
@@ -176,7 +210,6 @@ class CommitServiceTest {
                 assertFalse(commit.getAuthor_email().isEmpty(), "Author email should not be empty");
                 assertTrue(commit.getAuthored_date().isBefore(LocalDateTime.now()), "Authored date should be in the past");
             }
-            assertTrue(commit.getMessage() == null || !commit.getMessage().isEmpty(), "Commit message should not be empty");
         });
     }
 }

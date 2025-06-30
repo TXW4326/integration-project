@@ -88,9 +88,10 @@ public class CommentService {
         return comments;
     }
 
+    // Method implemented in case it is needed to get commits without getting the issue first. (For example, in testing)
     public List<Comment> getComments(String owner, String repo, int issueNumber, int maxPages) {
         userInputValidation(owner, repo, issueNumber, maxPages);
-        return getCommentsInternal(owner, repo, issueNumber, maxPages);
+        return ValidationUtils.validateObject(getCommentsInternal(owner, repo, issueNumber, maxPages));
     }
 
     private static void userInputValidation(String owner, String repo, int issueNumber, int maxPages) {

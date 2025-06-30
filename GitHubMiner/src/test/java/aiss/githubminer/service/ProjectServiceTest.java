@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class ProjectServiceTest {
 
-
     private final ProjectService projectService;
     private final int PER_PAGE;
 
@@ -89,6 +88,44 @@ class ProjectServiceTest {
         assertEquals("Repository is empty", ex.getMessage(), "Exception message should indicate empty repo");
         System.out.println(ex.getMessage());
     }
+
+
+    @Test
+    @DisplayName("Get project with blank owner")
+    void getProjectWithBlankOwner() {
+        String owner = "  ";
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                        projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty owner"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals( "Owner is empty", ex.getMessage(), "Exception message should indicate empty owner");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with blank repo")
+    void getProjectWithBlankRepo() {
+        String owner = "spring-projects";
+        String repo = "  ";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                        projectService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty repo"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is empty", ex.getMessage(), "Exception message should indicate empty repo");
+        System.out.println(ex.getMessage());
+    }
+
 
     @Test
     @DisplayName("Get project with invalid sinceCommits")

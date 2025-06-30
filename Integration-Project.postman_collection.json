@@ -1,0 +1,5779 @@
+{
+	"info": {
+		"_postman_id": "b0bb6fca-c95b-48dd-9095-552a640cb0c9",
+		"name": "Integration-Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43782905",
+		"_collection_link": "https://hugomonterrubiocastro.postman.co/workspace/Hugo-Monterrubio-Castro's-Works~4afe44c3-23a1-4a49-82e6-7fcde7301174/collection/43782905-b0bb6fca-c95b-48dd-9095-552a640cb0c9?action=share&source=collection_link&creator=43782905"
+	},
+	"item": [
+		{
+			"name": "GitMiner Students",
+			"item": [
+				{
+					"name": "GET BitbucketMiner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/bitbucket/gentlero/bitbucket-api?nCommits=5&nIssues=5&maxPages=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"bitbucket",
+								"gentlero",
+								"bitbucket-api"
+							],
+							"query": [
+								{
+									"key": "nCommits",
+									"value": "5"
+								},
+								{
+									"key": "nIssues",
+									"value": "5"
+								},
+								{
+									"key": "maxPages",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST BitbucketMiner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/bitbucket/gentlero/bitbucket-api?nCommits=5&nIssues=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"bitbucket",
+								"gentlero",
+								"bitbucket-api"
+							],
+							"query": [
+								{
+									"key": "nCommits",
+									"value": "5"
+								},
+								{
+									"key": "nIssues",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET GitHubMiner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/github/spring-projects/spring-framework",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"github",
+								"spring-projects",
+								"spring-framework"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST GitHubMiner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/github/spring-projects/spring-framework?maxPages=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"github",
+								"spring-projects",
+								"spring-framework"
+							],
+							"query": [
+								{
+									"key": "maxPages",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all projects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches project ID\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"id\\\":\\\"15717393\\\"\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/gitminer/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"15717393\",\r\n    \"name\": \"pitest\",\r\n    \"web_url\": \"https://github.com/hcoles/pitest\",\r\n    \"commits\": [\r\n        {\r\n            \"id\": \"ee6e291274fcca03801261f1fd0684aa32c6d140\",\r\n            \"title\": \"Merge pull request #1150 from hcoles/feature/results_interceptors\",\r\n            \"message\": \"\\n\\nNew extension point\",\r\n            \"author_name\": \"Henry Coles\",\r\n            \"author_email\": \"henry.coles@googlemail.com\",\r\n            \"authored_date\": \"2023-01-25T13:06:19Z\",\r\n            \"web_url\": \"https://github.com/hcoles/pitest/commit/ee6e291274fcca03801261f1fd0684aa32c6d140\"\r\n        },\r\n        {\r\n            \"id\": \"95e8102725b59780c07e89d4fca9a7563f12c976\",\r\n            \"title\": \"New extension points\",\r\n            \"message\": \"\\n\\nAdds new extension points to allow post analysis modification of\\ncoverage and mutation analysis results.\\n\\nExtensions points have multiple potential uses, but first use case is\\nsupporting the 'un-inlining' of inlined kotlin functions.\\n\\nChange requires alteration of existing interfaces which may be\\nincompatible with some third party plugins\",\r\n            \"author_name\": \"Henry Coles\",\r\n            \"author_email\": \"henry@pitest.org\",\r\n            \"authored_date\": \"2023-01-12T09:29:33Z\",\r\n            \"web_url\": \"https://github.com/hcoles/pitest/commit/95e8102725b59780c07e89d4fca9a7563f12c976\"\r\n        },\r\n        {\r\n            \"id\": \"598e5f1f4fd2c60e9153f0839f9ceab4d13bedbe\",\r\n            \"title\": \"Merge pull request #1146 from davidburstrom/davidburstrom-definition\",\r\n            \"message\": \"\\n\\nFix spelling error in ComputClassWrite\",\r\n            \"author_name\": \"Henry Coles\",\r\n            \"author_email\": \"henry.coles@googlemail.com\",\r\n            \"authored_date\": \"2023-01-20T18:17:08Z\",\r\n            \"web_url\": \"https://github.com/hcoles/pitest/commit/598e5f1f4fd2c60e9153f0839f9ceab4d13bedbe\"\r\n        },\r\n        {\r\n            \"id\": \"cef73029ab02ee4486a340b21877e4ec4e545c18\",\r\n            \"title\": \"\",\r\n            \"message\": \"Update ComputeClassWriter.java\",\r\n            \"author_name\": \"davidburstrom\",\r\n            \"author_email\": \"david.burstrom@gmail.com\",\r\n            \"authored_date\": \"2023-01-18T12:39:02Z\",\r\n            \"web_url\": \"https://github.com/hcoles/pitest/commit/cef73029ab02ee4486a340b21877e4ec4e545c18\"\r\n        }\r\n    ],\r\n    \"issues\": [\r\n        {\r\n            \"id\": \"1556497126\",\r\n            \"title\": \"New extension points\",\r\n            \"description\": \"Adds new extension points to allow post analysis modification of coverage and mutation analysis results.\\r\\n\\r\\nExtensions points have multiple potential uses, but first use case is supporting the 'un-inlining' of inlined kotlin functions.\\r\\n\\r\\nChange requires alteration of existing interfaces which may be incompatible with some third party plugins.\",\r\n            \"state\": \"closed\",\r\n            \"created_at\": \"2023-01-25T11:35:30Z\",\r\n            \"updated_at\": \"2023-01-25T13:06:20Z\",\r\n            \"closed_at\": \"2023-01-25T13:06:19Z\",\r\n            \"labels\": [],\r\n            \"author\": {\r\n                \"id\": \"1891135\",\r\n                \"username\": \"hcoles\",\r\n                \"name\": \"Henry Coles\",\r\n                \"avatar_url\": \"https://avatars.githubusercontent.com/u/1891135?v=4\",\r\n                \"web_url\": \"https://api.github.com/users/hcoles\"\r\n            },\r\n            \"assignee\": null,\r\n            \"votes\": 0,\r\n            \"comments\": []\r\n        },\r\n        {\r\n            \"id\": \"1554713335\",\r\n            \"title\": \"Missing AOD operator\",\r\n            \"description\": \"Hello,\\r\\n\\r\\nI've just run pitest 1.10.4 and configured AOD as follows:\\r\\n\\r\\n```\\r\\n<pitest \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  features=\\\"+EXPORT\\\" \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  pitClasspath=\\\"pitest.path\\\" \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  threads=\\\"2\\\" \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  classPath=\\\"mutation.path\\\" \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  targetTests=\\\"org.util.*\\\" \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  targetClasses=\\\"org.util.TriangleUtil\\\" \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  reportDir=\\\"pitReports\\\"\\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  sourceDir=\\\"src\\\" \\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  mutators=\\\"AOD\\\"\\r\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t  outputFormats=\\\"HTML,CSV\\\"\\r\\n/>\\r\\n</target>\\r\\n```\\r\\n\\r\\nIt gives me the following:\\r\\n`Exception in thread \\\"main\\\" org.pitest.help.PitHelpError: Mutator or group AOD is unknown.`\\r\\n\\r\\nIt was working in version 1.7.4, not sure about the following ones.\\r\\n\\r\\nThanks,\\r\\nF.\",\r\n            \"state\": \"open\",\r\n            \"created_at\": \"2023-01-24T10:30:10Z\",\r\n            \"updated_at\": \"2023-01-24T11:19:41Z\",\r\n            \"closed_at\": null,\r\n            \"labels\": [],\r\n            \"author\": {\r\n                \"id\": \"5122337\",\r\n                \"username\": \"pastoref\",\r\n                \"name\": \"Fabrizio Pastore\",\r\n                \"avatar_url\": \"https://avatars.githubusercontent.com/u/5122337?v=4\",\r\n                \"web_url\": \"https://api.github.com/users/pastoref\"\r\n            },\r\n            \"assignee\": null,\r\n            \"votes\": 0,\r\n            \"web_url\": \"https://api.github.com/repos/hcoles/pitest/issues/1149\",\r\n            \"comments\": [\r\n                {\r\n                    \"id\": \"1401706648\",\r\n                    \"body\": \"The research operators (such as AOD) were moved into an external plugin in 1.7.5\\r\\n\\r\\nhttps://github.com/hcoles/pitest/releases/tag/1.7.5\",\r\n                    \"author\": {\r\n                        \"id\": \"1891135\",\r\n                        \"username\": \"hcoles\",\r\n                        \"name\": \"Henry Coles\",\r\n                        \"avatar_url\": \"https://avatars.githubusercontent.com/u/1891135?v=4\",\r\n                        \"web_url\": \"https://api.github.com/users/hcoles\"\r\n                    },\r\n                    \"created_at\": \"2023-01-24T10:35:17Z\",\r\n                    \"updated_at\": \"2023-01-24T10:35:17Z\"\r\n                },\r\n                {\r\n                    \"id\": \"1401764139\",\r\n                    \"body\": \"Thanks a lot for the quick reply and sorry for the false alarm. However, it seems to be incompatible with 1.10.*.\\r\\n\\r\\nMaybe you can mention it also on \\\"https://pitest.org/quickstart/mutators/\\\" under \\\"Experimental Mutators\\\"\\r\\n\\r\\nThank you,\\r\\nF.P.\",\r\n                    \"author\": {\r\n                        \"id\": \"5122337\",\r\n                        \"username\": \"pastoref\",\r\n                        \"name\": \"Fabrizio Pastore\",\r\n                        \"avatar_url\": \"https://avatars.githubusercontent.com/u/5122337?v=4\",\r\n                        \"web_url\": \"https://api.github.com/users/pastoref\"\r\n                    },\r\n                    \"created_at\": \"2023-01-24T11:19:40Z\",\r\n                    \"updated_at\": \"2023-01-24T11:19:40Z\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"1549280294\",\r\n            \"title\": \"Coverage generation minion exited abnormally! (UNKNOWN_ERROR)  with v1.9.x and 1.10.x\",\r\n            \"description\": \"I have the following error when I run Pitest on my micro services :\\r\\n\\r\\n```\\r\\nClass, org.pitest.testapi.TestUnitExecutionListener)' of interface org.pitest.testapi.TestUnitFinder.\\r\\n15:14:24 PIT >> FINE : MINION :         at org.pitest.mutationtest.config.PrioritisingTestUnitFinder.findTestUnits(PrioritisingTestUnitFinder.java:20)\\r\\n15:14:24 PIT >> INFO : MINION : 15:14:24 PIT >> SEVERE : Error calculating coverage. Process will exit.\\r\\n15:14:24 PIT >> FINE : MINION :         at org.pitest.testapi.execute.FindTestUnits.findTestUnits(FindTestUnits.java:64)\\r\\n15:14:24 PIT >> SEVERE : Coverage generator Minion exited abnormally due to UNKNOWN_ERROR\\r\\n15:14:24 PIT >> INFO : MINION : java.lang.AbstractMethodError: Receiver class org.pitest.junit5.JUnit5TestUnitFinder does not define or inherit an implementation of the resolved method 'abstract java.util.List findTestUnits(java.lang.Class, org.pitest.testapi.TestUnitExecutionListener)' of interface org.pitest.testapi.TestUnitFinder.\\r\\n15:14:24 PIT >> FINE : MINION :         at org.pitest.testapi.execute.FindTestUnits.getTestUnits(FindTestUnits.java:47)\\r\\n15:14:24 PIT >> INFO : MINION :         at org.pitest.mutationtest.config.PrioritisingTestUnitFinder.findTestUnits(PrioritisingTestUnitFinder.java:20)\\r\\n15:14:24 PIT >> FINE : MINION :         at org.pitest.testapi.execute.FindTestUnits.findTestUnitsForAllSuppliedClasses(FindTestUnits.java:36)\\r\\n15:14:24 PIT >> INFO : MINION :         at org.pitest.testapi.execute.FindTestUnits.findTestUnits(FindTestUnits.java:64)\\r\\n[INFO] ------------------------------------------------------------------------15:14:24 PIT >> FINE : MINION :  at org.pitest.coverage.execute.CoverageMinion.discoverTests(CoverageMinion.java:167)\\r\\n15:14:24 PIT >> INFO : MINION :         at org.pitest.testapi.execute.FindTestUnits.getTestUnits(FindTestUnits.java:47)\\r\\n15:14:24 PIT >> FINE : MINION :         at org.pitest.coverage.execute.CoverageMinion.getTestsFromParent(CoverageMinion.java:153)\\r\\n[INFO] BUILD FAILURE15:14:24 PIT >> INFO : MINION :     at org.pitest.testapi.execute.FindTestUnits.findTestUnitsForAllSuppliedClasses(FindTestUnits.java:36)\\r\\n15:14:24 PIT >> FINE : MINION :         at org.pitest.coverage.execute.CoverageMinion.main(CoverageMinion.java:84)\\r\\n15:14:24 PIT >> INFO : MINION :         at org.pitest.coverage.execute.CoverageMinion.discoverTests(CoverageMinion.java:167)\\r\\n[INFO] ------------------------------------------------------------------------15:14:24 PIT >> INFO : MINION :  at org.pitest.coverage.execute.CoverageMinion.getTestsFromParent(CoverageMinion.java:153)\\r\\n15:14:24 PIT >> INFO : MINION :         at org.pitest.coverage.execute.CoverageMinion.main(CoverageMinion.java:84)\\r\\n[INFO] Total time:  18.204 s\\r\\n[INFO] Finished at: 2023-01-19T15:14:24+01:00\\r\\n[INFO] ------------------------------------------------------------------------\\r\\n[ERROR] Failed to execute goal org.pitest:pitest-maven:1.10.4:mutationCoverage (default-cli) on project td-ms: Execution default-cli of goal org.pitest:pitest-maven:1.10.4:mutationCoverage failed: Coverage generation minion exited abnormally! (UNKNOWN_ERROR)\\r\\n[ERROR]\\r\\n[ERROR] Please copy and paste the information and the complete stacktrace below when reporting an issue\\r\\n[ERROR] VM : OpenJDK 64-Bit Server VM\\r\\n[ERROR] Vendor : Azul Systems, Inc.\\r\\n[ERROR] Version : 11.0.12+7-LTS\\r\\n[ERROR] Uptime : 19079\\r\\n[ERROR] Input ->\\r\\n[ERROR]  1 : -Dclassworlds.conf=C:\\\\Tools\\\\apache-maven-3.8.3\\\\bin\\\\m2.conf\\r\\n[ERROR]  2 : -Dmaven.home=C:\\\\Tools\\\\apache-maven-3.8.3\\r\\n[ERROR]  3 : -Dlibrary.jansi.path=C:\\\\Tools\\\\apache-maven-3.8.3\\\\lib\\\\jansi-native\\r\\n[ERROR]  4 : -Dmaven.multiModuleProjectDirectory=C:\\\\repositories\\\\IdeaProjects\\\\muse-ng\\\\td-ms\\r\\n[ERROR] BootClassPathSupported : false\\r\\n[ERROR]\\r\\n[ERROR]\\r\\n[ERROR] Please copy and paste the information and the complete stacktrace below when reporting an issue\\r\\n[ERROR] VM : OpenJDK 64-Bit Server VM\\r\\n[ERROR] Vendor : Azul Systems, Inc.\\r\\n[ERROR] Version : 11.0.12+7-LTS\\r\\n[ERROR] Uptime : 19080\\r\\n[ERROR] Input ->\\r\\n[ERROR]  1 : -Dclassworlds.conf=C:\\\\Tools\\\\apache-maven-3.8.3\\\\bin\\\\m2.conf\\r\\n[ERROR]  2 : -Dmaven.home=C:\\\\Tools\\\\apache-maven-3.8.3\\r\\n[ERROR]  3 : -Dlibrary.jansi.path=C:\\\\Tools\\\\apache-maven-3.8.3\\\\lib\\\\jansi-native\\r\\n[ERROR]  4 : -Dmaven.multiModuleProjectDirectory=C:\\\\repositories\\\\IdeaProjects\\r\\n\\\\muse-ng\\\\td-ms\\r\\n[ERROR] BootClassPathSupported : false\\r\\n```\\r\\n\\r\\nMy PIT configuration is \\r\\n```\\r\\n  <groupId>org.pitest</groupId>\\r\\n  <artifactId>pitest-maven</artifactId>\\r\\n    <version>1.10.4</version>\\r\\n    <dependencies>\\r\\n        <dependency>\\r\\n            <groupId>org.pitest</groupId>\\r\\n            <artifactId>pitest-junit5-plugin</artifactId>\\r\\n            <version>1.1.2</version>\\r\\n        </dependency>\\r\\n    </dependencies>\\r\\n```\\r\\nand I use junit 5.9.2\\r\\n\\r\\nPitest is configured in a library on which I have no problem. But this library is the base of all my micro services and the problem occurs on all of them.\\r\\nI've used PITest on versions 1.8.x without problem. This error appears when I try to upgrade the tool to version 1.9.x or 1.10.x (this trace is from version 1.10.4)\\r\\n\",\r\n            \"state\": \"open\",\r\n            \"created_at\": \"2023-01-19T14:31:45Z\",\r\n            \"updated_at\": \"2023-01-19T14:31:45Z\",\r\n            \"closed_at\": null,\r\n            \"labels\": [],\r\n            \"author\": {\r\n                \"id\": \"120655075\",\r\n                \"username\": \"GerardSimon77\",\r\n                \"name\": null,\r\n                \"avatar_url\": \"https://avatars.githubusercontent.com/u/120655075?v=4\",\r\n                \"web_url\": \"https://api.github.com/users/GerardSimon77\"\r\n            },\r\n            \"assignee\": null,\r\n            \"votes\": 0,\r\n            \"comments\": []\r\n        },\r\n        {\r\n            \"id\": \"1538006305\",\r\n            \"title\": \"Testorder\",\r\n            \"description\": null,\r\n            \"state\": \"closed\",\r\n            \"created_at\": \"2023-01-18T13:28:38Z\",\r\n            \"updated_at\": \"2023-01-18T13:28:49Z\",\r\n            \"closed_at\": \"2023-01-18T13:28:49Z\",\r\n            \"labels\": [],\r\n            \"author\": {\r\n                \"id\": \"24887294\",\r\n                \"username\": \"pzzpl\",\r\n                \"name\": \"cnlzp\",\r\n                \"avatar_url\": \"https://avatars.githubusercontent.com/u/24887294?v=4\",\r\n                \"web_url\": \"https://api.github.com/users/pzzpl\"\r\n            },\r\n            \"assignee\": null,\r\n            \"votes\": 0,\r\n            \"comments\": []\r\n        },\r\n        {\r\n            \"id\": \"1537933904\",\r\n            \"title\": \"Fix spelling error in ComputClassWriter\",\r\n            \"description\": null,\r\n            \"state\": \"closed\",\r\n            \"created_at\": \"2023-01-18T12:39:44Z\",\r\n            \"updated_at\": \"2023-01-20T18:17:13Z\",\r\n            \"closed_at\": \"2023-01-20T18:17:09Z\",\r\n            \"labels\": [],\r\n            \"author\": {\r\n                \"id\": \"1671931\",\r\n                \"username\": \"davidburstrom\",\r\n                \"name\": null,\r\n                \"avatar_url\": \"https://avatars.githubusercontent.com/u/1671931?v=4\",\r\n                \"web_url\": \"https://api.github.com/users/davidburstrom\"\r\n            },\r\n            \"assignee\": null,\r\n            \"votes\": 0,\r\n            \"comments\": [\r\n                {\r\n                    \"id\": \"1398766669\",\r\n                    \"body\": \"Thanks!\",\r\n                    \"author\": {\r\n                        \"id\": \"1891135\",\r\n                        \"username\": \"hcoles\",\r\n                        \"name\": \"Henry Coles\",\r\n                        \"avatar_url\": \"https://avatars.githubusercontent.com/u/1891135?v=4\",\r\n                        \"web_url\": \"https://api.github.com/users/hcoles\"\r\n                    },\r\n                    \"created_at\": \"2023-01-20T18:17:13Z\",\r\n                    \"updated_at\": \"2023-01-20T18:17:13Z\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"1532442155\",\r\n            \"title\": \"false positive on orElseThrow() method.\",\r\n            \"description\": \"I'm facing a positive false when I use the methode `orElseThrow()` from `java.util.Optional `object.\\r\\n\\r\\nPitest replaces the returned value with a null but the `orElseThrow()` method can't return a null value.\\r\\n\\r\\n![image](https://user-images.githubusercontent.com/120655075/212349586-97f175f3-a4ee-4588-a5dc-1dca42867ec4.png)\\r\\n\\r\\nI'm currently using version 1.8.1 of Pitest\",\r\n            \"state\": \"closed\",\r\n            \"created_at\": \"2023-01-13T15:05:03Z\",\r\n            \"updated_at\": \"2023-01-19T13:42:48Z\",\r\n            \"closed_at\": \"2023-01-19T13:42:48Z\",\r\n            \"labels\": [],\r\n            \"author\": {\r\n                \"id\": \"120655075\",\r\n                \"username\": \"GerardSimon77\",\r\n                \"name\": null,\r\n                \"avatar_url\": \"https://avatars.githubusercontent.com/u/120655075?v=4\",\r\n                \"web_url\": \"https://api.github.com/users/GerardSimon77\"\r\n            },\r\n            \"assignee\": null,\r\n            \"votes\": 0,\r\n            \"comments\": [\r\n                {\r\n                    \"id\": \"1382028186\",\r\n                    \"body\": \"Pitest has replaced the return value of the lambda defined on line 26 with null. The equivalent code would be\\r\\n\\r\\n```java\\r\\nopt.orElseThrow(() -> null);\\r\\n```\\r\\n\\r\\nWhile this is not the most useful mutation, it is valid. To detect it you would need to include a test case where `findByHumanResource` returned an empty Optional.\\r\\n\\r\\nYou might be interested in the [arcmutate base plugin](https://www.arcmutate.com/) which improves the descriptions of mutations to lambdas so they are easier to understand.\\r\\n\",\r\n                    \"author\": {\r\n                        \"id\": \"1891135\",\r\n                        \"username\": \"hcoles\",\r\n                        \"name\": \"Henry Coles\",\r\n                        \"avatar_url\": \"https://avatars.githubusercontent.com/u/1891135?v=4\",\r\n                        \"web_url\": \"https://api.github.com/users/hcoles\"\r\n                    },\r\n                    \"created_at\": \"2023-01-13T15:37:05Z\",\r\n                    \"updated_at\": \"2023-01-13T15:37:18Z\"\r\n                },\r\n                {\r\n                    \"id\": \"1382170324\",\r\n                    \"body\": \"Thanks you for your quik reply, but I have another question.\\r\\n\\r\\nIn the following example I don't inderstand why Pitest doesn't try some mutation on line 34. For example why it doesn't try to remove this call like it is done for lines 32 and 33 ?\\r\\n\\r\\n![image](https://user-images.githubusercontent.com/120655075/212380616-c4ab3ea7-763e-4a3b-b868-d8238adf2bf2.png)\\r\\n\",\r\n                    \"author\": {\r\n                        \"id\": \"120655075\",\r\n                        \"username\": \"GerardSimon77\",\r\n                        \"name\": null,\r\n                        \"avatar_url\": \"https://avatars.githubusercontent.com/u/120655075?v=4\",\r\n                        \"web_url\": \"https://api.github.com/users/GerardSimon77\"\r\n                    },\r\n                    \"created_at\": \"2023-01-13T17:30:25Z\",\r\n                    \"updated_at\": \"2023-01-13T17:30:25Z\"\r\n                },\r\n                {\r\n                    \"id\": \"1382216587\",\r\n                    \"body\": \"Assuming you are using the default operators, the [VOID_METHOD_CALLS](https://pitest.org/quickstart/mutators/#VOID_METHOD_CALLS) mutator will be active, but the [NON_VOID_METHOD_CALLS](https://pitest.org/quickstart/mutators/#NON_VOID_METHOD_CALLS) mutator will not be activated. The call to the save method is therefore not mutated as it returns a value.\\r\\n\\r\\nYou can activate the NON_VOID_METHOD_CALLS mutator, but be aware there is a trade off to be made here. It will generate a relatively large number of mutants and they will often not add much value as they are less stable than the non void ones.\",\r\n                    \"author\": {\r\n                        \"id\": \"1891135\",\r\n                        \"username\": \"hcoles\",\r\n                        \"name\": \"Henry Coles\",\r\n                        \"avatar_url\": \"https://avatars.githubusercontent.com/u/1891135?v=4\",\r\n                        \"web_url\": \"https://api.github.com/users/hcoles\"\r\n                    },\r\n                    \"created_at\": \"2023-01-13T18:15:51Z\",\r\n                    \"updated_at\": \"2023-01-13T18:15:51Z\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/gitminer/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches project name\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"name\\\":\\\"pitest\\\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/projects/15717393",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"projects",
+								"15717393"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all commits",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches commit ID\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"id\\\":\\\"cef73029ab02ee4486a340b21877e4ec4e545c18\\\"\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/commits",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"commits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get commit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches commit ID\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"id\\\":\\\"ee6e291274fcca03801261f1fd0684aa32c6d140\\\"\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/commits/ee6e291274fcca03801261f1fd0684aa32c6d140",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"commits",
+								"ee6e291274fcca03801261f1fd0684aa32c6d140"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all issues",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches title\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"title\\\":\\\"New extension points\\\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/issues?issuePageSize=3000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"issues"
+							],
+							"query": [
+								{
+									"key": "issuePageSize",
+									"value": "3000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get issue by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches title\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"title\\\":\\\"New extension points\\\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/issues/1556497126",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"issues",
+								"1556497126"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get issue's comments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches comment body content\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"body\\\":\\\"Thanks a lot for the quick reply\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/issues/1554713335/comments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"issues",
+								"1554713335",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get issues by author ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches username\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"username\\\":\\\"pastoref\\\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/issues?authorId=5122337",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"issues"
+							],
+							"query": [
+								{
+									"key": "authorId",
+									"value": "5122337"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get issues by state",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches issue state\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"state\\\":\\\"open\\\"\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/issues?state=open",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"issues"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "open"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all comments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches comment body content\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"body\\\":\\\"Thanks a lot for the quick reply\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/comments?commentPageSize=3000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "commentPageSize",
+									"value": "3000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get comments by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body matches comment ID\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"\\\"id\\\":\\\"1398766669\\\"\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/gitminer/comments/1398766669",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"gitminer",
+								"comments",
+								"1398766669"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Addtional Tests",
+			"item": [
+				{
+					"name": "GitHubMiner",
+					"item": [
+						{
+							"name": "ValidParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(200);\r",
+											"utils.validateProject()"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceCommits=20&sinceIssues=20&maxPages=5",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "20"
+										},
+										{
+											"key": "sinceIssues",
+											"value": "20"
+										},
+										{
+											"key": "maxPages",
+											"value": "5"
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DefaultParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(200);\r",
+											"utils.validateProject()"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "20",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "20",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "5",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ValidParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(201);\r",
+											"utils.validateProject();"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceCommits=2&sinceIssues=2&maxPages=2",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2"
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2"
+										},
+										{
+											"key": "maxPages",
+											"value": "2"
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DefaultParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(201);\r",
+											"utils.validateProjectSchema();"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `maxPages value cannot be negative: ${pm.request.url.query.get(\"maxPages\")}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?maxPages=-2",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "-2"
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `maxPages value cannot be negative: ${pm.request.url.query.get(\"maxPages\")}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?maxPages=-2",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "-2"
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeSinceCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `sinceCommits value cannot be negative: ${pm.request.url.query.get(\"sinceCommits\")}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceCommits=-2",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "-2"
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankOwner",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: \"Owner is empty\"\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/ /:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										" ",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankRepo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: \"Repository is empty\"\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/ ",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										" "
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankRepo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: \"Repository is empty\"\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/ ",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										" "
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankOwner",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: \"Owner is empty\"\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/ /:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										" ",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeSinceCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `sinceCommits value cannot be negative: ${pm.request.url.query.get(\"sinceCommits\")}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceCommits=-2",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "-2"
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeSinceIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `sinceIssues value cannot be negative: ${pm.request.url.query.get(\"sinceIssues\")}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceIssues=-2",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "-2"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeSinceIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `sinceIssues value cannot be negative: ${pm.request.url.query.get(\"sinceIssues\")}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceIssues=-2",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "-2"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springBadRequestError();"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?maxPages=xsdcfvgbh",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "xsdcfvgbh"
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springBadRequestError();"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?maxPages=xsdcfvgbh",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "xsdcfvgbh"
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidSinceIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springBadRequestError();\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceIssues=rdcfvtgbh",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "rdcfvtgbh"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidSinceIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springBadRequestError();\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceIssues=rdcfvtgbh",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "rdcfvtgbh"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidSinceCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springBadRequestError();\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceCommits=rdctfvygbhujrfjnrf",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "rdctfvygbhujrfjnrf"
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidSinceCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springBadRequestError();\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/:repo?sinceCommits=rdctfvygbhujrfjnrf",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "rdctfvygbhujrfjnrf"
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										},
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyOwner",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springNotFoundError();"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										"",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyOwner",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springNotFoundError();"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										"",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyRepo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springNotFoundError()"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										""
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyRepo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.springNotFoundError()"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										""
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidOwner",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(404);\r",
+											"\r",
+											"//GraphQL version has a diferent error schema to include also the GraphQL error description in the error message.\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `Project not found: ${pm.request.url.path[1]}/${pm.request.url.path[2]}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/tfvgybvtfgybtfvghby/:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										"tfvgybvtfgybtfvghby",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidOwner",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(404);\r",
+											"/*\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tminLength: 1\r",
+											"\t\t},\r",
+											"\t\tparams: {\r",
+											"\t\t\ttype: \"object\",\r",
+											"\t\t\tproperties: {\r",
+											"\t\t\t\towner: {\r",
+											"\t\t\t\t\ttype: \"string\",\r",
+											"\t\t\t\t\tminLength: 1\r",
+											"\t\t\t\t},\r",
+											"\t\t\t\trepo: {\r",
+											"\t\t\t\t\ttype: \"string\",\r",
+											"\t\t\t\t\tminLength: 1\r",
+											"\t\t\t\t},\r",
+											"\t\t\t\tmaxPages: {\r",
+											"\t\t\t\t\ttype: \"integer\",\r",
+											"\t\t\t\t\tminimum: 0\r",
+											"\t\t\t\t},\r",
+											"\t\t\t\tsinceCommits: {\r",
+											"\t\t\t\t\ttype: \"integer\",\r",
+											"\t\t\t\t\tminimum: 0\r",
+											"\t\t\t\t},\r",
+											"\t\t\t\tsinceIssues: {\r",
+											"\t\t\t\t\ttype: \"integer\",\r",
+											"\t\t\t\t\tminimum: 0\r",
+											"\t\t\t\t},\r",
+											"\t\t\t\tissueNumber: {\r",
+											"\t\t\t\t\ttype: \"integer\",\r",
+											"\t\t\t\t\tminimum: 0\r",
+											"\t\t\t\t},\r",
+											"\t\t\t\tpage: {\r",
+											"\t\t\t\t\ttype: \"integer\",\r",
+											"\t\t\t\t\tminimum: 0\r",
+											"\t\t\t\t}\r",
+											"\t\t\t},\r",
+											"\t\t\trequired: [\"owner\", \"repo\", \"maxPages\", \"page\"],\r",
+											"\t\t\tadditionalProperties: false\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"*/\r",
+											"\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `Project not found: ${pm.request.url.path[1]}/${pm.request.url.path[2]}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/tfvgybvtfgybtfvghby/:repo",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										"tfvgybvtfgybtfvghby",
+										":repo"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repo",
+											"value": "spring-framework"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidRepo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(404);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `Project not found: ${pm.request.url.path[1]}/${pm.request.url.path[2]}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/tfrcvgybvfybtvfgyb",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										"tfrcvgybvfybtvfgyb"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidRepo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(404);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"\ttype: \"object\",\r",
+											"\tproperties: {\r",
+											"\t\terror: {\r",
+											"\t\t\ttype: \"string\",\r",
+											"\t\t\tconst: `Project not found: ${pm.request.url.path[1]}/${pm.request.url.path[2]}`\r",
+											"\t\t}\r",
+											"\t},\r",
+											"\trequired: [\"error\"],\r",
+											"\tadditionalProperties: false\r",
+											"};\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{GITHUBMINER_API_URL}}/:owner/tfrcvgybvfybtvfgyb",
+									"host": [
+										"{{GITHUBMINER_API_URL}}"
+									],
+									"path": [
+										":owner",
+										"tfrcvgybvfybtvfgyb"
+									],
+									"query": [
+										{
+											"key": "sinceCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "sinceIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "owner",
+											"value": "spring-projects"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									"const oldValidateCommits = utils.validateCommits;\r",
+									"const oldValidateIssues = utils.validateIssues;\r",
+									"utils.validateCommits = function (commits) {\r",
+									"\tconst maxItems = utils.getPm().collectionVariables.get(\"GITHUB_PAGE_SIZE\") * this.getQueryParam(\"maxPages\");\r",
+									"\toldValidateCommits(commits);\r",
+									"\tutils.getPm().test(`Comment list size should not exceed maxPages * ${utils.getPm().collectionVariables.get(\"GITHUB_PAGE_SIZE\")} (default page size)`, () => utils.getPm().expect(commits.length).to.be.lessThanOrEqual(maxItems));\r",
+									"};\r",
+									"\r",
+									"utils.validateIssues = function(issues) {\r",
+									"\tconst maxItems = utils.getPm().collectionVariables.get(\"GITHUB_PAGE_SIZE\") * this.getQueryParam(\"maxPages\");\r",
+									"\toldValidateIssues(issues);\r",
+									"\tutils.getPm().test(`Issue list size should not exceed maxPages * ${utils.getPm().collectionVariables.get(\"GITHUB_PAGE_SIZE\")} (default page size)`, () => utils.getPm().expect(issues.length).to.be.lessThanOrEqual(maxItems));\r",
+									"\r",
+									"\tutils.getPm().test(`Comment list size should not maxPages * ${utils.getPm().collectionVariables.get(\"GITHUB_PAGE_SIZE\")} (default page size)`, () => {\r",
+									"\t\tissues.forEach(issue => {\r",
+									"\t\t\tutils.getPm().expect(issue.comments.length, `Issue: ${issue.id}, contains more comments than it should`).to.be.lessThanOrEqual(maxItems);\r",
+									"\t\t});\r",
+									"\t});\r",
+									"};"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "BitbucketMiner",
+					"item": [
+						{
+							"name": "DefaultParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(200);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ValidParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(200); // Fixing the expected status code to 500\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nCommits=5&nIssues=5&maxPages=2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "5"
+										},
+										{
+											"key": "nIssues",
+											"value": "5"
+										},
+										{
+											"key": "maxPages",
+											"value": "2"
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ValidParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(200);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nCommits=5&nIssues=5&maxPages=2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "5"
+										},
+										{
+											"key": "nIssues",
+											"value": "5"
+										},
+										{
+											"key": "maxPages",
+											"value": "2"
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DefaultParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(200);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "5",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workplace/:repoSlug?maxPages=-2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workplace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "-2"
+										}
+									],
+									"variable": [
+										{
+											"key": "workplace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?maxPages=-2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "-2"
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeNCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nCommits=-2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "-2"
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankWorkplace",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/ /:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										" ",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankRepoSlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/ ",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										" "
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankRepoSlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/ ",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										" "
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BlankWorkplace",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/ /:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										" ",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeNCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nCommits=-2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "-2"
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeNIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nIssues=-2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "-2"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NegativeNIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nIssues=-2",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "-2"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500)\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?maxPages=xsdcfvgbh",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "xsdcfvgbh"
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidMaxPages",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?maxPages=xsdcfvgbh",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "xsdcfvgbh"
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidNIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nIssues=rdcfvtgbh",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "rdcfvtgbh"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidNIssues",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nIssues=rdcfvtgbh",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "rdcfvtgbh"
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidNCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nCommits=rdctfvygbhujrfjnrf",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "rdctfvygbhujrfjnrf"
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidNCommits",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/:repoSlug?nCommits=rdctfvygbhujrfjnrf",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "rdctfvygbhujrfjnrf"
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										},
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyWorkplace",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										"",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyWorkplace",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										"",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyRepoSlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500)\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EmptyRepoSlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(500)\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										""
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidWorkplace",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/tfvgybvtfgybtfvghby/:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										"tfvgybvtfgybtfvghby",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidWorkplace",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/tfvgybvtfgybtfvghby/:repoSlug",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										"tfvgybvtfgybtfvghby",
+										":repoSlug"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "repoSlug",
+											"value": "bitbucket-api"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidRepoSlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workplace/tfrcvgybvfybtvfgyb",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workplace",
+										"tfrcvgybvfybtvfgyb"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workplace",
+											"value": "gentlero"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "InvalidRepoSlug",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(400);\r",
+											"\r",
+											"const errorSchema = {\r",
+											"  type: \"object\",\r",
+											"  properties: {\r",
+											"    error: {\r",
+											"      type: \"string\",\r",
+											"      pattern: \"^(Parámetro inválido:|Error accediendo a Bitbucket:|Error inesperado:|Error del cliente:|Error interno del servidor:|Not Found:).*\"\r",
+											"    }\r",
+											"  },\r",
+											"  required: [\"error\"],\r",
+											"  additionalProperties: false\r",
+											"};\r",
+											"\r",
+											"utils.checkError(errorSchema);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BITBUCKETMINER_API_URL}}/:workspace/tfrcvgybvfybtvfgyb",
+									"host": [
+										"{{BITBUCKETMINER_API_URL}}"
+									],
+									"path": [
+										":workspace",
+										"tfrcvgybvfybtvfgyb"
+									],
+									"query": [
+										{
+											"key": "nCommits",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "nIssues",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "maxPages",
+											"value": "2",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "workspace",
+											"value": "gentlero"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GitMiner",
+					"item": [
+						{
+							"name": "ValidParameters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"utils.setPm(pm);\r",
+											"utils.checkStatus(200);\r",
+											"utils.validateProjectsSchema();\r",
+											"if (pm.response.json().length > 0) {\r",
+											"\tconst project = pm.response.json()[0];\r",
+											"\tutils.validateIssues(project.issues);\r",
+											"\tutils.validateCommits(project.commits);\r",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{GITMINER_API_URL}}/projects?projectPage=0&projectPageSize=1&commitPage=0&commitPageSize=4&issuePage=0&issuePageSize=2&commentPage=0&commentPageSize=1&commentOrderBy=createdAt&issueOrderBy=-updatedAt&projectOrderBy=name&commitOrderBy=-title",
+									"host": [
+										"{{GITMINER_API_URL}}"
+									],
+									"path": [
+										"projects"
+									],
+									"query": [
+										{
+											"key": "projectPage",
+											"value": "0"
+										},
+										{
+											"key": "projectPageSize",
+											"value": "1"
+										},
+										{
+											"key": "commitPage",
+											"value": "0"
+										},
+										{
+											"key": "commitPageSize",
+											"value": "4"
+										},
+										{
+											"key": "issuePage",
+											"value": "0"
+										},
+										{
+											"key": "issuePageSize",
+											"value": "2"
+										},
+										{
+											"key": "commentPage",
+											"value": "0"
+										},
+										{
+											"key": "commentPageSize",
+											"value": "1"
+										},
+										{
+											"key": "commentOrderBy",
+											"value": "createdAt"
+										},
+										{
+											"key": "issueOrderBy",
+											"value": "-updatedAt"
+										},
+										{
+											"key": "projectOrderBy",
+											"value": "name"
+										},
+										{
+											"key": "commitOrderBy",
+											"value": "-title"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									"utils.validateProjectsSchema = function () {\r",
+									"\tconst schema = {\r",
+									"\t\t$defs: {\r",
+									"\t\t\tuser: {\r",
+									"\t\t\t\ttype: \"object\",\r",
+									"\t\t\t\tproperties: {\r",
+									"\t\t\t\t\tusername: {\r",
+									"\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t},\r",
+									"\t\t\t\t\tid: {\r",
+									"\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t},\r",
+									"\t\t\t\t\tavatar_url: {\r",
+									"\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\tformat: \"uri\"\r",
+									"\t\t\t\t\t},\r",
+									"\t\t\t\t\tweb_url: {\r",
+									"\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\tformat: \"uri\"\r",
+									"\t\t\t\t\t},\r",
+									"\t\t\t\t\tname: {\r",
+									"\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t}\r",
+									"\t\t\t\t},\r",
+									"\t\t\t\trequired: [\"username\", \"id\", \"avatar_url\", \"web_url\"],\r",
+									"\t\t\t\tadditionalProperties: false\r",
+									"\t\t\t},\r",
+									"\t\t\tdateTimeUTC: {\r",
+									"\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\tformat: \"date-time\",\r",
+									"\t\t\t\tminLength: 20,\r",
+									"\t\t\t\tmaxLength: 20,\r",
+									"\t\t\t\tpattern: \"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$\"\r",
+									"\t\t\t}\r",
+									"\t\t},\r",
+									"\t\ttype: \"array\",\r",
+									"\t\titems: {\r",
+									"\t\t\ttype: \"object\",\r",
+									"\t\t\tproperties: {\r",
+									"\t\t\t\tid: {\r",
+									"\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t},\r",
+									"\t\t\t\tname: {\r",
+									"\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t},\r",
+									"\t\t\t\tweb_url: {\r",
+									"\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\tformat: \"uri\"\r",
+									"\t\t\t\t},\r",
+									"\t\t\t\tcommits: {\r",
+									"\t\t\t\t\ttype: \"array\",\r",
+									"\t\t\t\t\titems: {\r",
+									"\t\t\t\t\t\ttype: \"object\",\r",
+									"\t\t\t\t\t\tproperties: {\r",
+									"\t\t\t\t\t\t\tid: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tminLength: 40,\r",
+									"\t\t\t\t\t\t\t\tmaxLength: 40\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tauthor_name: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tauthor_email: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tformat: \"email\"\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tauthored_date: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+									"\t\t\t\t\t\t\tmessage: { type: \"string\" },\r",
+									"\t\t\t\t\t\t\ttitle: { type: \"string\" },\r",
+									"\t\t\t\t\t\t\tweb_url: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tformat: \"uri\"\r",
+									"\t\t\t\t\t\t\t}\r",
+									"\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\trequired: [\"id\", \"title\", \"web_url\"],\r",
+									"\t\t\t\t\t\tadditionalProperties: false\r",
+									"\t\t\t\t\t},\r",
+									"\t\t\t\t\tuniqueItems: true\r",
+									"\t\t\t\t},\r",
+									"\t\t\t\tissues: {\r",
+									"\t\t\t\t\ttype: \"array\",\r",
+									"\t\t\t\t\titems: {\r",
+									"\t\t\t\t\t\ttype: \"object\",\r",
+									"\t\t\t\t\t\tproperties: {\r",
+									"\t\t\t\t\t\t\tid: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tvotes: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"integer\",\r",
+									"\t\t\t\t\t\t\t\tminimum: 0\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\ttitle: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tauthor: { $ref: \"#/$defs/user\" },\r",
+									"\t\t\t\t\t\t\tlabels: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"array\",\r",
+									"\t\t\t\t\t\t\t\titems: {\r",
+									"\t\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t\t}\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tstate: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tassignee: { $ref: \"#/$defs/user\" },\r",
+									"\t\t\t\t\t\t\tcreated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+									"\t\t\t\t\t\t\tupdated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+									"\t\t\t\t\t\t\tclosed_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+									"\t\t\t\t\t\t\tdescription: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\tcomments: {\r",
+									"\t\t\t\t\t\t\t\ttype: \"array\",\r",
+									"\t\t\t\t\t\t\t\titems: {\r",
+									"\t\t\t\t\t\t\t\t\ttype: \"object\",\r",
+									"\t\t\t\t\t\t\t\t\tproperties: {\r",
+									"\t\t\t\t\t\t\t\t\t\tid: {\r",
+									"\t\t\t\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\t\t\t\tbody: {\r",
+									"\t\t\t\t\t\t\t\t\t\t\ttype: \"string\",\r",
+									"\t\t\t\t\t\t\t\t\t\t\tminLength: 1\r",
+									"\t\t\t\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\t\t\t\tcreated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+									"\t\t\t\t\t\t\t\t\t\tupdated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+									"\t\t\t\t\t\t\t\t\t\tauthor: { $ref: \"#/$defs/user\" }\r",
+									"\t\t\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\t\t\trequired: [\"id\", \"body\", \"created_at\", \"updated_at\"],\r",
+									"\t\t\t\t\t\t\t\t\tadditionalProperties: false\r",
+									"\t\t\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\t\t\tuniqueItems: true\r",
+									"\t\t\t\t\t\t\t}\r",
+									"\t\t\t\t\t\t},\r",
+									"\t\t\t\t\t\trequired: [\"id\", \"votes\", \"labels\", \"title\", \"state\", \"created_at\", \"updated_at\"],\r",
+									"\t\t\t\t\t\tadditionalProperties: false\r",
+									"\t\t\t\t\t},\r",
+									"\t\t\t\t\tuniqueItems: true\r",
+									"\t\t\t\t}\r",
+									"\t\t\t},\r",
+									"\t\t\trequired: [\"id\", \"name\", \"web_url\", \"commits\", \"issues\"],\r",
+									"\t\t\tadditionalProperties: false\r",
+									"\t\t},\r",
+									"\t\tuniqueItems: true\r",
+									"\t};\r",
+									"\tutils.getPm().test(\"Project array schema is valid\", () => {\r",
+									"\t\tutils.getPm().response.to.have.jsonSchema(schema);\r",
+									"\t});\r",
+									"}"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"let _pm;\r",
+							"\r",
+							"const checkComments = function (comments) {\r",
+							"\r",
+							"\tconst uniqueIds = new Set();\r",
+							"\tlet validCreatedDates = true;\r",
+							"\tlet validUpdatedDates = true\r",
+							"\tlet createdAfterUpdated = false;\r",
+							"\tlet createdIsPast = true;\r",
+							"\tlet updatedIsPast = true;\r",
+							"\tconst now = new Date();\r",
+							"\r",
+							"\tcomments.forEach(comment => {\r",
+							"\t\tuniqueIds.add(comment.id);\r",
+							"\t\tconst created_at = new Date(comment.created_at);\r",
+							"\t\tconst updated_at = new Date(comment.updated_at);\r",
+							"\t\tvalidCreatedDates = validCreatedDates && !isNaN(created_at.getTime());\r",
+							"\t\tvalidUpdatedDates = validUpdatedDates && !isNaN(updated_at.getTime());\r",
+							"\t\tcreatedAfterUpdated = createdAfterUpdated || created_at > updated_at;\r",
+							"\t\tcreatedIsPast = createdIsPast && created_at < now;\r",
+							"\t\tupdatedIsPast = updatedIsPast && updated_at < now;\r",
+							"\t});\r",
+							"\r",
+							"\treturn {\r",
+							"\t\tvalidCreatedDates: validCreatedDates,\r",
+							"\t\tvalidUpdatedDates: validUpdatedDates,\r",
+							"\t\tcreatedAfterUpdated: createdAfterUpdated,\r",
+							"\t\tcreatedIsPast: createdIsPast,\r",
+							"\t\tupdatedIsPast: updatedIsPast,\r",
+							"\t\tuniqueIdsRes: comments.length === uniqueIds.size\r",
+							"\t}\r",
+							"};\r",
+							"\r",
+							"\r",
+							"const now = new Date();\r",
+							"\r",
+							"\r",
+							"utils = {\r",
+							"\tsetPm: function (myPm) {\r",
+							"\t\t_pm = myPm;\r",
+							"\t},\r",
+							"\tgetQueryParam: function (name) {\r",
+							"\t\tlet param = _pm.request.url.query.toObject()[name];\r",
+							"\t\treturn param || _pm.collectionVariables.get(\"GITHUBMINER_DEFAULT_\" + name);\r",
+							"\t},\r",
+							"\tgetPm: function() {\r",
+							"\t\treturn _pm;\r",
+							"\t},\r",
+							"\tvalidateProjectSchema: function () {\r",
+							"\t\tconst schema = {\r",
+							"\t\t\t$defs: {\r",
+							"\t\t\t\tuser: {\r",
+							"\t\t\t\t\ttype: \"object\",\r",
+							"\t\t\t\t\tproperties: {\r",
+							"\t\t\t\t\t\tusername: {\r",
+							"\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\tid: {\r",
+							"\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\tavatar_url: {\r",
+							"\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\tformat: \"uri\"\r",
+							"\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\tweb_url: {\r",
+							"\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\tformat: \"uri\"\r",
+							"\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\tname: {\r",
+							"\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t}\r",
+							"\t\t\t\t\t},\r",
+							"\t\t\t\t\trequired: [\"username\", \"id\", \"avatar_url\", \"web_url\"],\r",
+							"\t\t\t\t\tadditionalProperties: false\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tdateTimeUTC: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tformat: \"date-time\",\r",
+							"\t\t\t\t\tminLength: 20,\r",
+							"\t\t\t\t\tmaxLength: 20,\r",
+							"\t\t\t\t\tpattern: \"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$\"\r",
+							"\t\t\t\t}\r",
+							"\t\t\t},\r",
+							"\t\t\ttype: \"object\",\r",
+							"\t\t\tproperties: {\r",
+							"\t\t\t\tid: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tname: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tweb_url: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tformat: \"uri\"\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tcommits: {\r",
+							"\t\t\t\t\ttype: \"array\",\r",
+							"\t\t\t\t\titems: {\r",
+							"\t\t\t\t\t\ttype: \"object\",\r",
+							"\t\t\t\t\t\tproperties: {\r",
+							"\t\t\t\t\t\t\tid: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tminLength: 40,\r",
+							"\t\t\t\t\t\t\t\tmaxLength: 40\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tauthor_name: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tauthor_email: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tformat: \"email\"\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tauthored_date: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+							"\t\t\t\t\t\t\tmessage: { type: \"string\" },\r",
+							"\t\t\t\t\t\t\ttitle: { type: \"string\" },\r",
+							"\t\t\t\t\t\t\tweb_url: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tformat: \"uri\"\r",
+							"\t\t\t\t\t\t\t}\r",
+							"\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\trequired: [\"id\", \"title\", \"web_url\"],\r",
+							"\t\t\t\t\t\tadditionalProperties: false\r",
+							"\t\t\t\t\t},\r",
+							"\t\t\t\t\tuniqueItems: true\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tissues: {\r",
+							"\t\t\t\t\ttype: \"array\",\r",
+							"\t\t\t\t\titems: {\r",
+							"\t\t\t\t\t\ttype: \"object\",\r",
+							"\t\t\t\t\t\tproperties: {\r",
+							"\t\t\t\t\t\t\tid: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tvotes: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"integer\",\r",
+							"\t\t\t\t\t\t\t\tminimum: 0\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\ttitle: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tauthor: { $ref: \"#/$defs/user\" },\r",
+							"\t\t\t\t\t\t\tlabels: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"array\",\r",
+							"\t\t\t\t\t\t\t\titems: {\r",
+							"\t\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t\t}\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tstate: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tassignee: { $ref: \"#/$defs/user\" },\r",
+							"\t\t\t\t\t\t\tcreated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+							"\t\t\t\t\t\t\tupdated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+							"\t\t\t\t\t\t\tclosed_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+							"\t\t\t\t\t\t\tdescription: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\tcomments: {\r",
+							"\t\t\t\t\t\t\t\ttype: \"array\",\r",
+							"\t\t\t\t\t\t\t\titems: {\r",
+							"\t\t\t\t\t\t\t\t\ttype: \"object\",\r",
+							"\t\t\t\t\t\t\t\t\tproperties: {\r",
+							"\t\t\t\t\t\t\t\t\t\tid: {\r",
+							"\t\t\t\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\t\t\t\tbody: {\r",
+							"\t\t\t\t\t\t\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\t\t\t\t\t\t\tminLength: 1\r",
+							"\t\t\t\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\t\t\t\tcreated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+							"\t\t\t\t\t\t\t\t\t\tupdated_at: { $ref: \"#/$defs/dateTimeUTC\" },\r",
+							"\t\t\t\t\t\t\t\t\t\tauthor: { $ref: \"#/$defs/user\" }\r",
+							"\t\t\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\t\t\trequired: [\"id\", \"body\", \"created_at\", \"updated_at\"],\r",
+							"\t\t\t\t\t\t\t\t\tadditionalProperties: false\r",
+							"\t\t\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\t\tuniqueItems: true\r",
+							"\t\t\t\t\t\t\t}\r",
+							"\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\trequired: [\"id\", \"votes\", \"labels\", \"title\", \"state\", \"created_at\", \"updated_at\"],\r",
+							"\t\t\t\t\t\tadditionalProperties: false\r",
+							"\t\t\t\t\t},\r",
+							"\t\t\t\t\tuniqueItems: true\r",
+							"\t\t\t\t}\r",
+							"\t\t\t},\r",
+							"\t\t\trequired: [\"id\", \"name\", \"web_url\", \"commits\", \"issues\"],\r",
+							"\t\t\tadditionalProperties: false\r",
+							"\t\t};\r",
+							"\t\t_pm.test(\"Project schema is valid\", () => {\r",
+							"\t\t\t_pm.response.to.have.jsonSchema(schema);\r",
+							"\t\t});\r",
+							"\t},\r",
+							"\tcheckStatus: function (expectedStatus) {\r",
+							"\t\t_pm.test(`Response status is ${expectedStatus}`, function () {\r",
+							"\t\t\t_pm.response.to.have.status(expectedStatus);\r",
+							"\t\t});\r",
+							"\t},\r",
+							"\tvalidateCommits: function (commits) {\r",
+							"\t\tconst uniqueIds = new Set();\r",
+							"\t\tlet validAuthoredDates = true;\r",
+							"\t\tlet validAuthorParams = true;\r",
+							"\t\tlet authoredDateIsPast = true;\r",
+							"\r",
+							"\t\tcommits.forEach(commit => {\r",
+							"\t\t\tuniqueIds.add(commit.id);\r",
+							"\t\t\tconst authored_date = new Date(commit.authored_date);\r",
+							"\t\t\tvalidAuthoredDates = validAuthoredDates && !isNaN(authored_date.getTime());\r",
+							"\t\t\tconst { author_name, author_email } = commit;\r",
+							"\t\t\tconst allNull = !author_name && !author_email && !authored_date;\r",
+							"\t\t\tconst allNonNull = author_name && author_email && authored_date;\r",
+							"\t\t\tvalidAuthorParams = validAuthorParams && (allNull || !!allNonNull);\r",
+							"\t\t\tauthoredDateIsPast = authoredDateIsPast && authored_date < now;\r",
+							"\t\t});\r",
+							"\r",
+							"\t\t_pm.test(\"Commit ids should be unique\", () => _pm.expect(uniqueIds.size).to.eql(commits.length));\r",
+							"\t\t_pm.test(\"Commit author fields should be all null or all non-null\", () => _pm.expect(validAuthorParams).to.be.true);\r",
+							"\t\t_pm.test(\"Commit authored date sould be a valid date\", () => _pm.expect(validAuthoredDates).to.be.true)\r",
+							"\t\t_pm.test(\"Commit authored date should be in the past\", () => _pm.expect(authoredDateIsPast).to.be.true);\r",
+							"\t},\r",
+							"\tvalidateIssues: function (issues) {\r",
+							"\r",
+							"\t\tconst combineCommentsResults = function (\r",
+							"\t\t\t{\r",
+							"\t\t\t\tvalidCreatedDates,\r",
+							"\t\t\t\tvalidUpdatedDates,\r",
+							"\t\t\t\tcreatedAfterUpdated,\r",
+							"\t\t\t\tcreatedIsPast,\r",
+							"\t\t\t\tupdatedIsPast,\r",
+							"\t\t\t\tuniqueIdsRes\r",
+							"\t\t\t}, {\r",
+							"\t\t\t\tvalidCreatedDates: validCreatedDates2,\r",
+							"\t\t\t\tvalidUpdatedDates: validUpdatedDates2,\r",
+							"\t\t\t\tcreatedAfterUpdated: createdAfterUpdated2,\r",
+							"\t\t\t\tcreatedIsPast: createdIsPast2,\r",
+							"\t\t\t\tupdatedIsPast: updatedIsPast2,\r",
+							"\t\t\t\tuniqueIdsRes: uniqueIdsRes2\r",
+							"\t\t\t}) {\r",
+							"\t\t\treturn {\r",
+							"\t\t\t\tvalidCreatedDates: validCreatedDates && validCreatedDates2,\r",
+							"\t\t\t\tvalidUpdatedDates: validUpdatedDates && validUpdatedDates2,\r",
+							"\t\t\t\tcreatedAfterUpdated: createdAfterUpdated || createdAfterUpdated2,\r",
+							"\t\t\t\tcreatedIsPast: createdIsPast && createdIsPast2,\r",
+							"\t\t\t\tupdatedIsPast: updatedIsPast && updatedIsPast2,\r",
+							"\t\t\t\tuniqueIdsRes: uniqueIdsRes && uniqueIdsRes2\r",
+							"\r",
+							"\t\t\t}\r",
+							"\t\t}\r",
+							"\r",
+							"\t\tconst uniqueIds = new Set();\r",
+							"\t\tlet validCreatedDate = true;\r",
+							"\t\tlet validUpdatedDate = true;\r",
+							"\t\tlet validClosedDate = true;\r",
+							"\t\tlet createdDateIsPast = true;\r",
+							"\t\tlet updatedDateIsPast = true;\r",
+							"\t\tlet closedDateIsPast = true;\r",
+							"\t\tlet updatedBeforeCreated = false;\r",
+							"\t\tlet closedAfterCreated = true;\r",
+							"\r",
+							"\t\tconst commentsResult = issues.map(issue => {\r",
+							"\t\t\tuniqueIds.add(issue.id);\r",
+							"\t\t\tconst created_at = new Date(issue.created_at);\r",
+							"\t\t\tconst updated_at = new Date(issue.updated_at);\r",
+							"\t\t\tvalidCreatedDate = validCreatedDate && !isNaN(created_at.getTime());\r",
+							"\t\t\tvalidUpdatedDate = validUpdatedDate && !isNaN(updated_at.getTime());\r",
+							"\t\t\tcreatedDateIsPast = createdDateIsPast && created_at < now;\r",
+							"\t\t\tupdatedDateIsPast = updatedDateIsPast && updated_at < now;\r",
+							"\t\t\tupdatedBeforeCreated = updatedBeforeCreated || updated_at < created_at;\r",
+							"\t\t\tif (issue.closed_at !== undefined) {\r",
+							"\t\t\t\tconst closed_at = new Date(issue.closed_at);\r",
+							"\t\t\t\tvalidClosedDate = validClosedDate && !isNaN(closed_at.getTime());\r",
+							"\t\t\t\tclosedDateIsPast = closedDateIsPast && closed_at < now;\r",
+							"\t\t\t\tclosedAfterCreated = closedAfterCreated && closed_at > created_at;\r",
+							"\r",
+							"\t\t\t}\r",
+							"\t\t\treturn checkComments(issue.comments);\r",
+							"\t\t}).reduce(combineCommentsResults);\r",
+							"\r",
+							"\t\t_pm.test(\"Issue created date should be a valid date\", () => _pm.expect(validCreatedDate).to.be.true);\r",
+							"\t\t_pm.test(\"Issue updated date should be a valid date\", () => _pm.expect(validUpdatedDate).to.be.true);\r",
+							"\t\t_pm.test(\"Issue closed date should be a valid date\", () => _pm.expect(validClosedDate).to.be.true);\r",
+							"\t\t_pm.test(\"Issue created date should be in the past\", () => _pm.expect(createdDateIsPast).to.be.true);\r",
+							"\t\t_pm.test(\"Issue updated date should be in the past\", () => _pm.expect(updatedDateIsPast).to.be.true);\r",
+							"\t\t_pm.test(\"Issue closed date should be in the past\", () => _pm.expect(closedDateIsPast).to.be.true);\r",
+							"\t\t_pm.test(\"Issue updated date should not be before created date\", () => _pm.expect(updatedBeforeCreated).to.be.false);\r",
+							"\t\t_pm.test(\"Issue closed date should be after created date\", () => _pm.expect(closedAfterCreated).to.be.true);\r",
+							"\t\t_pm.test(\"Comment IDs should be unique\", () => _pm.expect(commentsResult.uniqueIdsRes).to.be.true);\r",
+							"\t\t_pm.test(\"Comment creation date should be a valid date\", () => _pm.expect(commentsResult.validCreatedDates).to.be.true);\r",
+							"\t\t_pm.test(\"Comment update date should be a valid date\", () => _pm.expect(commentsResult.validUpdatedDates).to.be.true);\r",
+							"\t\t_pm.test(\"Comment creation date should not be after update date\", () => _pm.expect(commentsResult.createdAfterUpdated).to.be.false);\r",
+							"\t\t_pm.test(\"Comment creation date should be in the past\", () => _pm.expect(commentsResult.createdIsPast).to.be.true);\r",
+							"\t\t_pm.test(\"Comment update date should be in the past\", () => _pm.expect(commentsResult.updatedIsPast).to.be.true);\r",
+							"\r",
+							"\t},\r",
+							"\tvalidateProject: function () {\r",
+							"\t\tthis.validateProjectSchema();\r",
+							"\t\tconst project = _pm.response.json()\r",
+							"\t\tthis.validateCommits(project.commits);\r",
+							"\t\tthis.validateIssues(project.issues);\r",
+							"\t},\r",
+							"\tcheckError: function (errorJsonSchema) {\r",
+							"\t\t_pm.test(\"Error schema is valid\", () => _pm.response.to.have.jsonSchema(errorJsonSchema));\r",
+							"\t},\r",
+							"\tspringBadRequestError: function () {\r",
+							"\t\tthis.checkStatus(400)\r",
+							"\t\tconst schema = {\r",
+							"\t\t\ttype: \"object\",\r",
+							"\t\t\tproperties: {\r",
+							"\t\t\t\terror: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tconst: \"Bad Request\"\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\ttimestamp: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tformat: \"date-time\",\r",
+							"\t\t\t\t\tpattern: \"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]{3})\\\\+00\\\\:00$\"\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tpath: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tconst: _pm.request.url.getPath().toString()\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tstatus: {\r",
+							"\t\t\t\t\ttype: \"integer\",\r",
+							"\t\t\t\t\tconst: 400\r",
+							"\t\t\t\t}\r",
+							"\t\t\t},\r",
+							"\t\t\trequired: [\"error\", \"timestamp\", \"path\", \"status\"],\r",
+							"\t\t\tadditionalProperties: false\r",
+							"\t\t};\r",
+							"\t\tthis.checkError(schema);\r",
+							"\t},\r",
+							"\tspringNotFoundError: function () {\r",
+							"\t\tthis.checkStatus(404);\r",
+							"\t\tconst schema = {\r",
+							"\t\t\ttype: \"object\",\r",
+							"\t\t\tproperties: {\r",
+							"\t\t\t\terror: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tconst: \"Not Found\"\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\ttimestamp: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tformat: \"date-time\",\r",
+							"\t\t\t\t\tpattern: \"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]{3})\\\\+00\\\\:00$\"\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tpath: {\r",
+							"\t\t\t\t\ttype: \"string\",\r",
+							"\t\t\t\t\tconst: _pm.request.url.getPath()\r",
+							"\t\t\t\t},\r",
+							"\t\t\t\tstatus: {\r",
+							"\t\t\t\t\ttype: \"integer\",\r",
+							"\t\t\t\t\tconst: 404\r",
+							"\t\t\t\t}\r",
+							"\t\t\t},\r",
+							"\t\t\trequired: [\"error\", \"timestamp\", \"path\", \"status\"],\r",
+							"\t\t\tadditionalProperties: false\r",
+							"\t\t};\r",
+							"\t\tthis.checkError(schema)\r",
+							"\t}\r",
+							"};\r",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "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",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "GITHUBMINER_API_URL",
+			"value": "http://localhost:8082/github",
+			"type": "string"
+		},
+		{
+			"key": "GITMINER_API_URL",
+			"value": "http://localhost:8080/gitminer",
+			"type": "string"
+		},
+		{
+			"key": "BITBUCKETMINER_API_URL",
+			"value": "http://localhost:8081/bitbucket",
+			"type": "string"
+		},
+		{
+			"key": "GITHUB_PAGE_SIZE",
+			"value": "30",
+			"type": "string"
+		},
+		{
+			"key": "GITHUBMINER_DEFAULT_sinceCommits",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"key": "GITHUBMINER_DEFAULT_sinceIssues",
+			"value": "20",
+			"type": "string"
+		},
+		{
+			"key": "GITHUBMINER_DEFAULT_maxPages",
+			"value": "2",
+			"type": "string"
+		}
+	]
+}

@@ -7,35 +7,49 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Commit {
 
     @JsonProperty("id")
+    @NotNull(message = "Commit ID cannot be null")
+    @NotBlank(message = "Commit ID cannot be empty")
+    @Size(min = 40, max = 40, message = "Commit ID must be exactly 40 characters long")
     private String id;
 
     @JsonProperty("author_name")
+    @Size(min = 1, message = "Commit author name cannot be empty")
     private String author_name;
 
     @JsonProperty("author_email")
+    @Email(message = "Invalid email format for author email")
     private String author_email;
 
     @JsonProperty("authored_date")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @Past(message = "Authored date must be in the past")
     private LocalDateTime authored_date;
 
     @JsonProperty("message")
     private String message;
 
     @JsonProperty("title")
+    @NotNull(message = "Commit title cannot be null")
     private String title;
 
     @JsonProperty("web_url")
+    @NotNull(message = "Commit web URL cannot be null")
+    @URL(message = "Invalid URL format for commit web URL")
     private String web_url;
 
     @JsonProperty("commit")
@@ -53,7 +67,11 @@ public class Commit {
         }
         this.author_name = authorMap.get("name").toString();
         this.author_email = authorMap.get("email").toString();
-        this.authored_date = LocalDateTime.parse(authorMap.get("date").toString().replace("Z", ""));
+        try {
+            this.authored_date = LocalDateTime.parse(authorMap.get("date").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+        } catch (DateTimeParseException e) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, "Commit authored date is invalid: " + authorMap.get("date"));
+        }
         String[] description =  ((String) commit.get("message")).split("\n\n",2);
         this.title = description[0];
         if (description.length > 1) {this.message = description[1];}
@@ -140,5 +158,16 @@ public class Commit {
                 .append("authored_date", authored_date)
                 .append("web_url", web_url)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Commit commit)) return false;
+        return Objects.equals(getId(), commit.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 }
