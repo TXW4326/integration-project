@@ -108,10 +108,10 @@ public class CommitService {
         return commits;
     }
 
-    // Method implemented in case it is needed to get commits without getting the project first
+    // Method implemented in case it is needed to get commits without getting the project first. (For example, in testing)
     public List<Commit> getCommits(String owner, String repo, int sinceCommits, int maxPages) {
         userInputValidation(owner, repo, sinceCommits, maxPages);
-        return getCommitsInternal(owner, repo, sinceCommits, maxPages);
+        return ValidationUtils.validateObject(getCommitsInternal(owner, repo, sinceCommits, maxPages));
     }
 
     private static void userInputValidation(String owner, String repo, int sinceCommits, int maxPages) {

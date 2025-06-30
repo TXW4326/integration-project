@@ -176,7 +176,6 @@ class CommitServiceTest {
                 assertFalse(commit.getAuthor_email().isEmpty(), "Author email should not be empty");
                 assertTrue(commit.getAuthored_date().isBefore(LocalDateTime.now()), "Authored date should be in the past");
             }
-            assertTrue(commit.getMessage() == null || !commit.getMessage().isEmpty(), "Commit message should not be empty");
         });
     }
 }

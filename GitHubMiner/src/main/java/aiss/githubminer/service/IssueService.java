@@ -102,8 +102,8 @@ public class IssueService {
         for (int page = 1; page <= maxPages; page++) {
             Issue[] issuesArray = handleIssueApiCall(owner, repo, resultIssues, page, maxPages, sinceIssues);
             issues.addAll(Stream.of(issuesArray).parallel()
-                    .peek(issue -> {if (issue.getAuthor() != null) issue.setAuthor(userService.getUserInternal(issue.getAuthor().getUsername()));})
-                    .peek(issue -> {if (issue.getAssignee() != null) issue.setAssignee(userService.getUserInternal(issue.getAssignee().getUsername()));})
+                    .peek(issue -> {if (issue.getAuthor() != null) issue.setAuthor(userService.getUserInternal(issue.getAuthor().getUsername()));}) // This step is required because the author parameters do not provide the "name" attribute.
+                    .peek(issue -> {if (issue.getAssignee() != null) issue.setAssignee(userService.getUserInternal(issue.getAssignee().getUsername()));}) // This step is required because the author parameters do not provide the "name" attribute.
                     .peek(issue -> issue.setComments(commentService.getCommentsInternal(owner, repo, issue.getNumber(), maxPages)))
                     .toList()
             );
@@ -112,10 +112,10 @@ public class IssueService {
         return issues;
     }
 
-    // Method implemented in case it is needed to get issues without getting the project first
+    // Method implemented in case it is needed to get issues without getting the project first. (For example in testing)
     public List<Issue> getIssues(String owner, String repo, int sinceIssues, int maxPages) {
         userInputValidation(owner, repo, sinceIssues, maxPages);
-        return getIssuesInternal(owner, repo, sinceIssues, maxPages);
+        return ValidationUtils.validateObject(getIssuesInternal(owner, repo, sinceIssues, maxPages));
     }
 
     private static void userInputValidation(String owner, String repo, int sinceIssues, int maxPages) {

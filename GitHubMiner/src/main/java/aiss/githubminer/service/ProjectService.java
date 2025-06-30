@@ -55,17 +55,17 @@ public class ProjectService {
         }
         project.setCommits(commitService.getCommitsInternal(owner, repo, sinceCommits, maxPages));
         project.setIssues(issueService.getIssuesInternal(owner, repo, sinceIssues, maxPages));
-        return project;
+        return ValidationUtils.validateObject(project);
     }
 
     public void sendProject(Project project) {
-        //TODO: Handle errors
+        ValidationUtils.validateObject(project);
         try {
             restTemplate.postForEntity(gitMinerApiUrl, project, Project.class);
         } catch (RestClientResponseException e) {
             LinkedHashMapBuilder errorResponse = LinkedHashMapBuilder.of().add("error", "An error occurred while sending the project to GitMiner");
             throw new GitHubMinerException(e.getStatusCode(), (e.getResponseBodyAsString().isEmpty() ?
-                    errorResponse : errorResponse.add("GitHubMinerResponse", e.getResponseBodyAsString())
+                    errorResponse : errorResponse.add("GitHubMinerResponse", e.getResponseBodyAs(Object.class))
                 ).add("project", project)
             );
         } catch (RuntimeException e) {

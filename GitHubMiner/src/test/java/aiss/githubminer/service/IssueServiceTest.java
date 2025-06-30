@@ -1,6 +1,7 @@
 package aiss.githubminer.service;
 
 import aiss.githubminer.exception.GitHubMinerException;
+import aiss.githubminer.model.Comment;
 import aiss.githubminer.model.Issue;
 import aiss.githubminer.utils.JsonUtils;
 import aiss.githubminer.utils.TestUtils;
@@ -184,6 +185,8 @@ class IssueServiceTest {
         assertNotNull(issues, "List of issues should not be null");
         assertTrue(issues.size() <= maxPages * PER_PAGE, "Number of issues should not exceed maxPages * 30 (30 issues per page)");
         assertEquals(issues.size(), issues.stream().map(Issue::getId).distinct().count(), "Issue IDs should be unique");
+        List<Long> commentIDs = issues.stream().flatMap(issue -> issue.getComments().stream()).map(Comment::getId).toList();
+        assertEquals(commentIDs.size(),commentIDs.stream().distinct().count(), "Comments should be unique");
 
         return issues.stream().peek(issue -> {
             assertTrue(issue.getId() >= 0, "Issue ID should be non-negative");

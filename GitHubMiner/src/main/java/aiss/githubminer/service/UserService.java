@@ -33,9 +33,10 @@ public class UserService {
         }
     }
 
+    // Method implemented in case it is needed to get commits without getting an issue or comment first. (For example, in testing)
     public User getUser(String username) {
         ValidationUtils.validateUsername(username);
-        return getUserInternal(username);
+        return ValidationUtils.validateObject(getUserInternal(username));
     }
 
 }
