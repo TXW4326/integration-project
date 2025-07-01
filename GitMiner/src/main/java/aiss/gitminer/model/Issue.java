@@ -4,7 +4,8 @@ package aiss.gitminer.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
@@ -17,49 +18,111 @@ import java.util.Objects;
 @Entity
 @Table(name = "Issue")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(
+        description = "Represents an issue in a project"
+)
 public class Issue {
 
     @Id
     @JsonProperty("id")
     @NotNull(message = "Issue ID cannot be null")
     @NotBlank(message = "Issue ID should not be empty")
+    @Schema(
+            description = "Unique identifier for the issue",
+            example = "I_kwDOABGHUc6-VYdM",
+            minLength = 1,
+            required = true
+    )
     private String id;
 
     @JsonProperty("title")
     @NotNull(message = "Issue title cannot be null")
     @NotEmpty(message = "Issue title cannot be empty")
+    @Schema(
+            description = "Title of the issue",
+            example = "Remove obsolete `update_copyright_headers.sh`",
+            minLength = 1,
+            required = true
+    )
     private String title;
 
     @JsonProperty("description")
     @Column(columnDefinition="TEXT")
     @Size(min = 1, message = "Issue description cannot be empty")
+    @Schema(
+            description = "Description of the issue",
+            example = "This script is no longer used and should be removed.",
+            required = false
+    )
     private String description;
 
     @JsonProperty("state")
     @NotNull(message = "Issue state cannot be null")
     @NotBlank(message = "Issue state cannot be empty")
+    @Schema(
+            description = "State of the issue (e.g., open, closed)",
+            example = "open",
+            minLength = 1,
+            required = true
+    )
     private String state;
 
     @JsonProperty("created_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @NotNull(message = "Issue created date cannot be null")
     @Past(message = "Issue created date must be in the past")
+    @Schema(
+            description = "Date and time when the issue was created",
+            example = "2023-10-01T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            required = true,
+            minLength = 20,
+            maxLength = 20
+    )
     private LocalDateTime createdAt;
 
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @NotNull(message = "Issue updated date cannot be null")
     @Past(message = "Issue updated date must be in the past")
+    @Schema(
+            description = "Date and time when the issue was last updated",
+            example = "2023-10-02T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            required = true,
+            minLength = 20,
+            maxLength = 20
+    )
     private LocalDateTime updatedAt;
 
     @JsonProperty("closed_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Past(message = "Issue closed date must be in the past")
+    @Schema(
+            description = "Date and time when the issue was closed",
+            example = "2023-10-03T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            minLength = 20,
+            maxLength = 20
+    )
     private LocalDateTime closedAt;
 
     @JsonProperty("labels")
     @ElementCollection
     @NotNull(message = "Issue label list cannot be null")
+    @UniqueElements(message = "Issue label list should not contain duplicates")
+    @ArraySchema(
+            schema = @Schema(minLength = 1),
+            arraySchema = @Schema(
+                    description = "List of labels associated with the issue",
+                    example = "[\"bug\", \"enhancement\", \"documentation\"]",
+                    required = true
+            ),
+            uniqueItems = true
+    )
     private List<@NotNull(message = "Issue label cannot be null") String> labels;
 
     @JsonProperty("author")
@@ -77,6 +140,11 @@ public class Issue {
     @JsonProperty("votes")
     @Min(value = 0, message = "Votes must be a non-negative integer")
     @NotNull(message = "Issue votes cannot be null")
+    @Schema(
+            description = "Number of votes for the issue",
+            example = "5",
+            required = true
+    )
     private Integer votes;
 
     @JsonProperty("comments")
@@ -85,6 +153,14 @@ public class Issue {
     @Valid
     @NotNull(message = "Issue comment list cannot be null")
     @UniqueElements(message = "Issue comment ids should be unique")
+    @ArraySchema(
+            schema = @Schema(implementation = Comment.class),
+            arraySchema = @Schema(
+                    description = "List of comments on the issue",
+                    required = true
+            ),
+            uniqueItems = true
+    )
     private List<@NotNull(message = "Issue comments cannot be null") Comment> comments;
 
     public String getId() {

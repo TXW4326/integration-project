@@ -8,10 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Schema(
-        name = "ErrorResponse",
-        description = "Standard error response format"
-)
+@Schema(description = "Standard error response format")
 public class ErrorResponse {
     @Schema(description = "Timestamp of the error occurrence", example = "2023-10-01T12:00:00Z", required = true)
     private final LocalDateTime timestamp;

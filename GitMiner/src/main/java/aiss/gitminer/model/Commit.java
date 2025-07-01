@@ -3,6 +3,7 @@ package aiss.gitminer.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "Commit")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Represents a commit in a Git repository")
 public class Commit {
 
     @Id
@@ -23,33 +25,70 @@ public class Commit {
     @NotNull(message = "Commit ID cannot be null")
     @NotBlank(message = "Commit ID cannot be empty")
     @Size(min = 40, max = 40, message = "Commit ID must be exactly 40 characters long")
+    @Schema(
+            description = "SHA of the commit",
+            example = "b256babad56e64316f62535279b3a6e0fe960513",
+            required = true
+    )
     private String id;
 
     @JsonProperty("title")
     @NotNull(message = "Commit title cannot be null")
+    @Schema(
+            description = "Title of the commit",
+            example = "Fix issue with user authentication",
+            required = true
+    )
     private String title;
 
     @JsonProperty("message")
     @Column(columnDefinition="TEXT")
+    @Schema(
+            description = "Detailed message of the commit",
+            example = "This commit fixes the issue with user authentication that was causing login failures."
+    )
     private String message;
 
     @JsonProperty("author_name")
     //@NotEmpty(message = "Commit author name cannot be empty.") This annotation does a null check, and at least in GitHub if a user is private, the real name is null.
     @Size(min = 1, message = "Commit author name cannot be empty")
+    @Schema(
+            description = "Name of the author of the commit",
+            example = "John Doe"
+    )
     private String authorName;
 
     @JsonProperty("author_email")
     @Email(message = "Invalid email format for author email")
+    @Schema(
+            description = "Email of the author of the commit",
+            example = "john.doe@broadcom.com",
+            format = "email"
+    )
     private String authorEmail;
 
     @JsonProperty("authored_date")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Past(message = "Authored date must be in the past")
+    @Schema(
+            description = "Date and time when the commit was authored",
+            example = "2023-10-03T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            minLength = 20,
+            maxLength = 20
+    )
     private LocalDateTime authoredDate;
 
     @JsonProperty("web_url")
     @NotNull(message = "Commit web URL cannot be null")
     @URL(message = "Invalid URL format for commit web URL")
+    @Schema(
+            description = "Web URL of the commit",
+            example = "https://github.com/spring-projects/spring-framework/commit/b256babad56e64316f62535279b3a6e0fe960513",
+            format = "uri",
+            required = true
+    )
     private String webUrl;
 
     public String getId() {

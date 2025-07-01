@@ -3,13 +3,13 @@ package aiss.gitminer.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
@@ -17,31 +17,61 @@ import java.util.Objects;
 @Entity
 @Table(name = "GMUser")     // Watch out: User is a reserved keyword in H2
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Represents a User")
 public class User {
 
     @Id
     @JsonProperty("id")
     @NotNull(message = "User ID cannot be null")
     @NotBlank(message = "User ID cannot be empty")
+    @Schema(
+        description = "Unique identifier for the user",
+        example = "MDQ6VXNlcjQ5MDQ4NA==",
+        minLength = 1,
+        required = true
+    )
     private String id;
 
     @JsonProperty("username")
     @NotNull(message = "Username cannot be null")
     @NotBlank(message = "Username cannot be empty")
+    @Schema(
+        description = "Username of the user",
+        example = "johndoe",
+        minLength = 1,
+        required = true
+    )
     private String username;
 
     @JsonProperty("name")
     @Size(min = 1, message = "User real name cannot be empty")
+    @Schema(
+        description = "Real name of the user",
+        example = "John Doe",
+        minLength = 1
+    )
     private String name;
 
     @JsonProperty("avatar_url")
     @NotNull(message = "Avatar URL cannot be null")
     @URL(message = "Invalid URL format for avatar URL")
+    @Schema(
+        description = "URL of the user's avatar",
+        example = "https://avatars.githubusercontent.com/u/490484?v=4",
+        format = "uri",
+        required = true
+    )
     private String avatarUrl;
 
     @JsonProperty("web_url")
     @NotNull(message = "User Web URL cannot be null")
     @URL(message = "Invalid URL format for user web URL")
+    @Schema(
+        description = "Web URL of the user profile",
+        example = "https://github.com/johndoe",
+        format = "uri",
+        required = true
+    )
     private String webUrl;
 
     public String getId() {

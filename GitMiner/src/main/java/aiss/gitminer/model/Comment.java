@@ -4,6 +4,7 @@ package aiss.gitminer.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -17,18 +18,31 @@ import java.util.Objects;
 @Entity
 @Table(name = "Comment")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Represents a comment in the system")
 public class Comment {
 
     @Id
     @JsonProperty("id")
     @NotNull(message = "Comment ID cannot be null")
     @NotBlank(message = "Comment id should not be empty")
+    @Schema(
+            description = "Unique identifier for the comment",
+            example = "IC_kwDOABGHUc60Kmi0",
+            minLength = 1,
+            required = true
+    )
     private String id;
 
     @JsonProperty("body")
     @Column(columnDefinition="TEXT")
     @NotNull(message = "Comment body cannot be null")
     @NotEmpty(message = "Comment body cannot be empty")
+    @Schema(
+            description = "Content of the comment",
+            example = "This is a sample comment body.",
+            minLength = 1,
+            required = true
+    )
     private String body;
 
     @Valid
@@ -41,12 +55,28 @@ public class Comment {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @NotNull(message = "Comment creation date cannot be null")
     @Past(message = "Comment creation date must be in the past")
+    @Schema(
+            description = "Date and time when the comment was created",
+            example = "2023-10-03T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            minLength = 20,
+            maxLength = 20
+    )
     private LocalDateTime createdAt;
 
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @NotNull(message = "Comment update date cannot be null")
     @Past(message = "Comment update date must be in the past")
+    @Schema(
+            description = "Date and time when the comment was last updated",
+            example = "2023-10-03T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            minLength = 20,
+            maxLength = 20
+    )
     private LocalDateTime updatedAt;
 
     public String getId() {
