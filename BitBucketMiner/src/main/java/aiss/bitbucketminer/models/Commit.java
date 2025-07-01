@@ -96,7 +96,7 @@ public class Commit {
 
     // 6. authored_date
     @JsonProperty("authored_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.ss'Z'", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     private OffsetDateTime authored_date;
 
     @JsonProperty("date")
