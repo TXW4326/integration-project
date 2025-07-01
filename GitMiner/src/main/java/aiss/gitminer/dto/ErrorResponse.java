@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class ErrorResponse {
-    private LocalDateTime timestamp;
-    private int status;
-    private String error;
-    private String message;
-    private List<String> details;
+    private final LocalDateTime timestamp;
+    private final int status;
+    private final String error;
+    private final String message;
+    private final List<String> details;
 
     public ErrorResponse(HttpStatus status, String error, String message, List<String> details) {
         this.timestamp = LocalDateTime.now();

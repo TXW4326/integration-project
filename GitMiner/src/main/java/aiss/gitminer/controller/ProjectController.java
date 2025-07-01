@@ -1,10 +1,12 @@
 package aiss.gitminer.controller;
 
+import aiss.gitminer.dto.ErrorResponse;
 import aiss.gitminer.exception.ProjectNotFoundException;
 import aiss.gitminer.model.Project;
 import aiss.gitminer.repositories.ProjectRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,30 +24,35 @@ import java.util.Optional;
         name = "Project",
         description = "Project public API"
 )
+@ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json"))
 @RestController
+@RequestMapping("/gitminer/projects")
 public class ProjectController {
+    private final ProjectRepository projectRepository;
 
     @Autowired
-    ProjectRepository projectRepository;
+    private ProjectController(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
     // API Documentation:
     // GET http://localhost:8080/gitminer/projects
     @Operation(
             summary = "Get a list of projects",
             description = "Get a list of projects",
-            tags = {"GET", "getAll", "Projects", "Project"}
+            tags = {"GET", "getAll", "Project"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Project.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", content = { @Content (schema = @Schema())})
+            @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Project.class)), mediaType = "application/json"))
     })
 
     // API Route and method:
-    @GetMapping("/projects")
+    @GetMapping
     public List<Project> getProjects() {
         List<Project> projects = projectRepository.findAll();
+        //TODO: Why not return an empty list instead of throwing an exception?
         if (projects.isEmpty()) {
-            throw new ProjectNotFoundException("No projects found");
+            throw new ProjectNotFoundException();
         }
         return projects;
     }
@@ -59,18 +65,14 @@ public class ProjectController {
             tags = {"GET", "getById", "Project"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Project.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", content = { @Content (schema = @Schema())})
-
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Project.class), mediaType = "application/json"))
     })
 
     // API Route and method:
-    @GetMapping("/projects/{id}")
-    public Project getProjectById(@Parameter(description = "Searched project ID")@PathVariable String id) {
+    @GetMapping("/{id}")
+    public Project getProjectById(@Parameter(description = "Searched project ID") @PathVariable String id) {
         Optional<Project> project = projectRepository.findById(id);
-        if (!project.isPresent()) {
-            throw new ProjectNotFoundException("Project not found");
-        }
+        if (project.isEmpty()) throw new ProjectNotFoundException();
         return project.get();
     }
 
@@ -79,24 +81,23 @@ public class ProjectController {
     @Operation(
             summary = "Insert a new project",
             description = "Insert a new project into the database given its data as a parameter in JSON",
-            tags = {"POST", "insert", "Project"}
+            tags = {"POST", "Project"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", content = { @Content(schema = @Schema(implementation = Project.class), mediaType = "application/json")}),
-            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema())})
+            @ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = Project.class), mediaType = "application/json"))
     })
     // API Route and method:
-    @PostMapping("/projects")
-    public ResponseEntity createProject(@Valid @RequestBody Project p) {
-        Project projectToBePosted = new Project();
-        projectToBePosted.setId(p.getId());
-        projectToBePosted.setName(p.getName());
-        projectToBePosted.setIssues(p.getIssues());
-        projectToBePosted.setCommits(p.getCommits());
-        projectToBePosted.setPullRequests(p.getPullRequests());
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    //TODO: Think about the use of new Project() in createProject method and setters instead of directly using the project in the body or using a constructor with parameters, or even a custom constructor that receives another project.
+    public Project createProject(@Valid @RequestBody Project project) {
+        Project _project = new Project();
+        _project.setId(project.getId());
+        _project.setName(project.getName());
+        _project.setWebUrl(project.getWebUrl());
+        _project.setIssues(project.getIssues());
+        _project.setCommits(project.getCommits());
 
-        Project savedProject = projectRepository.save(projectToBePosted);
-
-        return new ResponseEntity(savedProject, HttpStatus.CREATED);
+        return projectRepository.save(_project);
     }
 }
