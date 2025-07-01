@@ -1,37 +1,55 @@
 package aiss.gitminer.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Commit")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Commit {
 
     @Id
     @JsonProperty("id")
+    @NotNull(message = "Commit ID cannot be null")
+    @NotBlank(message = "Commit ID cannot be empty")
+    @Size(min = 40, max = 40, message = "Commit ID must be exactly 40 characters long")
     private String id;
+
     @JsonProperty("title")
+    @NotNull(message = "Commit title cannot be null")
     private String title;
 
     @JsonProperty("message")
     @Column(columnDefinition="TEXT")
     private String message;
+
     @JsonProperty("author_name")
-    @NotEmpty(message = "Author name cannot be empty.")
+    //@NotEmpty(message = "Commit author name cannot be empty.") This annotation does a null check, and at least in GitHub if a user is private, the real name is null.
+    @Size(min = 1, message = "Commit author name cannot be empty")
     private String authorName;
+
     @JsonProperty("author_email")
+    @Email(message = "Invalid email format for author email")
     private String authorEmail;
+
     @JsonProperty("authored_date")
-    @NotEmpty(message = "Author date cannot be empty.")
-    private String authoredDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @Past(message = "Authored date must be in the past")
+    private LocalDateTime authoredDate;
 
     @JsonProperty("web_url")
-    @NotEmpty(message = "URL cannot be empty.")
+    @NotNull(message = "Commit web URL cannot be null")
+    @URL(message = "Invalid URL format for commit web URL")
     private String webUrl;
 
     public String getId() {
@@ -74,11 +92,11 @@ public class Commit {
         this.authorEmail = authorEmail;
     }
 
-    public String getAuthoredDate() {
+    public LocalDateTime getAuthoredDate() {
         return authoredDate;
     }
 
-    public void setAuthoredDate(String authoredDate) {
+    public void setAuthoredDate(LocalDateTime authoredDate) {
         this.authoredDate = authoredDate;
     }
 
@@ -128,5 +146,17 @@ public class Commit {
             sb.append(']');
         }
         return sb.toString();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Project project)) return false;
+        return Objects.equals(getId(), project.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 }

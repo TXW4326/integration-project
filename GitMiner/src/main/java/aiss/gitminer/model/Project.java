@@ -1,38 +1,57 @@
 
 package aiss.gitminer.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.URL;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
 @Table(name = "Project")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Project {
 
     @Id
     @JsonProperty("id")
+    @NotNull(message = "The id of the project cannot be null")
+    @NotBlank(message = "The id of the project cannot be empty")
     public String id;
 
     @JsonProperty("name")
-    @NotEmpty(message = "The name of the project cannot be empty")
-    public String name;
+    @NotNull(message = "The name of the project cannot be null")
+    @NotBlank(message = "The name of the project cannot be empty")
+    private String name;
 
     @JsonProperty("web_url")
-    @NotEmpty(message = "The URL of the project cannot be empty")
+    @NotNull(message = "The URL of the project cannot be null")
+    @URL(message = "Invalid URL format for project web URL")
     public String webUrl;
+
+    @Valid
     @JsonProperty("commits")
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "projectId")
-    private List<Commit> commits;
+    @NotNull(message = "Project commit list cannot be null")
+    @UniqueElements(message = "Commit ids should be unique")
+    private List<@NotNull(message = "Project commit cannot be null") Commit> commits;
 
     @JsonProperty("issues")
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "projectId")
-    private List<Issue> issues;
+    @Valid
+    @NotNull(message = "Project issue list cannot be null")
+    @UniqueElements(message = "Issue ids should be unique")
+    private List<@NotNull(message = "Project issue cannot be null") Issue> issues;
 
     public Project() {
         commits = new ArrayList<>();
@@ -110,5 +129,16 @@ public class Project {
             sb.append(']');
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Project project)) return false;
+        return Objects.equals(getId(), project.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 }

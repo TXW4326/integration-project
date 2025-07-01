@@ -1,6 +1,7 @@
 package aiss.gitminer.controller;
 
 import aiss.gitminer.dto.ErrorResponse;
+import aiss.gitminer.exception.BadRequestException;
 import aiss.gitminer.exception.CommitNotFoundException;
 import aiss.gitminer.model.Commit;
 import aiss.gitminer.repositories.CommitRepository;
@@ -70,6 +71,8 @@ public class CommitController {
     // API Route and method:
     @GetMapping("/{id}")
     public Commit getCommitById(@Parameter(description = "Searched commit ID")@PathVariable String id) {
+        if (id.isBlank()) throw new BadRequestException("Commit ID cannot be blank");
+        if (id.length() != 40) throw new BadRequestException("Commit ID must be 40 characters long");
         Optional<Commit> commit = commitRepository.findById(id);
         if (commit.isEmpty()) throw new CommitNotFoundException();
         return commit.get();

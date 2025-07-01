@@ -1,6 +1,7 @@
 package aiss.gitminer.controller;
 
 import aiss.gitminer.dto.ErrorResponse;
+import aiss.gitminer.exception.BadRequestException;
 import aiss.gitminer.exception.IssueNotFoundException;
 import aiss.gitminer.model.Comment;
 import aiss.gitminer.model.Issue;
@@ -72,6 +73,7 @@ public class IssueController {
     // API Route and method:
     @GetMapping("/{id}")
     public Issue getIssueById(@Parameter(description = "Searched issue ID")@PathVariable String id) {
+        if (id.isBlank()) throw new BadRequestException("Issue ID cannot be blank");
         Optional<Issue> issue = issueRepository.findById(id);
         if (issue.isEmpty()) throw new IssueNotFoundException();
         return issue.get();
@@ -91,6 +93,7 @@ public class IssueController {
     // API Route and method:
     @GetMapping("/{id}/comments")
     public List<Comment> getCommentsByIssueId(@Parameter(description = "Id of the issue whose comments are being requested") @PathVariable String id) {
+        if (id.isBlank()) throw new BadRequestException("Issue ID cannot be blank");
         Optional<Issue> issue = issueRepository.findById(id);
         if (issue.isEmpty()) throw new IssueNotFoundException();
         //TODO: Here you return an empty list if the issue has no comments, but everywhere else you always check if the returned list is empty.

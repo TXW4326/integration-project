@@ -1,6 +1,7 @@
 package aiss.gitminer.controller;
 
 import aiss.gitminer.dto.ErrorResponse;
+import aiss.gitminer.exception.BadRequestException;
 import aiss.gitminer.exception.ProjectNotFoundException;
 import aiss.gitminer.model.Project;
 import aiss.gitminer.repositories.ProjectRepository;
@@ -71,6 +72,7 @@ public class ProjectController {
     // API Route and method:
     @GetMapping("/{id}")
     public Project getProjectById(@Parameter(description = "Searched project ID") @PathVariable String id) {
+        if (id.isBlank()) throw new BadRequestException("Project ID cannot be blank");
         Optional<Project> project = projectRepository.findById(id);
         if (project.isEmpty()) throw new ProjectNotFoundException();
         return project.get();
@@ -89,15 +91,7 @@ public class ProjectController {
     // API Route and method:
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    //TODO: Think about the use of new Project() in createProject method and setters instead of directly using the project in the body or using a constructor with parameters, or even a custom constructor that receives another project.
     public Project createProject(@Valid @RequestBody Project project) {
-        Project _project = new Project();
-        _project.setId(project.getId());
-        _project.setName(project.getName());
-        _project.setWebUrl(project.getWebUrl());
-        _project.setIssues(project.getIssues());
-        _project.setCommits(project.getCommits());
-
-        return projectRepository.save(_project);
+        return projectRepository.save(project);
     }
 }

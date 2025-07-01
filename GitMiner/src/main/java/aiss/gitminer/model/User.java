@@ -1,28 +1,47 @@
 
 package aiss.gitminer.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(name = "GMUser")     // Watch out: User is a reserved keyword in H2
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
     @Id
     @JsonProperty("id")
+    @NotNull(message = "User ID cannot be null")
+    @NotBlank(message = "User ID cannot be empty")
     private String id;
+
     @JsonProperty("username")
-    @NotEmpty(message = "The username cannot be empty")
+    @NotNull(message = "Username cannot be null")
+    @NotBlank(message = "Username cannot be empty")
     private String username;
+
     @JsonProperty("name")
+    @Size(min = 1, message = "User real name cannot be empty")
     private String name;
+
     @JsonProperty("avatar_url")
+    @NotNull(message = "Avatar URL cannot be null")
+    @URL(message = "Invalid URL format for avatar URL")
     private String avatarUrl;
+
     @JsonProperty("web_url")
+    @NotNull(message = "User Web URL cannot be null")
+    @URL(message = "Invalid URL format for user web URL")
     private String webUrl;
 
     public String getId() {
@@ -95,6 +114,18 @@ public class User {
             sb.append(']');
         }
         return sb.toString();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Project project)) return false;
+        return Objects.equals(getId(), project.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 
 }

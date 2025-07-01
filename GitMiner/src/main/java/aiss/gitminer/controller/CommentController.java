@@ -1,6 +1,7 @@
 package aiss.gitminer.controller;
 
 import aiss.gitminer.dto.ErrorResponse;
+import aiss.gitminer.exception.BadRequestException;
 import aiss.gitminer.exception.CommentNotFoundException;
 import aiss.gitminer.model.Comment;
 import aiss.gitminer.repositories.CommentRepository;
@@ -69,6 +70,7 @@ public class CommentController {
     // API Route and method:
     @GetMapping("/{id}")
     public Comment getCommentById(@Parameter(description = "Searched comment ID")@PathVariable String id) {
+        if (id.isBlank()) throw new BadRequestException("Comment ID cannot be blank");
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isEmpty()) throw new CommentNotFoundException();
         return comment.get();
