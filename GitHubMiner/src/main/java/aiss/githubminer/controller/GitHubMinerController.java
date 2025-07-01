@@ -43,7 +43,6 @@ public class GitHubMinerController {
                 sinceIssues != null ? sinceIssues : DEFAULT_SINCE_ISSUES,
                 maxPages != null ? maxPages : DEFAULT_MAX_PAGES);
     }
-
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{username}/{repo}")
     public Project sendProjectToGitMiner(

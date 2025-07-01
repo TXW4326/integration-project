@@ -62,6 +62,7 @@ public class Comment {
 
     @JsonProperty("author")
     public void setAuthor(User author) {
+        if (author.getId() == null) return;
         this.author = author;
     }
 
@@ -109,7 +110,7 @@ public class Comment {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Issue issue)) return false;
-        return getId() == issue.getId();
+        return Objects.equals(getId(), issue.getId());
     }
 
     @Override

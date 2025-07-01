@@ -39,6 +39,7 @@ public class Issue {
 
     @JsonProperty("labels")
     @NotNull(message = "Issue label list cannot be null")
+    @UniqueElements(message = "Issue label names should be unique")
     private List<@NotNull(message = "Issue label cannot be null") String> labels;
 
     @JsonProperty("state")
@@ -119,8 +120,9 @@ public class Issue {
         return author;
     }
 
-    @JsonProperty("user")
+    @JsonProperty("author")
     public void setAuthor(User author) {
+        if (author.getId() == null) return; //GraphQL returns author: {}, if there is no author, not a null value, the same for the author property in the Comment class
         this.author = author;
     }
 
@@ -158,7 +160,7 @@ public class Issue {
 
     @JsonSetter("assignee")
     public void setAssignee(Map<String, List<User>> assignees) {
-        if (assignees != null && assignees.containsKey("nodes") && !assignees.get("nodes").isEmpty()) {
+        if (assignees != null && assignees.containsKey("nodes") && !assignees.get("nodes").isEmpty() && assignees.get("nodes").get(0).getId()!=null) {
             this.assignee = assignees.get("nodes").get(0);
         }
     }
@@ -261,7 +263,7 @@ public class Issue {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Issue issue)) return false;
-        return getId() == issue.getId();
+        return Objects.equals(getId(), issue.getId());
     }
 
     @Override

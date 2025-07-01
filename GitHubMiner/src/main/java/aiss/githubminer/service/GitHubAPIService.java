@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
@@ -97,8 +98,21 @@ public class GitHubAPIService {
     }
 
     public void sendProject(Project project) {
-        //TODO: Handle errors when sending the project
-        restTemplate.postForObject(GITMINER_URL + "/projects", project, Void.class);
+        ValidationUtils.validateObject(project);
+        try {
+            restTemplate.postForObject(GITMINER_URL, project, Void.class);
+        } catch (RestClientResponseException e) {
+            LinkedHashMapBuilder errorResponse = LinkedHashMapBuilder.of().add("error", "An error occurred while sending the project to GitMiner");
+            throw new GitHubMinerException(e.getStatusCode(), (e.getResponseBodyAsString().isEmpty() ?
+                    errorResponse : errorResponse.add("GitHubMinerResponse", e.getResponseBodyAs(Object.class)))
+                    .add("project", project)
+            );
+        } catch (RuntimeException e) {
+            throw new GitHubMinerException(HttpStatus.INTERNAL_SERVER_ERROR, LinkedHashMapBuilder.of()
+                    .add("error", "An error occurred while sending the project to GitMiner")
+                    .add("project", project)
+            );
+        }
     }
 
 }

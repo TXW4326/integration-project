@@ -29,15 +29,14 @@ class GitHubAPIServiceTest {
         this.gitHubAPIService = gitHubAPIService;
     }
 
-
     @Test
     @DisplayName("get project with valid parameters")
     void getProject() {
         String owner = "spring-projects";
         String repo = "spring-framework";
         int sinceCommits = 20;
-        int sinceIssues = 10;
-        int maxPages = 20;
+        int sinceIssues = 20;
+        int maxPages = 5;
 
         Project project = gitHubAPIService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages);
         assertEquals(repo, project.getName(), "Project name should match the repo");
@@ -77,6 +76,42 @@ class GitHubAPIServiceTest {
     void getProjectWithEmptyRepo() {
         String owner = "spring-projects";
         String repo = "";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                        gitHubAPIService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty repo"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals("Repository is empty", ex.getMessage(), "Exception message should indicate empty repo");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with blank owner")
+    void getProjectWithBlankOwner() {
+        String owner = "  ";
+        String repo = "spring-framework";
+        int sinceCommits = 2;
+        int sinceIssues = 20;
+        int maxPages = 2;
+
+        GitHubMinerException ex = assertThrows(GitHubMinerException.class, () ->
+                        gitHubAPIService.getProject(owner, repo, sinceCommits, sinceIssues, maxPages),
+                "Should throw GitHubMinerException for empty owner"
+        );
+        TestUtils.assertException(ex, HttpStatus.BAD_REQUEST);
+        assertEquals( "Owner is empty", ex.getMessage(), "Exception message should indicate empty owner");
+        System.out.println(ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get project with blank repo")
+    void getProjectWithBlankRepo() {
+        String owner = "spring-projects";
+        String repo = "  ";
         int sinceCommits = 2;
         int sinceIssues = 20;
         int maxPages = 2;
@@ -269,8 +304,8 @@ class GitHubAPIServiceTest {
             assertTrue(issue.getUpdated_at().isBefore(LocalDateTime.now()), "Issue updated date should be in the past");
             if (issue.getClosed_at() != null) {
                 assertTrue(issue.getClosed_at().isBefore(LocalDateTime.now()), "Issue closed date should be in the past");
-                assertTrue(issue.getClosed_at().isAfter(issue.getUpdated_at()), "Issue closed date should be after last updated date");
                 assertTrue(issue.getClosed_at().isAfter(issue.getCreated_at()), "Issue closed date should be after created date");
+                //Issue closed date can be before updated date if it was updated after being closed (A comment or a label change)
             }
             assertTrue(issue.getDescription() == null || !issue.getDescription().isEmpty(), "Issue description should not be empty");
             testComments(issue.getComments(), maxPages).close();

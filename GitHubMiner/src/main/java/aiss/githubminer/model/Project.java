@@ -24,6 +24,8 @@ import java.util.Objects;
 public class Project {
 
     @JsonProperty("id")
+    @NotNull(message = "The id of the project cannot be null")
+    @NotBlank(message = "The id of the project cannot be empty")
     private String id;
 
     @JsonProperty("name")
@@ -102,9 +104,7 @@ public class Project {
 
     @JsonIgnore
     public void addIssues (List<Issue> issues) {
-        if (issues != null) {
-            this.issues.addAll(issues);
-        }
+        if (issues != null) this.issues.addAll(issues);
     }
 
     @JsonProperty("commits")
@@ -138,9 +138,7 @@ public class Project {
 
     @JsonIgnore
     public void addCommits(List<Commit> commits) {
-        if (commits != null) {
-            this.commits.addAll(commits);
-        }
+        if (commits != null) this.commits.addAll(commits);
     }
 
     @JsonIgnore
@@ -178,7 +176,7 @@ public class Project {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Issue issue)) return false;
-        return getId() == issue.getId();
+        return Objects.equals(getId(), issue.getId());
     }
 
     @Override

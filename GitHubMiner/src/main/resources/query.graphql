@@ -25,7 +25,7 @@ query ($owner: String!, $name: String!, $resultCommits: GitTimestamp!, $resultIs
                 }
             }
         }
-        issues(first: $numIssues, after: $issueCursor, filterBy: {since: $resultIssues, states: OPEN}, orderBy: {field: CREATED_AT, direction: DESC}) @include(if : $fetchIssues) {
+        issues(first: $numIssues, after: $issueCursor, filterBy: {since: $resultIssues}, orderBy: {field: CREATED_AT, direction: DESC}) @include(if : $fetchIssues) {
             nodes {
                 id
                 title

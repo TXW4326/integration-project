@@ -12,7 +12,7 @@ public final class QueryBuilder {
     private final int elements;
     private static final String defaultQuery =
                 """
-                {{issueName}}: issues(first: 1, {{operation}}: {{issueCursor}}, filterBy: {since: $resultIssues, states: OPEN}, orderBy: {field: CREATED_AT, direction: DESC}) {
+                {{issueName}}: issues(first: 1, {{operation}}: {{issueCursor}}, filterBy: {since: $resultIssues}, orderBy: {field: CREATED_AT, direction: DESC}) {
                         comments(first: {{numComments}}, after: {{commentCursor}}) {
                                 nodes {
                                     id

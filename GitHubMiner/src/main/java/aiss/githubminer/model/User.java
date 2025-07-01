@@ -33,8 +33,8 @@ public class User {
     private String avatar_url;
 
     @JsonProperty("web_url")
-    @NotNull(message = "Web URL cannot be null")
-    @URL(message = "Invalid URL format for web URL")
+    @NotNull(message = "User Web URL cannot be null")
+    @URL(message = "Invalid URL format for user web URL")
     private String web_url;
 
     @JsonProperty("name")
@@ -106,7 +106,7 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Issue issue)) return false;
-        return getId() == issue.getId();
+        return Objects.equals(getId(), issue.getId());
     }
 
     @Override

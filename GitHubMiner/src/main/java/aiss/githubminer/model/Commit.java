@@ -19,6 +19,7 @@ public class Commit {
     @JsonProperty("id")
     @NotNull(message = "Commit ID cannot be null")
     @NotBlank(message = "Commit ID cannot be empty")
+    @Size(min = 40, max = 40, message = "Commit ID must be exactly 40 characters long")
     private String id;
 
     @JsonProperty("author_name")
