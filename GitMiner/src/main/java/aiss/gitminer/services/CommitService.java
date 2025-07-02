@@ -38,10 +38,6 @@ public class CommitService {
         return commitRepository.findByProjectId(projectId, pageable).getContent();
     }
 
-    public List<Commit> findByProjectId(String projectId, Pageable pageable) {
-        projectRepository.projectExists(projectId);
-        return findByProjectIdInternal(projectId, pageable);
-    }
 
     public List<Commit> findAll(Pageable pageable) {
         return commitRepository.findAll(pageable).getContent();

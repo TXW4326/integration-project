@@ -1,8 +1,12 @@
 package aiss.gitminer.controller;
 
 import aiss.gitminer.dto.ErrorResponse;
+import aiss.gitminer.model.Comment;
+import aiss.gitminer.model.Commit;
+import aiss.gitminer.model.Issue;
 import aiss.gitminer.model.Project;
 import aiss.gitminer.services.ProjectService;
+import aiss.gitminer.utils.ValidationUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -12,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -48,20 +51,116 @@ public class ProjectController {
     })
     // API Route and method:
     @GetMapping
+    @SuppressWarnings("ConstantConditions")
     public List<Project> getProjects(
-            @Parameter(description = "Project page number, default is 0") @RequestParam(defaultValue = "0") Integer projectPage,
-            @Parameter(description = "Project page size, default is 30") @RequestParam(defaultValue = "30") Integer projectPageSize,
-            @Parameter(description = "Issue page number, default is 0") @RequestParam(defaultValue = "0") Integer issuePage,
-            @Parameter(description = "Issue page size, default is 30") @RequestParam(defaultValue = "30") Integer issuePageSize,
-            @Parameter(description = "Commit page number, default is 0") @RequestParam(defaultValue = "0") Integer commitPage,
-            @Parameter(description = "Commit page size, default is 30") @RequestParam(defaultValue = "30") Integer commitPageSize,
-            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
-            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize
+            @Parameter(
+                    description = "Project page number",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer projectPage,
+
+            @Parameter(
+                    description = "Project page size",
+                    schema = @Schema(minimum = "0")
+            ) @RequestParam(defaultValue = "30")
+            Integer projectPageSize,
+
+            @Parameter(
+                    description = "Order ",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "name", "-name"}
+                    )
+            )
+            @RequestParam(defaultValue = "id")
+            String orderProjectBy,
+
+            @Parameter(
+                    description = "Issue page number",
+                    schema =  @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer issuePage,
+
+            @Parameter(
+                    description = "Issue page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer issuePageSize,
+
+            @Parameter(
+                    description = "Order issues by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt","title", "-title","votes", "-votes"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String issueOrderBy,
+
+            @Parameter(
+                    description = "Commit page number",
+                    schema =  @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commitPage,
+
+            @Parameter(
+                    description = "Commit page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commitPageSize,
+
+            @Parameter(
+                    description = "Order commits by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "title", "-title"}
+                    )
+            )
+            @RequestParam(defaultValue = "id")
+            String commitOrderBy,
+
+            @Parameter(
+                    description = "Comment page number",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commentPage,
+
+            @Parameter(
+                    description = "Comment page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commentPageSize,
+
+            @Parameter(
+                    description = "Order comments by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt", "body", "-body"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String commentOrderBy
     ) {
-        Pageable pageProjects = PageRequest.of(projectPage, projectPageSize);
-        Pageable pageIssues = PageRequest.of(issuePage, issuePageSize);
-        Pageable pageCommits = PageRequest.of(commitPage, commitPageSize);
-        Pageable pageComments = PageRequest.of(commentPage, commentPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateProjectPage, projectPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateProjectPageSize, projectPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssuePage, issuePage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssuePageSize, issuePageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommitPage, commitPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommitPageSize, commitPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPage, commentPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPageSize, commentPageSize);
+        Issue.Order issueOrder = ValidationUtils.accumulateValidationReturn(Issue.Order::new, issueOrderBy);
+        Commit.Order commitOrder = ValidationUtils.accumulateValidationReturn(Commit.Order::new, commitOrderBy);
+        Comment.Order commentOrder = ValidationUtils.accumulateValidationReturn(Comment.Order::new, commentOrderBy);
+        Project.Order projectOrder = ValidationUtils.accumulateValidationReturn(Project.Order::new, orderProjectBy);
+        ValidationUtils.throwIfErrors();
+        Pageable pageIssues = issueOrder.getPageable(issuePage, issuePageSize);
+        Pageable pageCommits = commitOrder.getPageable(commitPage, commitPageSize);
+        Pageable pageComments = commentOrder.getPageable(commentPage, commentPageSize);
+        Pageable pageProjects = projectOrder.getPageable(projectPage, projectPageSize);
         return projectService.findAllProjects(pageProjects,pageComments,pageCommits,pageIssues);
     }
 
@@ -79,18 +178,101 @@ public class ProjectController {
 
     // API Route and method:
     @GetMapping("/{id}")
+    @SuppressWarnings("ConstantConditions ")
     public Project getProjectById(
-            @Parameter(description = "Searched project ID") @PathVariable String id,
-            @Parameter(description = "Issue page number, default is 0") @RequestParam(defaultValue = "0") Integer issuePage,
-            @Parameter(description = "Issue page size, default is 30") @RequestParam(defaultValue = "30") Integer issuePageSize,
-            @Parameter(description = "Commit page number, default is 0") @RequestParam(defaultValue = "0") Integer commitPage,
-            @Parameter(description = "Commit page size, default is 30") @RequestParam(defaultValue = "30") Integer commitPageSize,
-            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
-            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize
+            @Parameter(
+                    description = "Searched project ID",
+                    schema = @Schema(
+                            example = "MDEwOlJlcG9zaXRvcnkxMTQ4NzUz",
+                            minLength = 1
+                    )
+            )
+            @PathVariable
+            String id,
+
+            @Parameter(
+                    description = "Issue page number",
+                    schema =  @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer issuePage,
+
+            @Parameter(
+                    description = "Issue page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer issuePageSize,
+
+            @Parameter(
+                    description = "Order issues by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt","title", "-title","votes", "-votes"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String issueOrderBy,
+
+            @Parameter(
+                    description = "Commit page number",
+                    schema =  @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commitPage,
+
+            @Parameter(
+                    description = "Commit page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commitPageSize,
+
+            @Parameter(
+                    description = "Order commits by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "title", "-title"}
+                    )
+            )
+            @RequestParam(defaultValue = "id")
+            String commitOrderBy,
+
+            @Parameter(
+                    description = "Comment page number",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commentPage,
+
+            @Parameter(
+                    description = "Comment page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commentPageSize,
+
+            @Parameter(
+                    description = "Order comments by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt", "body", "-body"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String commentOrderBy
     ) {
-        Pageable pageIssues = PageRequest.of(issuePage, issuePageSize);
-        Pageable pageCommits = PageRequest.of(commitPage, commitPageSize);
-        Pageable pageComments = PageRequest.of(commentPage, commentPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateProjectId, id);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssuePage, issuePage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssuePageSize, issuePageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommitPage, commitPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommitPageSize, commitPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPage, commentPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPageSize, commentPageSize);
+        Issue.Order issueOrder = ValidationUtils.accumulateValidationReturn(Issue.Order::new, issueOrderBy);
+        Commit.Order commitOrder = ValidationUtils.accumulateValidationReturn(Commit.Order::new, commitOrderBy);
+        Comment.Order commentOrder = ValidationUtils.accumulateValidationReturn(Comment.Order::new, commentOrderBy);
+        ValidationUtils.throwIfErrors();
+        Pageable pageIssues = issueOrder.getPageable(issuePage, issuePageSize);
+        Pageable pageCommits = commitOrder.getPageable(commitPage, commitPageSize);
+        Pageable pageComments = commentOrder.getPageable(commentPage, commentPageSize);
         return projectService.findProjectById(id, pageIssues, pageComments, pageCommits);
     }
 

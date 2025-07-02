@@ -5,6 +5,7 @@ import aiss.gitminer.model.Comment;
 import aiss.gitminer.model.Issue;
 import aiss.gitminer.services.CommentService;
 import aiss.gitminer.services.IssueService;
+import aiss.gitminer.utils.ValidationUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,16 +54,76 @@ public class IssueController {
 
     // API Route and method:
     @GetMapping
+    @SuppressWarnings("ConstantConditions")
     public List<Issue> getIssues(
-            @Parameter(description = "Issue page number, default is 0") @RequestParam(defaultValue = "0") Integer issuePage,
-            @Parameter(description = "Issue page size, default is 30") @RequestParam(defaultValue = "30") Integer issuePageSize,
-            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
-            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize,
-            @Parameter(description = "Issue author ID") @RequestParam(required = false) String authorId,
-            @Parameter(description = "Issue state") @RequestParam(required = false) String state
+            @Parameter(
+                    description = "Issue page number",
+                    schema =  @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer issuePage,
+
+            @Parameter(
+                    description = "Issue page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer issuePageSize,
+
+            @Parameter(
+                    description = "Order issues by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt","title", "-title","votes", "-votes"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String issueOrderBy,
+
+            @Parameter(
+                    description = "Comment page number",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commentPage,
+
+            @Parameter(
+                    description = "Comment page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commentPageSize,
+
+            @Parameter(
+                    description = "Order comments by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt", "body", "-body"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String commentOrderBy,
+
+            @Parameter(
+                    description = "Issue author ID",
+                    schema = @Schema(minLength = 1)
+            ) @RequestParam(required = false)
+            String authorId,
+
+            @Parameter(
+                    description = "Issue state",
+                    schema = @Schema(minLength = 1)
+            ) @RequestParam(required = false) String state
     ) {
-        Pageable pageIssue = PageRequest.of(issuePage, issuePageSize);
-        Pageable pageComment = PageRequest.of(commentPage, commentPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssuePage, issuePage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssuePageSize, issuePageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPage, commentPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPageSize, commentPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateUserId, authorId);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssueState, state);
+        Issue.Order issueOrder = ValidationUtils.accumulateValidationReturn(Issue.Order::new, issueOrderBy);
+        Comment.Order commentOrder = ValidationUtils.accumulateValidationReturn(Comment.Order::new, commentOrderBy);
+        ValidationUtils.throwIfErrors();
+        Pageable pageIssue = issueOrder.getPageable(issuePage, issuePageSize);
+        Pageable pageComment = commentOrder.getPageable(commentPage, commentPageSize);
         if (authorId != null && state != null) {
             return issueService.findAllByAuthorIdAndState(authorId, state, pageIssue, pageComment);
         } else if (authorId != null) {
@@ -89,13 +149,45 @@ public class IssueController {
 
     // API Route and method:
     @GetMapping("/{id}")
+    @SuppressWarnings("ConstantConditions")
     public Issue getIssueById(
-            @Parameter(description = "Searched issue ID")@PathVariable String id,
-            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
-            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize
+            @Parameter(
+                    description = "Searched issue ID",
+                    schema = @Schema(minLength = 1)
+            )
+            @PathVariable
+            String id,
+
+            @Parameter(
+                    description = "Comment page number",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commentPage,
+
+            @Parameter(
+                    description = "Comment page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commentPageSize,
+
+            @Parameter(
+                    description = "Order comments by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt", "body", "-body"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String commentOrderBy
     ) {
-        Pageable pageComment = PageRequest.of(commentPage, commentPageSize);
-        return issueService.findIssueById(id,pageComment);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssueId, id);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPage, commentPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPageSize, commentPageSize);
+        Comment.Order commentOrder = ValidationUtils.accumulateValidationReturn(Comment.Order::new, commentOrderBy);
+        ValidationUtils.throwIfErrors();
+        Pageable pageComment = commentOrder.getPageable(commentPage, commentPageSize);
+        return issueService.findIssueById(id, pageComment);
     }
 
     // API Documentation:
@@ -112,12 +204,44 @@ public class IssueController {
 
     // API Route and method:
     @GetMapping("/{id}/comments")
+    @SuppressWarnings("ConstantConditions")
     public List<Comment> getCommentsByIssueId(
-            @Parameter(description = "Id of the issue whose comments are being requested") @PathVariable String id,
-            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
-            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize
+            @Parameter(
+                    description = "Id of the issue whose comments are being requested",
+                    schema = @Schema(minLength = 1)
+            )
+            @PathVariable
+            String id,
+
+            @Parameter(
+                    description = "Comment page number",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commentPage,
+
+            @Parameter(
+                    description = "Comment page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commentPageSize,
+
+            @Parameter(
+                    description = "Order comments by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt", "body", "-body"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String commentOrderBy
     ) {
-        Pageable pageComment = PageRequest.of(commentPage, commentPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateIssueId, id);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPage, commentPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPageSize, commentPageSize);
+        Comment.Order commentOrder = ValidationUtils.accumulateValidationReturn(Comment.Order::new, commentOrderBy);
+        ValidationUtils.throwIfErrors();
+        Pageable pageComment = commentOrder.getPageable(commentPage, commentPageSize);
         return commentService.findByIssueId(id,pageComment);
     }
 

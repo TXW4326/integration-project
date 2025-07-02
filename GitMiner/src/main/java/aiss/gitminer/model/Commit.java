@@ -1,5 +1,7 @@
 package aiss.gitminer.model;
 
+import aiss.gitminer.exception.BadRequestException;
+import aiss.gitminer.utils.GeneralOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,6 +13,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "Commit")
@@ -194,12 +198,50 @@ public class Commit {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Project project)) return false;
-        return Objects.equals(getId(), project.getId());
+        if (!(o instanceof Project _project)) return false;
+        return Objects.equals(getId(), _project.getId());
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
+    }
+
+
+    private enum OrderBy {
+        ID("id"),
+        TITLE("title");
+
+        private final String value;
+        private static final String validValues = Stream.of(OrderBy.values()).map(orderBy -> orderBy + ", -" + orderBy).collect(Collectors.joining(", ", "{ ", " }"));
+
+        OrderBy(String value) {
+            this.value = value;
+        }
+
+        public static OrderBy of(String name) {
+            return Stream.of(OrderBy.values()).filter(e -> e.value.equals(name)).findFirst().orElseThrow(()->
+                    new BadRequestException("Invalid issueOrderBy value: " + name + ", expected one of: " + validValues)
+            );
+        }
+
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public record Order(OrderBy orderBy, boolean ascending) implements GeneralOrder {
+        public Order(String order) {
+            this(
+                    order.charAt(0) == '-' ? OrderBy.of(order.substring(1)) : OrderBy.of(order),
+                    order.charAt(0) != '-'
+            );
+        }
+
+        public String getOrderBy() {
+            return orderBy.toString();
+        }
     }
 }

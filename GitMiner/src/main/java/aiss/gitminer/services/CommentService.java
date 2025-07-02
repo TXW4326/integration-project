@@ -5,6 +5,7 @@ import aiss.gitminer.model.Comment;
 import aiss.gitminer.repositories.CommentRepository;
 import aiss.gitminer.repositories.IssueRepository;
 import aiss.gitminer.repositories.UserRepository;
+import aiss.gitminer.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class CommentService {
     }
 
     public Comment findById(String id) {
+        ValidationUtils.validateCommentId(id);
         return commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
     }
 

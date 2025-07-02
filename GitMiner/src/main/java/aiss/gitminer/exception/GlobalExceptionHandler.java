@@ -1,6 +1,7 @@
 package aiss.gitminer.exception;
 
 import aiss.gitminer.dto.ErrorResponse;
+import aiss.gitminer.utils.ValidationUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class GlobalExceptionHandler {
                 "Not Found",
                 "Requested Issue doesn't exists."
         );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -33,6 +36,7 @@ public class GlobalExceptionHandler {
                 "Not Found",
                 "Requested Comment doesn't exist."
         );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -43,6 +47,7 @@ public class GlobalExceptionHandler {
                 "Not Found",
                 "Requested Commit doesn't exist."
         );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -53,6 +58,7 @@ public class GlobalExceptionHandler {
                 "Not Found",
                 "Requested Project doesn't exist."
         );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -64,6 +70,7 @@ public class GlobalExceptionHandler {
                 "Not Found",
                 "Requested User doesn't exist."
         );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -77,6 +84,7 @@ public class GlobalExceptionHandler {
                 "Request does not match validation constraints.",
                 errors
         );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -91,16 +99,28 @@ public class GlobalExceptionHandler {
                 "Internal Server Error",
                 "An unexpected error has occurred in the server. Please, try again later."
         );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                "Bad Request",
-                ex.getMessage()
-        );
+        ErrorResponse errorResponse;
+        if (ex.getDetails() != null) {
+            errorResponse = new ErrorResponse(
+                    HttpStatus.BAD_REQUEST,
+                    "Bad Request",
+                    ex.getMessage(),
+                    ex.getDetails()
+            );
+        } else {
+            errorResponse = new ErrorResponse(
+                    HttpStatus.BAD_REQUEST,
+                    "Bad Request",
+                    ex.getMessage()
+            );
+        }
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -111,6 +131,18 @@ public class GlobalExceptionHandler {
                 "Bad Request",
                 "Error mapping JSON data: " + ex.getMostSpecificCause().getMessage()
         );
+        ValidationUtils.clearErrors();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Bad Request",
+                "Invalid value for parameter '" + ex.getName() + "': " + ex.getValue()
+        );
+        ValidationUtils.clearErrors();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

@@ -3,6 +3,7 @@ package aiss.gitminer.controller;
 import aiss.gitminer.dto.ErrorResponse;
 import aiss.gitminer.model.Commit;
 import aiss.gitminer.services.CommitService;
+import aiss.gitminer.utils.ValidationUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -12,8 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,12 +46,36 @@ public class CommitController {
 
     // API Route and method:
     @GetMapping
+    @SuppressWarnings("ConstantConditions")
     public List<Commit> getCommits(
-            @Parameter(description = "Commit page number, default is 0") @RequestParam(defaultValue = "0") Integer commitPage,
-            @Parameter(description = "Commit page size, default is 30") @RequestParam(defaultValue = "30") Integer commitPageSize
+            @Parameter(
+                    description = "Commit page number",
+                    schema =  @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commitPage,
+
+            @Parameter(
+                    description = "Commit page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commitPageSize,
+
+            @Parameter(
+                    description = "Order commits by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "title", "-title"}
+                    )
+            )
+            @RequestParam(defaultValue = "id")
+            String commitOrderBy
     ) {
-        Pageable pageCommit = PageRequest.of(commitPage, commitPageSize);
-        return commitService.findAll(pageCommit);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommitPage, commitPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommitPageSize, commitPageSize);
+        Commit.Order commitOrder = ValidationUtils.accumulateValidationReturn(Commit.Order::new, commitOrderBy);
+        ValidationUtils.throwIfErrors();
+        return commitService.findAll(commitOrder.getPageable(commitPage, commitPageSize));
     }
 
     // API Documentation:
@@ -69,7 +92,15 @@ public class CommitController {
     // API Route and method:
     @GetMapping("/{id}")
     public Commit getCommitById(
-            @Parameter(description = "Searched commit ID")@PathVariable String id
+            @Parameter(
+                    description = "Searched commit ID",
+                    schema = @Schema(
+                            minLength = 40,
+                            maxLength = 40
+                    )
+            )
+            @PathVariable
+            String id
     ) {
         return commitService.findById(id);
     }

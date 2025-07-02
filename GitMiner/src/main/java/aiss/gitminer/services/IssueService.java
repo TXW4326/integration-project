@@ -3,7 +3,6 @@ package aiss.gitminer.services;
 import aiss.gitminer.exception.IssueNotFoundException;
 import aiss.gitminer.model.Issue;
 import aiss.gitminer.repositories.IssueRepository;
-import aiss.gitminer.repositories.ProjectRepository;
 import aiss.gitminer.repositories.UserRepository;
 import aiss.gitminer.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +15,16 @@ import java.util.List;
 public class IssueService {
 
     private final IssueRepository issueRepository;
-    private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final CommentService commentService;
 
     @Autowired
     private IssueService(
             IssueRepository issueRepository,
-            ProjectRepository projectRepository,
             CommentService commentService,
             UserRepository userRepository
         ) {
         this.issueRepository = issueRepository;
-        this.projectRepository = projectRepository;
         this.commentService = commentService;
         this.userRepository = userRepository;
     }
@@ -39,10 +35,6 @@ public class IssueService {
         }).toList();
     }
 
-    public List<Issue> findByProjectId(String projectId, Pageable pageIssues, Pageable pageComments) {
-        projectRepository.projectExists(projectId);
-        return findByProjectIdInternal(projectId, pageIssues, pageComments);
-    }
 
     public Issue findIssueById(String issueId, Pageable pageComments) {
         ValidationUtils.validateIssueId(issueId);

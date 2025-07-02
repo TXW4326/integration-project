@@ -3,6 +3,7 @@ package aiss.gitminer.controller;
 import aiss.gitminer.dto.ErrorResponse;
 import aiss.gitminer.model.Comment;
 import aiss.gitminer.services.CommentService;
+import aiss.gitminer.utils.ValidationUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -12,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,12 +47,44 @@ public class CommentController {
 
     // API Route and method:
     @GetMapping
+    @SuppressWarnings("ConstantConditions")
     public List<Comment> getComments(
-            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
-            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize,
-            @Parameter(description = "Author id of the comments") @RequestParam(required = false) String authorId
+            @Parameter(
+                    description = "Comment page number",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "0")
+            Integer commentPage,
+
+            @Parameter(
+                    description = "Comment page size",
+                    schema = @Schema(minimum = "0")
+            )
+            @RequestParam(defaultValue = "30")
+            Integer commentPageSize,
+
+            @Parameter(
+                    description = "Order comments by field",
+                    schema = @Schema(
+                            allowableValues = {"id", "-id", "createdAt", "-createdAt", "updatedAt", "-updatedAt", "body", "-body"}
+                    )
+            )
+            @RequestParam(defaultValue = "-createdAt")
+            String commentOrderBy,
+
+            @Parameter(
+                    description = "Author id of the comments",
+                    schema = @Schema(minLength = 1)
+            )
+            @RequestParam(required = false)
+            String authorId
     ) {
-        Pageable pageComment = PageRequest.of(commentPage, commentPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPage, commentPage);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateCommentPageSize, commentPageSize);
+        ValidationUtils.accumulateValidation(ValidationUtils::validateUserId, authorId);
+        Comment.Order commentOrder = ValidationUtils.accumulateValidationReturn(Comment.Order::new, commentOrderBy);
+        ValidationUtils.throwIfErrors();
+        Pageable pageComment = commentOrder.getPageable(commentPage, commentPageSize);
         return authorId == null ? commentService.findAll(pageComment) : commentService.findAllByAuthorId(authorId, pageComment);
     }
 
@@ -70,7 +102,12 @@ public class CommentController {
     // API Route and method:
     @GetMapping("/{id}")
     public Comment getCommentById(
-            @Parameter(description = "Searched comment ID")@PathVariable String id
+            @Parameter(
+                    description = "Searched comment ID",
+                    schema = @Schema(minLength = 1)
+            )
+            @PathVariable
+            String id
     ) {
         return commentService.findById(id);
     }

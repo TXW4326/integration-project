@@ -1,6 +1,8 @@
 
 package aiss.gitminer.model;
 
+import aiss.gitminer.exception.BadRequestException;
+import aiss.gitminer.utils.GeneralOrder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -15,6 +17,8 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Entity
@@ -175,5 +179,43 @@ public class Project {
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
+    }
+
+
+    private enum OrderBy {
+        ID("id"),
+        NAME("name");
+
+        private final String value;
+        private static final String validValues = Stream.of(OrderBy.values()).map(orderBy -> orderBy + ", -" + orderBy).collect(Collectors.joining(", ", "{ ", " }"));
+
+        OrderBy(String value) {
+            this.value = value;
+        }
+
+        public static OrderBy of(String name) {
+            return Stream.of(OrderBy.values()).filter(e -> e.value.equals(name)).findFirst().orElseThrow(()->
+                    new BadRequestException("Invalid issueOrderBy value: " + name + ", expected one of: " + validValues)
+            );
+        }
+
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public record Order(OrderBy orderBy, boolean ascending) implements GeneralOrder {
+        public Order(String order) {
+            this(
+                    order.charAt(0) == '-' ? OrderBy.of(order.substring(1)) : OrderBy.of(order),
+                    order.charAt(0) != '-'
+            );
+        }
+
+        public String getOrderBy() {
+            return orderBy.toString();
+        }
     }
 }
