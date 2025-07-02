@@ -5,8 +5,11 @@ import aiss.bitbucketminer.models.Issue;
 import aiss.bitbucketminer.models.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +17,7 @@ public class BitbucketProjectService {
 
     private final BitbucketCommitService commitService;
     private final BitbucketIssueService issueService;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public Project fetchProject(String workspace, String repo, int nCommits, int nIssues, int maxPages) {
         Project project = new Project(repo, "https://bitbucket.org/" + workspace + "/" + repo);
@@ -23,5 +27,26 @@ public class BitbucketProjectService {
         project.getIssues().addAll(issues);
         return project;
     }
-}
 
+    public List<Project> fetchAllProjects(String workspace, int nCommits, int nIssues, int maxPages) {
+        List<Project> allProjects = new ArrayList<>();
+        String url = "https://api.bitbucket.org/2.0/repositories/" + workspace;
+
+        while (url != null) {
+            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+            List<Map<String, Object>> values = (List<Map<String, Object>>) response.get("values");
+
+            for (Map<String, Object> repoMap : values) {
+                String repoName = (String) repoMap.get("name");
+                if (repoName != null) {
+                    Project project = fetchProject(workspace, repoName, nCommits, nIssues, maxPages);
+                    allProjects.add(project);
+                }
+            }
+
+            url = (String) response.get("next");
+        }
+
+        return allProjects;
+    }
+}
