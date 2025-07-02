@@ -2,6 +2,7 @@
 package aiss.gitminer.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -22,6 +23,13 @@ import java.util.Objects;
         description = "Represents an issue in a project"
 )
 public class Issue {
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "projectId")
+    @Schema(hidden = true)
+    private Project project;
+
 
     @Id
     @JsonProperty("id")
@@ -148,7 +156,7 @@ public class Issue {
     private Integer votes;
 
     @JsonProperty("comments")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "issueId")
     @Valid
     @NotNull(message = "Issue comment list cannot be null")

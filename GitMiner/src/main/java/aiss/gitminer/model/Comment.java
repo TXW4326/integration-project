@@ -2,6 +2,7 @@
 package aiss.gitminer.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,12 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Represents a comment in the system")
 public class Comment {
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "issueId")
+    @Schema(hidden = true)
+    private Issue issue;
 
     @Id
     @JsonProperty("id")

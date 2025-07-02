@@ -1,15 +1,13 @@
 package aiss.gitminer.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.URL;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -19,6 +17,12 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Represents a commit in a Git repository")
 public class Commit {
+
+    @JsonIgnore
+    @Schema(hidden = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "projectId")
+    private Project project;
 
     @Id
     @JsonProperty("id")

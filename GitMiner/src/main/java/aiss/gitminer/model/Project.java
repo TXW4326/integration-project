@@ -1,7 +1,6 @@
 
 package aiss.gitminer.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,7 +12,6 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,9 +22,6 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Represents a project with its details, including commits and issues.")
 public class Project {
-
-    @JsonIgnore
-    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Id
     @JsonProperty("id")
@@ -63,7 +58,7 @@ public class Project {
 
     @Valid
     @JsonProperty("commits")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
     @JoinColumn(name = "projectId")
     @NotNull(message = "Project commit list cannot be null")
     @UniqueElements(message = "Commit ids should be unique")
@@ -78,7 +73,7 @@ public class Project {
     private List<@NotNull(message = "Project commit cannot be null") Commit> commits;
 
     @JsonProperty("issues")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
     @JoinColumn(name = "projectId")
     @Valid
     @NotNull(message = "Project issue list cannot be null")

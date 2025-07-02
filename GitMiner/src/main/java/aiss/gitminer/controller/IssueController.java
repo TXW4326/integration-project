@@ -1,11 +1,10 @@
 package aiss.gitminer.controller;
 
 import aiss.gitminer.dto.ErrorResponse;
-import aiss.gitminer.exception.BadRequestException;
-import aiss.gitminer.exception.IssueNotFoundException;
 import aiss.gitminer.model.Comment;
 import aiss.gitminer.model.Issue;
-import aiss.gitminer.repositories.IssueRepository;
+import aiss.gitminer.services.CommentService;
+import aiss.gitminer.services.IssueService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -15,28 +14,31 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Tag(
         name = "Issue",
         description = "Issue public API"
 )
-@ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json"))
+@ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json"))
 @RestController
 @RequestMapping("/gitminer/issues")
 public class IssueController {
 
-    private final IssueRepository issueRepository;
+    private final IssueService issueService;
+    private final CommentService commentService;
 
     @Autowired
-    private IssueController(IssueRepository issueRepository) {
-        this.issueRepository = issueRepository;
+    private IssueController(
+            IssueService issueService,
+            CommentService commentService
+        ) {
+        this.issueService = issueService;
+        this.commentService = commentService;
     }
 
     // API Documentation:
@@ -47,16 +49,30 @@ public class IssueController {
             tags = {"GET", "getAll", "Issues", "Issue"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Issue.class)), mediaType = "application/json"))
+            @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Issue.class)), mediaType = "application/json")),
     })
 
     // API Route and method:
     @GetMapping
-    public List<Issue> getIssues() {
-        List<Issue> issues = issueRepository.findAll();
-        //TODO: Why not return an empty list instead of throwing an exception?
-        if (issues.isEmpty()) throw new IssueNotFoundException();
-        return issues;
+    public List<Issue> getIssues(
+            @Parameter(description = "Issue page number, default is 0") @RequestParam(defaultValue = "0") Integer issuePage,
+            @Parameter(description = "Issue page size, default is 30") @RequestParam(defaultValue = "30") Integer issuePageSize,
+            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
+            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize,
+            @Parameter(description = "Issue author ID") @RequestParam(required = false) String authorId,
+            @Parameter(description = "Issue state") @RequestParam(required = false) String state
+    ) {
+        Pageable pageIssue = PageRequest.of(issuePage, issuePageSize);
+        Pageable pageComment = PageRequest.of(commentPage, commentPageSize);
+        if (authorId != null && state != null) {
+            return issueService.findAllByAuthorIdAndState(authorId, state, pageIssue, pageComment);
+        } else if (authorId != null) {
+            return issueService.findAllByAuthorId(authorId, pageIssue, pageComment);
+        } else if (state != null) {
+            return issueService.findAllByState(state, pageIssue, pageComment);
+        } else {
+            return issueService.findAll(pageIssue, pageComment);
+        }
     }
 
     // API Documentation:
@@ -67,16 +83,19 @@ public class IssueController {
             tags = {"GET", "getById", "Issue"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Issue.class), mediaType = "application/json"))
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Issue.class), mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")),
     })
 
     // API Route and method:
     @GetMapping("/{id}")
-    public Issue getIssueById(@Parameter(description = "Searched issue ID")@PathVariable String id) {
-        if (id.isBlank()) throw new BadRequestException("Issue ID cannot be blank");
-        Optional<Issue> issue = issueRepository.findById(id);
-        if (issue.isEmpty()) throw new IssueNotFoundException();
-        return issue.get();
+    public Issue getIssueById(
+            @Parameter(description = "Searched issue ID")@PathVariable String id,
+            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
+            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize
+    ) {
+        Pageable pageComment = PageRequest.of(commentPage, commentPageSize);
+        return issueService.findIssueById(id,pageComment);
     }
 
     // API Documentation:
@@ -87,17 +106,19 @@ public class IssueController {
             tags = {"GET", "getById", "Issue", "Comments", "Comment"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Comment.class)), mediaType = "application/json"))
+            @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Comment.class)), mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")),
     })
 
     // API Route and method:
     @GetMapping("/{id}/comments")
-    public List<Comment> getCommentsByIssueId(@Parameter(description = "Id of the issue whose comments are being requested") @PathVariable String id) {
-        if (id.isBlank()) throw new BadRequestException("Issue ID cannot be blank");
-        Optional<Issue> issue = issueRepository.findById(id);
-        if (issue.isEmpty()) throw new IssueNotFoundException();
-        //TODO: Here you return an empty list if the issue has no comments, but everywhere else you always check if the returned list is empty.
-        return issue.get().getComments();
+    public List<Comment> getCommentsByIssueId(
+            @Parameter(description = "Id of the issue whose comments are being requested") @PathVariable String id,
+            @Parameter(description = "Comment page number, default is 0") @RequestParam(defaultValue = "0") Integer commentPage,
+            @Parameter(description = "Comment page size, default is 30") @RequestParam(defaultValue = "30") Integer commentPageSize
+    ) {
+        Pageable pageComment = PageRequest.of(commentPage, commentPageSize);
+        return commentService.findByIssueId(id,pageComment);
     }
 
 }
