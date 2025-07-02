@@ -507,7 +507,8 @@
 									"    pm.expect(pm.response.text()).to.include(\"\\\"body\\\":\\\"Thanks a lot for the quick reply\");\r",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -515,7 +516,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/gitminer/issues/1554713335/comments",
+							"raw": "http://localhost:8080/gitminer/issues/1554713335/comments?commentsPageSize=3000",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -526,6 +527,12 @@
 								"issues",
 								"1554713335",
 								"comments"
+							],
+							"query": [
+								{
+									"key": "commentsPageSize",
+									"value": "3000"
+								}
 							]
 						}
 					},
@@ -635,6 +642,13 @@
 								],
 								"type": "text/javascript",
 								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
 							}
 						}
 					],
