@@ -137,7 +137,7 @@ public class Commit {
         }
     }
 
-    // 7. web_url (expuesta y derivada de links.html.href)
+    // 7. web_url (derivada de links.html.href)
     @JsonProperty("web_url")
     public String getWeb_url() {
         return links != null && links.getHtml() != null ? links.getHtml().getHref() : null;

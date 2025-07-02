@@ -21,6 +21,8 @@ public class Author {
     @JsonProperty("links")
     private Avatar avatarWrapper;
 
+    //author y user debería ser lo mismo
+
     public String getAvatar_url() {
         return avatarWrapper != null ? avatarWrapper.getAvatar().getHref() : null;
     }

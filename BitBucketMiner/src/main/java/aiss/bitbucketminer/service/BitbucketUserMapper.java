@@ -18,7 +18,7 @@ public class BitbucketUserMapper {
             user.setAvatar_url((String) avatar.get("href"));
         }
 
-        // Bitbucket does not provide web_url for users directly.
+        // Bitbucket no da directamente url de usuarios (???).
         user.setWeb_url(null);
         return user;
     }
