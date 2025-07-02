@@ -62,6 +62,7 @@ public class Commit {
         this.author = author;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     private static class Raw {
         @JsonProperty("author_name")
@@ -93,14 +94,9 @@ public class Commit {
     }
 
     // 6. authored_date
+    @JsonAlias("date")
     @JsonProperty("authored_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
-    private OffsetDateTime authored_date;
-
-    @JsonProperty("date")
-    public void setDate(OffsetDateTime authored_date) {
-        this.authored_date = authored_date;
-    }
+    private String authored_date;
 
     // Ocultamos links para que no salga en JSON
     @JsonIgnore
@@ -116,6 +112,7 @@ public class Commit {
         this.links = links;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     private static class Links {
         @JsonProperty("html")
@@ -143,4 +140,11 @@ public class Commit {
     public String getWeb_url() {
         return links != null && links.getHtml() != null ? links.getHtml().getHref() : null;
     }
+
+    public void setWeb_url(String href) {
+        if (links == null) links = new Links();
+        if (links.getHtml() == null) links.setHtml(new Links.Html());
+        links.getHtml().setHref(href);
+    }
+
 }

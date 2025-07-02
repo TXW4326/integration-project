@@ -29,10 +29,12 @@ public class Author {
         return null;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     static class Avatar {
         private AvatarImage avatar;
 
+        @JsonIgnoreProperties(ignoreUnknown = true)
         @Data
         static class AvatarImage {
             private String href;

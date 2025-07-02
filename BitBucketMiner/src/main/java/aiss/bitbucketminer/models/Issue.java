@@ -31,13 +31,11 @@ public class Issue {
 
     @JsonAlias("created_on")
     @JsonProperty("created_at")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private OffsetDateTime created_at;
+    private String created_at;
 
     @JsonAlias("updated_on")
     @JsonProperty("updated_at")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private OffsetDateTime updated_at;
+    private String updated_at;
 
     @JsonProperty("labels")
     private List<String> labels = new ArrayList<>();
