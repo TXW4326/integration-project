@@ -3,9 +3,11 @@ package aiss.bitbucketminer.models;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
 import java.util.Objects;
 
+@JsonPropertyOrder({"id","title","message",
+        "author_name","author_email","authored_date",
+        "web_url"})
 @JsonIgnoreProperties(ignoreUnknown=true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data

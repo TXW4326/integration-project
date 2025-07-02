@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +70,8 @@ public class Issue {
     @JsonProperty("labels")
     private List<String> labels = new ArrayList<>();
 
-    @JsonProperty("reporter")
+    @JsonAlias("reporter")
+    @JsonProperty("author")
     private Author author;
 
     @JsonProperty("comments")
