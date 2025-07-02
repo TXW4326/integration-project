@@ -1,26 +1,42 @@
 package aiss.bitbucketminer.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Comment {
-    @JsonProperty("id")
+
     private String id;
 
-    @JsonProperty("body")
-    private String body;
+    @JsonProperty("content")
+    private RawContent content;
 
-    @JsonProperty("created_at")
-    private String created_at;
+    @JsonProperty("created_on")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    private LocalDateTime createdAt;
 
-    @JsonProperty("updated_at")
-    private String updated_at;
+    @JsonProperty("user")
+    private Author author;
 
-    @JsonProperty("author")
-    private User author;
+    public String getBody() {
+        return content != null ? content.getRaw() : null;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class RawContent {
+        private String raw;
+    }
 }

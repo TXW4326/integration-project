@@ -3,6 +3,7 @@ package aiss.bitbucketminer.service;
 import aiss.bitbucketminer.models.Commit;
 import aiss.bitbucketminer.models.Issue;
 import aiss.bitbucketminer.models.Project;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,12 @@ public class BitbucketService {
     @Value("${gitminer.api.url:http://localhost:8080/gitminer/projects}")
     private String gitMinerUrl;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate;
+
+    @Autowired
+    public void ServiceBitBucket(RestTemplate restTemplate){
+        this.restTemplate = restTemplate;
+    }
 
     public Project fetchData(String workspace, String repoSlug, int nCommits, int nIssues, int maxPages, boolean sendToGitMiner) {
         String baseApi = "https://api.bitbucket.org/2.0/repositories/" + workspace + "/" + repoSlug;
