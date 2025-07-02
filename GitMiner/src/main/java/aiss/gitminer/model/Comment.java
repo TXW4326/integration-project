@@ -1,36 +1,94 @@
 
 package aiss.gitminer.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import aiss.gitminer.exception.BadRequestException;
+import aiss.gitminer.utils.GeneralOrder;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "Comment")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Represents a comment in the system")
 public class Comment {
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "issueId")
+    @Schema(hidden = true)
+    private Issue issue;
 
     @Id
     @JsonProperty("id")
+    @NotNull(message = "Comment ID cannot be null")
+    @NotBlank(message = "Comment id should not be empty")
+    @Schema(
+            description = "Unique identifier for the comment",
+            example = "IC_kwDOABGHUc60Kmi0",
+            minLength = 1,
+            required = true
+    )
     private String id;
+
     @JsonProperty("body")
-    @NotEmpty(message = "The message cannot be empty.")
     @Column(columnDefinition="TEXT")
+    @NotNull(message = "Comment body cannot be null")
+    @NotEmpty(message = "Comment body cannot be empty")
+    @Schema(
+            description = "Content of the comment",
+            example = "This is a sample comment body.",
+            minLength = 1,
+            required = true
+    )
     private String body;
 
+    @Valid
     @JsonProperty("author")
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     @OneToOne(cascade=CascadeType.ALL)
     private User author;
 
     @JsonProperty("created_at")
-    @NotEmpty(message = "The field created_at cannot be empty.")
-    private String createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @NotNull(message = "Comment creation date cannot be null")
+    @Past(message = "Comment creation date must be in the past")
+    @Schema(
+            description = "Date and time when the comment was created",
+            example = "2023-10-03T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            minLength = 20,
+            maxLength = 20
+    )
+    private LocalDateTime createdAt;
+
     @JsonProperty("updated_at")
-    private String updatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @NotNull(message = "Comment update date cannot be null")
+    @Past(message = "Comment update date must be in the past")
+    @Schema(
+            description = "Date and time when the comment was last updated",
+            example = "2023-10-03T12:00:00Z",
+            format = "date-time",
+            pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+            minLength = 20,
+            maxLength = 20
+    )
+    private LocalDateTime updatedAt;
 
     public String getId() {
         return id;
@@ -56,19 +114,19 @@ public class Comment {
         this.author = author;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -102,6 +160,58 @@ public class Comment {
             sb.append(']');
         }
         return sb.toString();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Project project)) return false;
+        return Objects.equals(getId(), project.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+
+    private enum OrderBy {
+        ID("id"),
+        BODY("body"),
+        CREATED_AT("createdAt"),
+        UPDATED_AT("updatedAt");
+
+        private final String value;
+        private static final String validValues = Stream.of(OrderBy.values()).map(orderBy -> orderBy + ", -" + orderBy).collect(Collectors.joining(", ", "{ ", " }"));
+
+        OrderBy(String value) {
+            this.value = value;
+        }
+
+        public static OrderBy of(String name) {
+            return Stream.of(OrderBy.values()).filter(e -> e.value.equals(name)).findFirst().orElseThrow(()->
+                    new BadRequestException("Invalid issueOrderBy value: " + name + ", expected one of: " + validValues)
+            );
+        }
+
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public record Order(OrderBy orderBy, boolean ascending) implements GeneralOrder {
+        public Order(String order) {
+            this(
+                    order.charAt(0) == '-' ? OrderBy.of(order.substring(1)) : OrderBy.of(order),
+                    order.charAt(0) != '-'
+            );
+        }
+
+        public String getOrderBy() {
+            return orderBy.toString();
+        }
     }
 
 }

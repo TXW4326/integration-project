@@ -1,38 +1,96 @@
 
 package aiss.gitminer.model;
 
+import aiss.gitminer.exception.BadRequestException;
+import aiss.gitminer.utils.GeneralOrder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.validator.constraints.URL;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Entity
 @Table(name = "Project")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Represents a project with its details, including commits and issues.")
 public class Project {
 
     @Id
     @JsonProperty("id")
+    @NotNull(message = "The id of the project cannot be null")
+    @NotBlank(message = "The id of the project cannot be empty")
+    @Schema(
+            description = "Unique identifier for the project",
+            example = "MDEwOlJlcG9zaXRvcnkxMTQ4NzUz",
+            minLength = 1,
+            required = true
+    )
     public String id;
 
     @JsonProperty("name")
-    @NotEmpty(message = "The name of the project cannot be empty")
-    public String name;
+    @NotNull(message = "The name of the project cannot be null")
+    @NotBlank(message = "The name of the project cannot be empty")
+    @Schema(
+            description = "Name of the project",
+            example = "spring-framework",
+            minLength = 1,
+            required = true
+    )
+    private String name;
 
     @JsonProperty("web_url")
-    @NotEmpty(message = "The URL of the project cannot be empty")
+    @NotNull(message = "The URL of the project cannot be null")
+    @URL(message = "Invalid URL format for project web URL")
+    @Schema(
+            description = "Web URL of the project",
+            example = "https://github.com/spring-projects/spring-framework",
+            format = "uri",
+            required = true)
     public String webUrl;
+
+    @Valid
     @JsonProperty("commits")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
     @JoinColumn(name = "projectId")
-    private List<Commit> commits;
+    @NotNull(message = "Project commit list cannot be null")
+    @UniqueElements(message = "Commit ids should be unique")
+    @ArraySchema(
+            schema = @Schema(implementation = Commit.class),
+            arraySchema = @Schema(
+                    description = "List of commits associated with the project",
+                    required = true
+            ),
+            uniqueItems = true
+    )
+    private List<@NotNull(message = "Project commit cannot be null") Commit> commits;
 
     @JsonProperty("issues")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
     @JoinColumn(name = "projectId")
-    private List<Issue> issues;
+    @Valid
+    @NotNull(message = "Project issue list cannot be null")
+    @UniqueElements(message = "Issue ids should be unique")
+    @ArraySchema(
+            schema = @Schema(implementation = Issue.class),
+            arraySchema = @Schema(
+                    description = "List of issues associated with the project",
+                    required = true
+            ),
+            uniqueItems = true
+    )
+    private List<@NotNull(message = "Project issue cannot be null") Issue> issues;
 
     public Project() {
         commits = new ArrayList<>();
@@ -87,6 +145,14 @@ public class Project {
         sb.append('=');
         sb.append(((this.id == null)?"<null>":this.id));
         sb.append(',');
+        sb.append("name");
+        sb.append('=');
+        sb.append(((this.name == null)?"<null>":this.name));
+        sb.append(',');
+        sb.append("web_url");
+        sb.append('=');
+        sb.append(((this.webUrl == null)?"<null>":this.webUrl));
+        sb.append(',');
         sb.append("commits");
         sb.append('=');
         sb.append(((this.commits == null)?"<null>":this.commits));
@@ -102,5 +168,54 @@ public class Project {
             sb.append(']');
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Project project)) return false;
+        return Objects.equals(getId(), project.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+
+    private enum OrderBy {
+        ID("id"),
+        NAME("name");
+
+        private final String value;
+        private static final String validValues = Stream.of(OrderBy.values()).map(orderBy -> orderBy + ", -" + orderBy).collect(Collectors.joining(", ", "{ ", " }"));
+
+        OrderBy(String value) {
+            this.value = value;
+        }
+
+        public static OrderBy of(String name) {
+            return Stream.of(OrderBy.values()).filter(e -> e.value.equals(name)).findFirst().orElseThrow(()->
+                    new BadRequestException("Invalid issueOrderBy value: " + name + ", expected one of: " + validValues)
+            );
+        }
+
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public record Order(OrderBy orderBy, boolean ascending) implements GeneralOrder {
+        public Order(String order) {
+            this(
+                    order.charAt(0) == '-' ? OrderBy.of(order.substring(1)) : OrderBy.of(order),
+                    order.charAt(0) != '-'
+            );
+        }
+
+        public String getOrderBy() {
+            return orderBy.toString();
+        }
     }
 }
